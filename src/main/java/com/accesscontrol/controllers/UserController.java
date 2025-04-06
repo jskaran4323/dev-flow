@@ -26,4 +26,5 @@ public class UserController {
     public User getUserById(@RequestParam Long id){
         return userService.userById(id);
     }
+    
 }

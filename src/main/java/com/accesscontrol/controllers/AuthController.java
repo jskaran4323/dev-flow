@@ -42,4 +42,11 @@ public class AuthController {
     String token = jwtUtil.generateToken(user.getUsername());
     return ResponseEntity.ok(new LoginResponse(token));
     }
+    
+
+    @GetMapping("/logout")
+     public ResponseEntity<?> logout(){
+        return ResponseEntity.ok("logout success, token is still there");
+     }
+    
 }
