@@ -25,14 +25,6 @@ public class AuthController {
         return userService.registerUser(request.getUsername(),request.getPassword(),request.getFullName(),request.getRoles());
     }
 
-    @GetMapping("/users")
-    public List<User> getUsers(){
-        return userService.getUser(); 
-    }
-    @GetMapping("/user")
-    public User getUserById(@RequestParam Long id){
-        return userService.userById(id);
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
