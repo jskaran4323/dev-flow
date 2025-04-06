@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.*;
 import java.util.List;
 
 @Service
@@ -34,4 +34,7 @@ public class UserService {
     public User userById(Long id){
         return userRepository.findById(id).orElse(new User());
      }
+    public Optional<User> findByUsername(String username){
+        return userRepository.findByUsername(username);
+    }
 }
