@@ -14,6 +14,8 @@ public class UserService {
     private UserRepository userRepository;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    
+
 
     public User registerUser(String username,String email, String password, String fullName, Set<String> roles){
         if (userRepository.findByUsername(username).isPresent()){
@@ -22,7 +24,9 @@ public class UserService {
               User user = User.builder()
               .username(username).
               password(passwordEncoder.encode(password)).fullname(fullName).email(email).roles(roles).build();
+             System.out.println("saved username and email:"+username+email);
               return userRepository.save(user);
+
    
 
     }
