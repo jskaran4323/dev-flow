@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.configuration.updateBuildConfiguration": "interactive"
+	},
+	"extensions": {
+    "recommendations": [
+      "octref.vetur",              // Vue 2 support
+      "johnsoncodehk.volar",       // Vue 3 support (optional)
+      "esbenp.prettier-vscode",    // Prettier formatting
+      "dbaeumer.vscode-eslint",    // ESLint integration
+      "vuetifyjs.vuetify-vscode"   // Vuetify snippets
+    ]
+  }
+}

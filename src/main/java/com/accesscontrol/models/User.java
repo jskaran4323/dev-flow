@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Set;
+import java.util.UUID;
 @Entity
 @Table(name = "users")
 @Data
@@ -13,11 +14,12 @@ import java.util.Set;
 public class User {
 
 @Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long id;
+@GeneratedValue
+private UUID id;
 
 @Column(unique = true)
 private String username;
+private String email;
 private String password;
 private String fullname;
 
