@@ -19,8 +19,11 @@ private UUID id;
 
 @Column(unique = true)
 private String username;
+@Column(unique = true)
 private String email;
+
 private String password;
+
 private String fullname;
 
 @ElementCollection(fetch = FetchType.EAGER)
@@ -28,8 +31,4 @@ private String fullname;
 @Column(name = "role")
 
 private Set<String> roles;
-
-
-  
-    
 }
