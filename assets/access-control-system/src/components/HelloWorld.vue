@@ -16,9 +16,13 @@
         </p>
       </v-col>
         </v-row>
-        <v-btn >Login</v-btn>
+        <v-row>
+          <v-col>
+            <v-btn @click="goToLogin">Login</v-btn>
+          </v-col>
+        </v-row>
         <v-btn @click="goToRegister">Register</v-btn>
-
+         
   </v-container>
 </template>
 
@@ -33,7 +37,13 @@
       goToRegister(){
        
     this.$router.push({ name: 'Register' });
-  }
+  },
+  goToLogin(){
+       
+       this.$router.push({ name: 'Login' });
+       
+       
+     }
       
     }
   }

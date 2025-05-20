@@ -105,7 +105,7 @@ export default {
 
         const data = await res.json();
         console.log('User registered:', data);
-        this.$router.push({name: 'DashBoard'})
+        this.$router.push({name: 'Login'})
       } catch (err) {
         this.error = 'Something went wrong';
         console.error(err);
