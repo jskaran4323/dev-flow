@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <NavBar/>
     <v-row>
       <v-col>
         <h2>Register</h2>
@@ -12,6 +13,18 @@
           <v-text-field
             v-model="username"
             label="Username"
+            :rules="[rules.required]"
+            outlined
+            required
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-text-field
+            v-model="email"
+            label="Enter your email"
+            type="email"
             :rules="[rules.required]"
             outlined
             required
@@ -68,11 +81,17 @@
 </template>
 
 <script>
+import NavBar from './NavBar.vue';
+
 export default {
+  components:{
+  NavBar
+  },
   name: 'UserForm',
   data() {
     return {
       username: '',
+      email:'',
       password: '',
       fullName: '',
       role: '',
@@ -92,6 +111,7 @@ export default {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             username: this.username,
+            email: this.email,
             password: this.password,
             fullName: this.fullName,
             roles: [this.role]  

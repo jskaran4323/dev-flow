@@ -1,5 +1,7 @@
 <template>
+  
     <v-container >
+        <NavBar/>
         <v-row>
             <v-col>
             <h2>Login</h2>
@@ -35,20 +37,28 @@
                 <v-btn color="primary" type="submit">
                     Login
                 </v-btn>
+                
             </v-col>
          </v-row>
-
+         <v-alert type="error" v-if="error" dense outlined class="mt-3">
+        {{ error }}
+      </v-alert>
         
         </v-form>
-
+      
     </v-container>
 </template>
 
 <script>
   import { setToken } from '@/utils/auth';
+
+import NavBar from './NavBar.vue';
 export default{
   
     name: 'LoginForm',
+    components:{
+    NavBar
+    },
     data(){
         return{
             identifier:'',
@@ -59,12 +69,9 @@ export default{
             }
         };
     },
-
-
    methods:{
     async loginUser(){
      this.error = '';
-     
      try{
         const res = await fetch('/auth/login',{
             method:'POST',
@@ -73,9 +80,10 @@ export default{
                 identifier: this.identifier,
                 password: this.password
             })
-        })
+        });
         if (!res.ok){
             this.error="login failed"
+            return;
         }
         const data = await res.json();
         setToken(data.token);

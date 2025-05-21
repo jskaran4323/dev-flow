@@ -1,14 +1,17 @@
 <template>
   <v-container>
+    <NavBar/>
     <v-row class="text-center">
       
       <v-col class="mb-4">
         <h1 class="display-2 font-weight-bold mb-3">
-          Welcome to Sample App
+          Access Control 
         </h1>
-
+      <h2 class="display-2 font-weight-bold mb-3">
+        A Gemini based ChatBot
+      </h2>
         <p class="subheading font-weight-regular">
-         this will something related to any real world project
+         Link to project
           <a
             href="https://github.com/jskaran4323/smart-access-control-system.git"
             target="_blank"
@@ -27,8 +30,14 @@
 </template>
 
 <script>
+
+import NavBar from './NavBar.vue';
   export default {
-    name: 'HelloWorld',
+    name: 'HelloPage',
+   components:{
+   NavBar
+    },
+
 
     data: () => ({
       

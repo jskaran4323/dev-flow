@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import HelloWorld from '@/components/HelloWorld.vue';
+
 import UserDashBoard from '@/components/UserDashBoard.vue';
 import UserForm from '@/components/UserForm.vue';
 import LoginForm from '@/components/LoginForm.vue';
+import HomePage from '@/components/HomePage.vue';
 
 
 Vue.use(Router);
@@ -11,7 +12,7 @@ Vue.use(Router);
 export default new Router({
   mode: 'history',
   routes: [ 
-    { path: '/', name: 'Home', component: HelloWorld },
+    { path: '/', name: 'Home', component: HomePage },
     { path: '/register', name: 'Register', component: UserForm },
     {path: '/dashboard', name:'DashBoard', component: UserDashBoard},
     {path: '/login', name:'Login', component: LoginForm}
