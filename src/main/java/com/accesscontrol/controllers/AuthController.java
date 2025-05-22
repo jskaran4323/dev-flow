@@ -19,24 +19,25 @@ public class AuthController {
     private UserService userService;
     @Autowired
     private JwtUtil jwtUtil;
-
+    
     @PostMapping("/register")
     public User register(@RequestBody RegisterRequest request){
-        return userService.registerUser(request.getUsername(),request.getPassword(),request.getFullName(),request.getRoles());
+        return userService.registerUser(request.getUsername(),request.getEmail(),request.getPassword(),request.getFullName(),request.getRoles());
     }
 
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request){
-        Optional<User> userOpt = userService.findByUsername(request.getUsername());
+        Optional<User> userOpt = userService.findByUsernameOrEmail(request.getIdentifier());
     if (userOpt.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username/email");
     }
 
     User user = userOpt.get();
+    
 
     if (!new BCryptPasswordEncoder().matches(request.getPassword(), user.getPassword())) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid  or password");
     }
 
     String token = jwtUtil.generateToken(user.getUsername());

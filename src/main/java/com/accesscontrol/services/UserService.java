@@ -7,7 +7,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.List;
 
 @Service
 public class UserService {
@@ -15,15 +14,19 @@ public class UserService {
     private UserRepository userRepository;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    
 
-    public User registerUser(String username, String password, String fullName, Set<String> roles){
+
+    public User registerUser(String username,String email, String password, String fullName, Set<String> roles){
         if (userRepository.findByUsername(username).isPresent()){
             throw new RuntimeException("Username already exists");
         }
               User user = User.builder()
               .username(username).
-              password(passwordEncoder.encode(password)).fullname(fullName).roles(roles).build();
+              password(passwordEncoder.encode(password)).fullname(fullName).email(email).roles(roles).build();
+             System.out.println("saved username and email:"+username+email);
               return userRepository.save(user);
+
    
 
     }
@@ -31,10 +34,16 @@ public class UserService {
        return userRepository.findAll();
     }
 
-    public User userById(Long id){
+    public User userById(UUID id){
         return userRepository.findById(id).orElse(new User());
      }
-    public Optional<User> findByUsername(String username){
+
+       public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+     public Optional<User> findByUsernameOrEmail(String identifier) {
+        return userRepository.findByUsername(identifier)
+               .or(() -> userRepository.findByEmail(identifier));
     }
 }
