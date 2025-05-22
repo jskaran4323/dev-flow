@@ -11,6 +11,5 @@ public class AccesscontrolSystemApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AccesscontrolSystemApplication.class, args);
 	}
-
-
+	
 }
