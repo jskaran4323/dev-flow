@@ -28,7 +28,6 @@ services:
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_JPA_SHOW_SQL=true
-      - GEMINI_API_KEY=AIzaSyDidEFT5N81KU9iEWurbSBME1SL2nZ1AAA
     networks:
       - app-network
 
