@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.util.Set;
 import java.util.UUID;
+
+import com.accesscontrol.enums.UserType;
 @Entity
 @Table(name = "users")
 @Data
@@ -38,6 +40,7 @@ private String fullname;
 
 @ElementCollection(fetch = FetchType.EAGER)
 @CollectionTable(name= "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+@Enumerated(EnumType.STRING)
 @Column(name = "role")
 
 private Set<String> roles;

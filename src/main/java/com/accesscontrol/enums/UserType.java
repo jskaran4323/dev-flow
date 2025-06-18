@@ -1,4 +1,4 @@
-package com.accesscontrol.models;
+package com.accesscontrol.enums;
 
 public enum UserType {
     ADMIN(0),

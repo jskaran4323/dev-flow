@@ -23,7 +23,7 @@ public class UserService {
         }
               User user = User.builder()
               .username(username).
-              password(passwordEncoder.encode(password)).fullname(fullName).email(email).roles(roles).build();
+              password(passwordEncoder.encode(password)).fullname(fullName).email(email).roles(Set.of("Customers")).build();
              System.out.println("saved username and email:"+username+email);
               return userRepository.save(user);
 
@@ -39,7 +39,7 @@ public class UserService {
      }
     
      public List<User> getAllCustomers(int type){
-        return userRepository.findByUserType(1);
+        return userRepository.findByUserType(type);
      }
 
        public Optional<User> findByUsername(String username) {
