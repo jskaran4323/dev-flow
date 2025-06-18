@@ -37,6 +37,10 @@ public class UserService {
     public User userById(UUID id){
         return userRepository.findById(id).orElse(new User());
      }
+    
+     public List<User> getAllCustomers(int type){
+        return userRepository.findByUserType(1);
+     }
 
        public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
