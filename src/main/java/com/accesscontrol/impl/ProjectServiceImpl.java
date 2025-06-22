@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.accesscontrol.models.Project;
-import com.accesscontrol.models.User;
 import com.accesscontrol.repositories.ProjectRepository;
 import com.accesscontrol.services.ProjectService;
 

@@ -12,11 +12,14 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Issues")
+@Table(name = "issue")
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Issue {
@@ -32,12 +35,14 @@ public class Issue {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id")
+    @JsonBackReference
     private User assignee;
     
 
      
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
+    @JsonBackReference
     private Project project;
 
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)

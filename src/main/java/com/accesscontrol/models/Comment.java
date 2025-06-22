@@ -1,5 +1,47 @@
 package com.accesscontrol.models;
 
-public class Comment {
+import jakarta.persistence.*;
+import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.*;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Entity
+@Table(name="comments")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@EntityListeners(AuditingEntityListener.class)
+@Builder
+public class Comment {
+   @Id
+   @GeneratedValue(strategy = GenerationType.AUTO)
+   private UUID id;
+   
+   @Column(columnDefinition = "TEXT")
+   private String content;
+   
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "author_id")
+   @JsonBackReference
+   private User author;
+   
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "issue_id")
+   @JsonBackReference
+   private Issue issue;
+    
+     @CreatedDate
+    private LocalDateTime createdAt;
+
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }

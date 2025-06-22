@@ -14,7 +14,8 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Table(name = "project")
 @Builder
 @EntityListeners(AuditingEntityListener.class)

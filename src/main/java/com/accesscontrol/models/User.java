@@ -35,6 +35,6 @@ public void setUserTypeEnum(UserType type) {
 
 private String password;
 
-private String fullname;
+private String fullname; 
 
 }
