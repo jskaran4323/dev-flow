@@ -2,7 +2,6 @@ package com.accesscontrol.dto;
 
 import lombok.Data;
 
-import java.util.Set;
 
 import com.accesscontrol.enums.UserType;
 

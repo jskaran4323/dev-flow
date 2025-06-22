@@ -1,6 +1,6 @@
 package com.accesscontrol.controllers;
 
-import java.security.Principal;
+
 import java.util.*;
 
 
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.accesscontrol.models.Project;
 import com.accesscontrol.models.User;
-import com.accesscontrol.repositories.UserRepository;
 import com.accesscontrol.services.ProjectService;
 
 

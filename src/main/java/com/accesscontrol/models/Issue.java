@@ -1,0 +1,53 @@
+package com.accesscontrol.models;
+
+
+import jakarta.persistence.*;
+
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "Issues")
+@Builder
+@EntityListeners(AuditingEntityListener.class)
+public class Issue {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+    private String title;
+    @Column
+    private String description;
+
+    private int status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignee_id")
+    private User assignee;
+    
+
+     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+   
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+}

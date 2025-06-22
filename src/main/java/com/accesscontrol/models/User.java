@@ -3,7 +3,6 @@ package com.accesscontrol.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
 import java.util.UUID;
 
 import com.accesscontrol.enums.UserType;
