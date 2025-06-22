@@ -23,7 +23,9 @@ public class ProjectController {
  
 
   @PostMapping("/register")
-  public ResponseEntity<Project> createProject(@RequestBody Project project){
+  public ResponseEntity<Project> createProject(@RequestBody Project project, Authentication auth){
+    User user = (User) auth.getPrincipal();
+    project.setOwner(user);
     Project savedProject = projectService.createProject(project);
     return ResponseEntity.ok(savedProject);
   }

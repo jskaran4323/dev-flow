@@ -25,7 +25,7 @@ public enum UserType {
     }
 
     public String toSpringRole() {
-        return "ROLE_" + this.name(); // e.g., ROLE_ADMIN
+        return "ROLE_" + this.name(); 
     }
 }
 

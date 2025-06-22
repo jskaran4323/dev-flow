@@ -15,12 +15,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name = "project" )
+@Table(name = "project")
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Project {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue()
     private UUID id;
     private String name;
     private String description;
