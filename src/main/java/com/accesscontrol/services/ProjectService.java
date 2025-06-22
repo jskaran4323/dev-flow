@@ -1,0 +1,13 @@
+package com.accesscontrol.services;
+
+import com.accesscontrol.models.Project;
+import com.accesscontrol.models.User;
+import java.util.*;
+
+
+public interface ProjectService {
+ Project createProject(Project project);
+ List<Project> getProjectsByOwnerId(UUID id);
+ Optional<Project> getProjectById(UUID id);
+ void deleteProject(UUID id);    
+}

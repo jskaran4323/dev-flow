@@ -22,7 +22,7 @@ public class AuthController {
     
     @PostMapping("/register")
     public User register(@RequestBody RegisterRequest request){
-        return userService.registerUser(request.getUsername(),request.getEmail(),request.getPassword(),request.getFullName(),request.getRoles());
+        return userService.registerUser(request.getUsername(),request.getEmail(),request.getPassword(),request.getFullName(),request.getType());
     }
 
 
@@ -39,10 +39,11 @@ public class AuthController {
     if (!new BCryptPasswordEncoder().matches(request.getPassword(), user.getPassword())) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid  or password");
     }
-
-    String token = jwtUtil.generateToken(user.getUsername());
+    String token = jwtUtil.generateTokenFromUserType(user);
+    
     return ResponseEntity.ok(new LoginResponse(token));
     }
+    
     
 
     @GetMapping("/logout")

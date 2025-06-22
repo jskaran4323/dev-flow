@@ -20,8 +20,8 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests()
-                .requestMatchers("/auth/**").permitAll() // Public endpoints
-                .anyRequest().authenticated()           // Everything else = protected
+                .requestMatchers("/auth/**").permitAll() 
+                .anyRequest().authenticated()          
             .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
