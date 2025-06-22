@@ -38,10 +38,30 @@ public class IssueController {
        .project(projectOpt.get())
        .build();
        return ResponseEntity.ok(issueService.createIssue(issue));
-
     }
 
-
+    @GetMapping("/{issueId}")
+    public ResponseEntity<Issue> getIssueById(@PathVariable UUID issueId){
+        return issueService.getIssueById(issueId).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+     
+    @PutMapping("/{issueId}")
+    public ResponseEntity<Issue> updateIssue(@PathVariable UUID projectId, @PathVariable UUID issueId,
+    @RequestBody Issue updatedIssue){
+        return issueService.getIssueById(issueId).map(existing-> {
+            existing.setTitle(updatedIssue.getTitle());
+            existing.setDescription(updatedIssue.getDescription());
+            existing.setStatus(updatedIssue.getStatus());
+            existing.setAssignee(updatedIssue.getAssignee());
+            return ResponseEntity.ok(issueService.updateIssue(existing));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+    @DeleteMapping("/{issueId}")
+    public ResponseEntity<Void> deleteIssue(@PathVariable UUID issueId) {
+        issueService.deleteIssue(issueId);
+        return ResponseEntity.noContent().build();
+    }
+    
 
 
 

@@ -11,7 +11,7 @@ import com.accesscontrol.models.Project;
 public interface IssueService {
     Issue createIssue(Issue issue);
     Optional<Issue> getIssueById(UUID id);
-    Page<Issue> getIssueByProject(Project project);
+    // Page<Issue> getIssueByProject(Project project);
     //TODO: make more get models
        Page<Issue> findByAssigneeId(UUID assigneeId, Pageable pageable);
     public Issue updateIssue(Issue issue);

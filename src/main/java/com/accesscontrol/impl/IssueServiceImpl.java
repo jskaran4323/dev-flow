@@ -26,13 +26,13 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public Optional<Issue> getIssueById(UUID id) {
-     return getIssueById(id);    
+     return issueRepository.findById(id);    
     }
-
-    @Override
-    public Page<Issue> getIssueByProject(Project project) {
-        return getIssueByProject(project);
-    }
+     //TODO: implement pagination for this
+    // @Override
+    // public Page<Issue> getIssueByProject(Project project, Pageable pageable) {
+    //     return issueRepository.findByProject(project);
+    // }
 
     @Override
     public Issue updateIssue(Issue issue) {
