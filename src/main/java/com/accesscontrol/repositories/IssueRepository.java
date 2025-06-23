@@ -1,6 +1,5 @@
 package com.accesscontrol.repositories;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;

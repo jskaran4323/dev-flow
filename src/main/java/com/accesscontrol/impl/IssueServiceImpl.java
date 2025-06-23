@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.accesscontrol.models.Issue;
-import com.accesscontrol.models.Project;
 import com.accesscontrol.repositories.IssueRepository;
 import com.accesscontrol.services.IssueService;
 
@@ -36,7 +35,7 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public Issue updateIssue(Issue issue) {
-        return updateIssue(issue);
+        return issueRepository.save(issue);
     }
 
     @Override

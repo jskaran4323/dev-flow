@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.accesscontrol.models.Issue;
-import com.accesscontrol.models.Project;
 
 public interface IssueService {
     Issue createIssue(Issue issue);
