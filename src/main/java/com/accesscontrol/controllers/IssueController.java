@@ -41,7 +41,7 @@ public class IssueController {
     }
 
     @GetMapping("/{issueId}")
-    public ResponseEntity<Issue> getIssueById(@PathVariable UUID issueId){
+    public ResponseEntity<Issue> getSingleIssue(@PathVariable UUID issueId){
         return issueService.getIssueById(issueId).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
      

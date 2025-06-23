@@ -3,12 +3,9 @@ package com.accesscontrol.controllers;
 import java.util.Optional;
 import java.util.UUID;
 
-
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 import com.accesscontrol.dto.CommentRequest;
 import com.accesscontrol.models.Issue;
@@ -25,9 +22,11 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/issues/{issueId}/comments")
 @RequiredArgsConstructor
 public class CommentController {
+
     private final CommentService commentService; 
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
+
     @PostMapping
     public ResponseEntity<Comment> createComment(
         @PathVariable UUID issueId,
@@ -35,13 +34,41 @@ public class CommentController {
     ){
         Optional<Issue> issueOpt = issueRepository.findById(issueId);
         Optional<User> authorOpt = userRepository.findById(request.getAuthorId());
-           if (issueOpt.isEmpty() || authorOpt.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        if (issueOpt.isEmpty() || authorOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Comment comment = Comment.builder()
+            .content(request.getContent())
+            .author(authorOpt.get())
+            .issue(issueOpt.get())
+            .build();
+        
+        return ResponseEntity.ok(commentService.createComment(comment));
+    }
+    
+    @GetMapping("/{commentId}")
+    public ResponseEntity<Comment> getSingleComment(@PathVariable UUID commentId){
+        return commentService.getByCommentId(commentId)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
-    Comment comment = Comment.builder().content(request.getContent())
-    .author(authorOpt.get()).issue(issueOpt.get()).build();
-        
-    return ResponseEntity.ok(commentService.createComment(comment));
+    @PutMapping("/{commentId}")
+    public ResponseEntity<Comment> updateComment(
+        @PathVariable UUID commentId,
+        @RequestBody Comment updatedComment
+    ) {
+        return commentService.getByCommentId(commentId).map(existing -> {
+            existing.setContent(updatedComment.getContent());
+            return ResponseEntity.ok(commentService.updateComment(existing));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable UUID commentId){
+        commentService.deleteComment(commentId);
+        return ResponseEntity.noContent().build();
     }
 }
