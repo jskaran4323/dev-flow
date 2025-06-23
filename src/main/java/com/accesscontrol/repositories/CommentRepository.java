@@ -13,6 +13,5 @@ import java.util.*;
 
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
     Page<Comment> findByIssue(Issue issue, Pageable pageable);
-    
     List<Comment> findByAuthor(User user);
 }

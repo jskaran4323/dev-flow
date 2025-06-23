@@ -5,6 +5,7 @@ import java.util.*;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.accesscontrol.models.Comment;
 
@@ -14,7 +15,7 @@ import com.accesscontrol.repositories.CommentRepository;
 import com.accesscontrol.repositories.IssueRepository;
 import com.accesscontrol.repositories.UserRepository;
 import com.accesscontrol.services.CommentService;
-
+@Service
 public class CommentServiceImpl implements CommentService{
  
     @Autowired
