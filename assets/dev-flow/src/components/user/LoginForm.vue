@@ -52,7 +52,7 @@
 <script>
   import { setToken } from '@/utils/auth';
 
-import NavBar from './NavBar.vue';
+import NavBar from '../home/NavBar.vue';
 export default{
   
     name: 'LoginForm',
