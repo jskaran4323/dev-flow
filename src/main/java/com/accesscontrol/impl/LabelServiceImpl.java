@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.springframework.stereotype.Service;
 
-import com.accesscontrol.dto.LabelRequest;
+import com.accesscontrol.dto.request.LabelRequest;
 import com.accesscontrol.models.Label;
 import com.accesscontrol.models.Project;
 
@@ -17,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class LabelServiceImpl implements LabelService{
-     public  ProjectRepository projectRepository;
-     public  LabelRepository labelRepository; 
+     public final ProjectRepository projectRepository;
+     public final LabelRepository labelRepository; 
 
     @Override
     public Label createLabel(UUID projectId, LabelRequest request) {

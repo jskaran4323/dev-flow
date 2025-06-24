@@ -1,6 +1,6 @@
-package com.accesscontrol.dto;
+package com.accesscontrol.dto.request;
 
-import java.util.UUID;
+import java.util.*;
 
 import lombok.Data;
 
@@ -11,4 +11,5 @@ public class IssueRequest {
     private String description;
     private int status;
     private UUID assigneeId; 
+    private List<UUID> labelIds;
 }

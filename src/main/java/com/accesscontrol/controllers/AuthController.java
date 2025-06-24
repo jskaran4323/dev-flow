@@ -1,7 +1,7 @@
 package com.accesscontrol.controllers;
-import com.accesscontrol.dto.LoginRequest;
-import com.accesscontrol.dto.LoginResponse;
-import com.accesscontrol.dto.RegisterRequest;
+import com.accesscontrol.dto.request.LoginRequest;
+import com.accesscontrol.dto.response.LoginResponse;
+import com.accesscontrol.dto.response.RegisterRequest;
 import com.accesscontrol.models.User;
 import com.accesscontrol.utils.JwtUtil;
 import com.accesscontrol.services.UserService;

@@ -1,4 +1,4 @@
-package com.accesscontrol.dto;
+package com.accesscontrol.dto.request;
 
 import java.util.UUID;
 

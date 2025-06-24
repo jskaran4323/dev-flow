@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.accesscontrol.dto.CommentRequest;
 import com.accesscontrol.models.Issue;
 import com.accesscontrol.models.User;
+import com.accesscontrol.dto.request.CommentRequest;
 import com.accesscontrol.models.Comment;
 
 import com.accesscontrol.repositories.IssueRepository;

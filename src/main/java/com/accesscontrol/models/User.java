@@ -11,7 +11,9 @@ import com.accesscontrol.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
+@ToString(exclude = "comments")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

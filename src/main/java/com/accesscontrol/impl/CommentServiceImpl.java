@@ -40,7 +40,7 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
 public List<Comment> getCommentByUserId(UUID id) {
-    return userRepository.findById(id)
+    return userRepository.findByIdWithComments(id)
             .map(User::getComments)
             .orElse(Collections.emptyList());
 }
