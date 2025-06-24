@@ -3,11 +3,18 @@ package com.accesscontrol.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import com.accesscontrol.enums.UserType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
+@ToString(exclude = "comments")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,14 +28,23 @@ private UUID id;
 private String username;
 @Column(unique = true)
 private String email;
+private int userType;
+
+@OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+@JsonIgnore
+private List<Comment> comments = new ArrayList<>();
+
+
+public UserType getUserTypeEnum() {
+    return UserType.fromValue(this.userType);
+}
+
+public void setUserTypeEnum(UserType type) {
+    this.userType = type.getValue();
+}
 
 private String password;
 
-private String fullname;
+private String fullname; 
 
-@ElementCollection(fetch = FetchType.EAGER)
-@CollectionTable(name= "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-@Column(name = "role")
-
-private Set<String> roles;
 }

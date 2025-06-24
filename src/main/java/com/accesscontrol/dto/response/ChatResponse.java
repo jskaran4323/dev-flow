@@ -1,4 +1,4 @@
-package com.accesscontrol.dto;
+package com.accesscontrol.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatRequest {
-
-    private String message;
-
+public class ChatResponse {
+    
+    private String reply;
 }

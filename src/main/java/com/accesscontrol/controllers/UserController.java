@@ -22,9 +22,6 @@ public class UserController {
     public List<User> getUsers(){
         return userService.getUser(); 
     }
-    @GetMapping("/user")
-    public User getUserById(@RequestParam UUID id){
-        return userService.userById(id);
-    }
+   
     
 }

@@ -1,4 +1,4 @@
-package com.accesscontrol.dto;
+package com.accesscontrol.dto.response;
 
 
 import lombok.AllArgsConstructor;

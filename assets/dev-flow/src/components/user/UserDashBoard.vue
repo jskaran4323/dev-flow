@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import NavBar from './NavBar.vue';
+import NavBar from '../home/NavBar.vue';
 export default {
   name: 'UserDashboard',
   data(){

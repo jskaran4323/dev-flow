@@ -1,8 +1,9 @@
-package com.accesscontrol.dto;
+package com.accesscontrol.dto.response;
 
 import lombok.Data;
 
-import java.util.Set;
+
+import com.accesscontrol.enums.UserType;
 
 @Data
 public class RegisterRequest {
@@ -11,5 +12,6 @@ public class RegisterRequest {
     private String password;
     private String email;
     private String fullName;
-    private Set<String> roles;
+    private UserType type;
+  
 }
