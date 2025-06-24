@@ -2,11 +2,14 @@ package com.accesscontrol.controllers;
 
 import java.util.*;
 
+import org.springframework.security.core.Authentication;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.accesscontrol.dto.request.IssueRequest;
+import com.accesscontrol.dto.response.IssueResponse;
+import com.accesscontrol.mapper.IssueMapper;
 import com.accesscontrol.models.Issue;
 import com.accesscontrol.models.Label;
 import com.accesscontrol.models.Project;
@@ -26,40 +29,70 @@ public class IssueController {
     private final UserRepository userRepository;
     private final LabelRepository labelRepository;
     @PostMapping
-    public ResponseEntity<Issue> createEntity(@PathVariable UUID projectId, @RequestBody IssueRequest request){
-       Optional<Project> projectOpt = projectRepository.findById(projectId);
-       Optional<User> assigneeOpt = userRepository.findById(request.getAssigneeId());
-       Set<Label> labels = new HashSet<>();
-        labels = new HashSet<>(labelRepository.findAllById(request.getLabelIds()));
-       if(projectOpt.isEmpty()){
-        return ResponseEntity.notFound().build();
-       }
-       Issue issue = Issue.builder()
-       .title(request.getTitle())
-       .description(request.getDescription())
-       .status(request.getStatus())
-       .assignee(assigneeOpt.get())
-       .project(projectOpt.get())
-       .labels(labels)
-       .build();
-       return ResponseEntity.ok(issueService.createIssue(issue));
+    public ResponseEntity<IssueResponse> createEntity(
+        @PathVariable UUID projectId,
+        @RequestBody IssueRequest request,
+        Authentication auth
+    ) {
+        // 1. Fetch project
+        Optional<Project> projectOpt = projectRepository.findById(projectId);
+        if (projectOpt.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+    
+        // 2. Determine assignee
+        UUID assigneeId = request.getAssigneeId();
+        User assignee;
+    
+        if (assigneeId != null) {
+            Optional<User> assigneeOpt = userRepository.findById(assigneeId);
+            if (assigneeOpt.isEmpty()) {
+                return ResponseEntity.badRequest().build(); 
+            }
+            assignee = assigneeOpt.get();
+        } else {
+            
+            assignee = (User) auth.getPrincipal();
+        }
+    
+        
+        Set<Label> labels = new HashSet<>();
+        if (request.getLabelIds() != null && !request.getLabelIds().isEmpty()) {
+            labels.addAll(labelRepository.findAllById(request.getLabelIds()));
+        }
+    
+       
+        Issue issue = Issue.builder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .status(request.getStatus())
+                .assignee(assignee)
+                .project(projectOpt.get())
+                .labels(labels)
+                .build();
+    
+        Issue saved = issueService.createIssue(issue);
+        return ResponseEntity.ok(IssueMapper.toIssueResponse(saved));
     }
-
     @GetMapping("/{issueId}")
-    public ResponseEntity<Issue> getSingleIssue(@PathVariable UUID issueId){
-        return issueService.getIssueById(issueId).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<IssueResponse> getSingleIssue(@PathVariable UUID issueId){
+        return issueService.getIssueById(issueId).map(IssueMapper::toIssueResponse).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
      
     @PutMapping("/{issueId}")
-    public ResponseEntity<Issue> updateIssue(@PathVariable UUID projectId, @PathVariable UUID issueId,
-    @RequestBody Issue updatedIssue){
-        
+    public ResponseEntity<IssueResponse> updateIssue(@PathVariable UUID projectId, @PathVariable UUID issueId,
+    @RequestBody IssueRequest request){
+        Optional<User> assigneeOpt = userRepository.findById(request.getAssigneeId());
+        Set<Label> labels = new HashSet<>(labelRepository.findAllById(request.getLabelIds()));
+
         return issueService.getIssueById(issueId).map(existing-> {
-            existing.setTitle(updatedIssue.getTitle());
-            existing.setDescription(updatedIssue.getDescription());
-            existing.setStatus(updatedIssue.getStatus());
-            existing.setAssignee(updatedIssue.getAssignee());
-            return ResponseEntity.ok(issueService.updateIssue(existing));
+            existing.setTitle(request.getTitle());
+            existing.setDescription(request.getDescription());
+            existing.setStatus(request.getStatus());
+            assigneeOpt.ifPresent(existing::setAssignee);
+            Issue updated = issueService.updateIssue(existing);
+            existing.setLabels(labels);
+            return ResponseEntity.ok(IssueMapper.toIssueResponse(updated));
         }).orElse(ResponseEntity.notFound().build());
     }
     @DeleteMapping("/{issueId}")

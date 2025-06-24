@@ -5,6 +5,7 @@ import java.util.*;
 public interface CommentService {
     Comment createComment(Comment comment);
     Optional<Comment> getByCommentId(UUID id);
+    List<Comment> getAllComments();
     List<Comment> getCommentByIssueId(UUID id);
     List<Comment> getCommentByUserId(UUID id);
     Comment updateComment(Comment comment);

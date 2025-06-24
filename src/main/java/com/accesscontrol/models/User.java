@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.accesscontrol.enums.UserType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "users")
@@ -30,7 +31,7 @@ private String email;
 private int userType;
 
 @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-@JsonManagedReference
+@JsonIgnore
 private List<Comment> comments = new ArrayList<>();
 
 

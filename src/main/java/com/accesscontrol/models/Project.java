@@ -6,8 +6,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +29,16 @@ public class Project {
     @ManyToOne
     private User owner;
     
+
+
+    @OneToMany(mappedBy = "project")
+
+private List<Issue> issues;
+
+@OneToMany(mappedBy = "project")
+
+private List<Label> labels;
+
 
     @CreatedDate
     private LocalDateTime createdAt;

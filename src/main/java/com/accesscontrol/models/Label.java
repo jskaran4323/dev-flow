@@ -3,6 +3,7 @@ package com.accesscontrol.models;
 import java.util.*;
 
 import com.accesscontrol.enums.LabelType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class Label {
     private int type;
 
     @ManyToOne
+    @JsonBackReference("project-label")
     private Project project;
    
     public LabelType getLabelTypeEnum(){

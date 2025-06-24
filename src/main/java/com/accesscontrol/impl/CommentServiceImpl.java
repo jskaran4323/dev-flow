@@ -60,5 +60,10 @@ public List<Comment> getCommentByUserId(UUID id) {
     public Comment updateComment(Comment comment) {
       return commentRepository.save(comment);
     }
+
+    @Override
+    public List<Comment> getAllComments() {
+      return commentRepository.findAll();
+    }
     
 }

@@ -7,8 +7,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import com.accesscontrol.models.Comment;
-import com.accesscontrol.models.Label;
+import com.accesscontrol.dto.CommentDto;
+import com.accesscontrol.dto.LabelDto;
+
+
 
 @Data
 @NoArgsConstructor
@@ -16,14 +18,15 @@ import com.accesscontrol.models.Label;
 
 public class IssueResponse {
     
+  
     private UUID id;
     private String title;
     private String description;
     private int status;
     private UUID assigneeId;
     private String assigneeName;
-    private List<Label> labels;
-    private List<Comment> comments;
+    private List<LabelDto> labels;
+    private List<CommentDto> comments;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
