@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ProjectRepository extends JpaRepository<Project, UUID>{
     List<Project> findByOwner(User user);
     List<Project> findByOwnerId(UUID id);
+    
     } 
