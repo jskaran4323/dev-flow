@@ -1,12 +1,13 @@
-// src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../assets/pages/auth/Login.vue'
-import Register from '../assets/pages/auth/Register.vue'
-import Home from '../assets/pages/Home.vue'
+import Login from '../pages/Login.vue'
+import Register from '../pages/Register.vue'
+import Home from '../pages/Home.vue'
+import DashBoard from '../pages/DashBoard.vue'
 const routes = [
   { path: '/', component: Home },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
+  { path: '/dashboard', component: DashBoard },
 ]
 
 const router = createRouter({
