@@ -34,13 +34,13 @@ public class IssueController {
         @RequestBody IssueRequest request,
         Authentication auth
     ) {
-        // 1. Fetch project
+       
         Optional<Project> projectOpt = projectRepository.findById(projectId);
         if (projectOpt.isEmpty()) {
             return ResponseEntity.status(404).body(null);
         }
     
-        // 2. Determine assignee
+       
         UUID assigneeId = request.getAssigneeId();
         User assignee;
     
