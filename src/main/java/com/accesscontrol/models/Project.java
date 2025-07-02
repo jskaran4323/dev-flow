@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.accesscontrol.enums.ProjectStatusType;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
@@ -25,7 +26,8 @@ public class Project {
     private UUID id;
     private String name;
     private String description;
-
+    @Column(name = "status")
+    private ProjectStatusType status;
     @ManyToOne
     private User owner;
     

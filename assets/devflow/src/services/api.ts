@@ -6,12 +6,16 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 })
-
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
-  if (token) {
+  console.log('[Axios] Token from localStorage:', token)
+  
+  if (token && token !== 'undefined' && token !== 'null') {
     config.headers.Authorization = `Bearer ${token}`
+  } else {
+    console.warn('[Axios] No valid token found — not setting Authorization header.')
   }
+
   return config
 })
 

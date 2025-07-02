@@ -41,10 +41,10 @@ const auth = useAuthStore()
 
 const handleLogin = async () => {
   try {
-    console.log('✅ Login triggered with', identifier.value, password.value)
+
     const res = await loginUser({identifier: identifier.value, password: password.value})
-  
-    auth.login(res.data)  
+    
+    auth.login(res.token)  
   
     router.push('/dashboard')
   }

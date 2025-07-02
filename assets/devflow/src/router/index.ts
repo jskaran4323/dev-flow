@@ -4,6 +4,8 @@ import Login from '../pages/Login.vue'
 import Register from '../pages/Register.vue'
 import DashBoard from '../pages/DashBoard.vue'
 import Home from '../pages/Home.vue'
+import Project from '../pages/Project/Project.vue'
+import ProjectForm from '../pages/Project/ProjectForm.vue'
 // ... your other routes
 
 const routes = [
@@ -11,7 +13,19 @@ const routes = [
   { path: '/login', component: Login },
   { path: '/register', component: Register },
   { path: '/dashboard', component: DashBoard },
-  // ... your other routes
+  {
+    path: '/projects',
+    component: Project,
+  },
+  {
+    path: '/projects/new',
+    component: ProjectForm,
+  },
+  {
+    path: '/projects/:id/edit',
+    component: ProjectForm
+  },
+  
 ]
 
 const router = createRouter({

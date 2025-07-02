@@ -8,6 +8,8 @@ const request = {
 
   post: async (url: string, data?: any) => {
     const res = await api.post(url, data)
+    console.log(res.data);
+    
     return res.data
   },
 

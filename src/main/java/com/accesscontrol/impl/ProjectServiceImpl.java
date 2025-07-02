@@ -21,8 +21,6 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public Project createProject(Project project) {
-        project.setCreatedAt(LocalDateTime.now());
-        project.setUpdatedAt(LocalDateTime.now());
         return projectRepository.save(project);
 
     }
