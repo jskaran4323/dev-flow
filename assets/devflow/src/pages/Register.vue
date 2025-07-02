@@ -6,6 +6,10 @@
           <h2 class="text-center mb-4">📝 Register for DevFlow</h2>
           <form @submit.prevent="handleRegister">
             <div class="mb-3">
+              <label for="fullname" class="form-label">Full Name</label>
+              <input v-model="fullname" type="fullname" class="form-control" id="fullname" required />
+            </div>
+            <div class="mb-3">
               <label for="username" class="form-label">Username</label>
               <input v-model="username" type="text" class="form-control" id="username" required />
             </div>
@@ -17,6 +21,7 @@
               <label for="password" class="form-label">Password</label>
               <input v-model="password" type="password" class="form-control" id="password" required />
             </div>
+          
             <button type="submit" class="btn btn-primary w-100">Register</button>
           </form>
           <p class="mt-3 text-center text-muted">
@@ -31,13 +36,25 @@
   <script setup lang="ts">
   import { ref } from 'vue'
 import BaseLayout from '../layouts/BaseLayout.vue'
+import { registerUser } from '../services/authRequests'
+
+import { useRouter } from 'vue-router'
   
   const username = ref('')
   const email = ref('')
   const password = ref('')
   const fullname = ref('')
-  function handleRegister() {
-    
+  const errorMessage = ref('')
+
+  const router = useRouter()
+  const handleRegister = async() => {
+    try{
+      await registerUser({username: username.value,email: email.value, password: password.value, fullname: fullname.value}
+      )
+      router.push('/login')
+    }catch (error: any) {
+    errorMessage.value = error.response?.data?.message || 'Registration failed'
+  }
   }
   </script>
   

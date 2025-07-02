@@ -22,7 +22,7 @@ public class AuthController {
     
     @PostMapping("/register")
     public User register(@RequestBody RegisterRequest request){
-        return userService.registerUser(request.getUsername(),request.getEmail(),request.getPassword(),request.getFullName(),request.getType());
+        return userService.registerUser(request);
     }
 
 

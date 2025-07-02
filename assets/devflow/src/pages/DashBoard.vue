@@ -1,4 +1,4 @@
-<!-- src/pages/Dashboard.vue -->
+
 <template>
     <BaseLayout>
       <div class="container py-5 text-white">

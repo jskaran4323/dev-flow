@@ -1,5 +1,6 @@
 package com.accesscontrol.services;
 
+import com.accesscontrol.dto.response.RegisterRequest;
 import com.accesscontrol.enums.UserType;
 import com.accesscontrol.models.User;
 import com.accesscontrol.repositories.UserRepository;
@@ -18,14 +19,15 @@ public class UserService {
     
 
 
-    public User registerUser(String username,String email, String password, String fullName, UserType userTypeEnum){
-        if (userRepository.findByUsername(username).isPresent()){
+    public User registerUser(RegisterRequest request){
+        if (userRepository.findByUsername(request.getUsername()).isPresent()){
             throw new RuntimeException("Username already exists");
         }
+              UserType userType = request.getType() != null ? request.getType() : UserType.VIEWER;
               User user = User.builder()
-              .username(username).
-              password(passwordEncoder.encode(password)).fullname(fullName).email(email).userType(userTypeEnum.getValue()).build();
-             System.out.println("saved username and email:"+username+email);
+              .username(request.getUsername()).
+              password(passwordEncoder.encode(request.getPassword())).fullname(request.getFullName()).email(request.getEmail()).userType(userType.getValue()).build();
+           
               return userRepository.save(user);
 
    
