@@ -31,12 +31,13 @@
   import { useRoute, useRouter } from 'vue-router'
 import BaseLayout from '../../layouts/BaseLayout.vue'
 import { ProjectStatusType } from '../../enums/ProjectStatusType'
-import { addProject } from '../../services/authRequests'
+import {  useProjectStore } from '../../stores/project'
+
   import { ref } from 'vue'
   const route = useRoute()
   const router = useRouter()
   const isEditMode = route.params.id !== undefined
-  
+  const projectStore = useProjectStore();
   const project = reactive({
     name: '',
     description: '',
@@ -48,7 +49,7 @@ import { addProject } from '../../services/authRequests'
   
   const handleSubmit = async() => {
     try{
-     const res = await addProject(project);
+      await projectStore.createProject(project);
      router.push('/projects')
 
     }catch(error: any){

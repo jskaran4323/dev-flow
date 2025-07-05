@@ -15,13 +15,13 @@ import com.accesscontrol.services.ProjectService;
 
 
 @RestController
-@RequestMapping("/api/projects")
+@RequestMapping("/api")
 public class ProjectController {
   @Autowired
   private ProjectService projectService;  
  
 
-  @PostMapping("/register")
+  @PostMapping("/project/register")
   public ResponseEntity<Project> createProject(@RequestBody Project project, Authentication auth){
     User user = (User) auth.getPrincipal();
     project.setOwner(user);
@@ -29,20 +29,19 @@ public class ProjectController {
     return ResponseEntity.ok(savedProject);
   }
   
-  @GetMapping("/")
+  @GetMapping("/projects")
   public ResponseEntity<List<Project>> getUserProjects(Authentication auth){
     User user = (User) auth.getPrincipal(); 
-    System.out.println(user.getUsername());
     List<Project> projects = projectService.getProjectsByOwnerId(user.getId());
     return ResponseEntity.ok(projects);
   }
-  @GetMapping("/{id}")
+  @GetMapping("/project/{id}")
   public ResponseEntity<Project> getProject(@PathVariable UUID id){
     return projectService.getProjectById(id)
     .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     
   }
-  @PostMapping("/delete/{id}")
+  @PostMapping("/project/delete/{id}")
     public  ResponseEntity<Void> deleteProject(@PathVariable UUID id){
       projectService.deleteProject(id);
       return ResponseEntity.noContent().build();
