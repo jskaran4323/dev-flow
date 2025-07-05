@@ -41,7 +41,7 @@ public class ProjectController {
     .map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     
   }
-  @PostMapping("/project/delete/{id}")
+  @DeleteMapping("/project/delete/{id}")
     public  ResponseEntity<Void> deleteProject(@PathVariable UUID id){
       projectService.deleteProject(id);
       return ResponseEntity.noContent().build();

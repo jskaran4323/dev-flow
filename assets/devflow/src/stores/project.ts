@@ -4,7 +4,8 @@ import {
   getProjects,
   getProjectById,
   addProject,
-  updateProject
+  updateProject,
+  deleteProject
 } from '../services/devFlow/project'
 
 export interface Project {
@@ -103,6 +104,19 @@ export const useProjectStore = defineStore('project', {
         this.error = err.response?.data?.message || 'Failed to update project'
         throw err
       }
-    }
-  }
+    },
+    async deleteProject(id: string){
+      this.error = null
+      try{
+       await deleteProject(id)
+       this.projects = this.projects.filter(p => p.id !=id);
+   
+      }catch(err: any){
+       this.error = err.response?.data?.message || 'Failed to delete project'
+       throw err
+      }
+     } 
+  },
+ 
+
 })

@@ -16,3 +16,5 @@ export const updateProject = (id: string, data: {
   description: string
   status: number
 }) => request.put(`/projects/${id}`, data).then(res => res.data)
+
+export const deleteProject = (id: string) => request.delete(`/project/delete/${id}`)

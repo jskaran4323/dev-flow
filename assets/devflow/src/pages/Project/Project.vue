@@ -53,8 +53,8 @@ onMounted(async () => {
 
 const deleteProject = async (id: string) => {
   try {
-   // await projectStore.deleteProject(id)
-    // Optionally show a toast or confirmation
+   await projectStore.deleteProject(id)
+   await projectStore.fetchProjects();
   } catch (err) {
     console.error('Failed to delete project', err)
   }
