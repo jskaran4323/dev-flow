@@ -44,12 +44,19 @@
   </template>
   
   <script setup lang="ts">
-  import { ref } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   import BaseLayout from '../layouts/BaseLayout.vue'
-  
+  import { useProjectStore } from '../stores/project'
   // You’ll replace these with real API values later
+  const projectStore = useProjectStore()
+  onMounted(async ()=>{
+    await projectStore.fetchProjects();
+  })
+  const totalProjects = computed(() => projectStore.projects.length);
+  
   const totalIssues = ref(12)
-  const totalProjects = ref(3)
+  
+  
   const totalComments = ref(27)
   </script>
   
