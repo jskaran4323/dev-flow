@@ -21,14 +21,14 @@ import com.accesscontrol.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/{projectId}/issues")
+@RequestMapping("/api/issues")
 @RequiredArgsConstructor
 public class IssueController {
     private final IssueService issueService;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final LabelRepository labelRepository;
-    @PostMapping
+    @PostMapping("/{projectId}")
     public ResponseEntity<IssueResponse> createEntity(
         @PathVariable UUID projectId,
         @RequestBody IssueRequest request,
@@ -74,14 +74,23 @@ public class IssueController {
         Issue saved = issueService.createIssue(issue);
         return ResponseEntity.ok(IssueMapper.toIssueResponse(saved));
     }
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<List<IssueResponse>> getProjectIssue(@PathVariable UUID projectId, Authentication auth) {
+        List<Issue> issues = issueService.getProjectIssues(projectId);
+        List<IssueResponse> response = issues.stream()
+            .map(IssueMapper::toIssueResponse)
+            .toList();
+        return ResponseEntity.ok(response);
+    }
+    
     @GetMapping("/{issueId}")
-    public ResponseEntity<IssueResponse> getSingleIssue(@PathVariable UUID issueId){
+    public ResponseEntity<IssueResponse> getSingleIssue(@PathVariable UUID issueId,Authentication auth){
         return issueService.getIssueById(issueId).map(IssueMapper::toIssueResponse).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
      
     @PutMapping("/{issueId}")
     public ResponseEntity<IssueResponse> updateIssue(@PathVariable UUID projectId, @PathVariable UUID issueId,
-    @RequestBody IssueRequest request){
+    @RequestBody IssueRequest request,Authentication auth){
         Optional<User> assigneeOpt = userRepository.findById(request.getAssigneeId());
         Set<Label> labels = new HashSet<>(labelRepository.findAllById(request.getLabelIds()));
 

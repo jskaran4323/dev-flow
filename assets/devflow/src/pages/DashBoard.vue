@@ -37,7 +37,9 @@
           <h4 class="mb-3">Quick Actions</h4>
           <router-link to="/projects" class="btn btn-outline-light me-2">View Projects</router-link>
           <router-link to="/issues" class="btn btn-outline-light me-2">View Issues</router-link>
-          <router-link to="/create" class="btn btn-success">+ Create Issue</router-link>
+          <router-link to="/select-project?next=create-issue" class="btn btn-success">
+  + Create Issue
+</router-link>
         </div>
       </div>
     </BaseLayout>

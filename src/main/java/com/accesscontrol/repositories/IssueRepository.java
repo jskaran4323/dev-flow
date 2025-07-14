@@ -1,5 +1,7 @@
 package com.accesscontrol.repositories;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import com.accesscontrol.models.Project;
 
 public interface IssueRepository extends JpaRepository<Issue, UUID> {
     Page<Issue> findByProject(Project Project, Pageable pageable);
+    List<Issue> findByProjectId(UUID projectId);
     
     Page<Issue> findByAssigneeId(UUID assigneeId, Pageable pageable);
 

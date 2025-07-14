@@ -6,6 +6,9 @@ import DashBoard from '../pages/DashBoard.vue'
 import Home from '../pages/Home.vue'
 import Project from '../pages/Project/Project.vue'
 import ProjectForm from '../pages/Project/ProjectForm.vue'
+import SelectProject from '../pages/Project/SelectProject.vue'
+import Issues from '../pages/issues/issues.vue'
+import IssueForm from '../pages/issues/IssueForm.vue'
 // ... your other routes
 
 const routes = [
@@ -25,7 +28,32 @@ const routes = [
     path: '/projects/:id/edit',
     component: ProjectForm
   },
-  
+  {
+    name: "createIssue",
+    path: '/project/:projectId/create-issue',
+    component: Issues,
+  },
+  {
+    path: '/issues/new',
+    component: IssueForm,
+  },
+  {
+    path: '/issues/:id/edit',
+    component: Issues
+  },
+
+  {
+    path: '/select-project',
+    component: SelectProject
+  },
+  {
+    path: '/projects/:projectId/issues/new',
+    component: SelectProject
+  } 
+
+
+
+
 ]
 
 const router = createRouter({
