@@ -29,19 +29,24 @@ const routes = [
     component: ProjectForm
   },
   {
-    name: "createIssue",
-    path: '/project/:projectId/create-issue',
-    component: Issues,
-  },
-  {
-    path: '/issues/new',
-    component: IssueForm,
-  },
-  {
-    path: '/issues/:id/edit',
+    name: 'ProjectIssues',
+    path: '/projects/:projectId/issues',
     component: Issues
   },
 
+  {
+    name: 'CreateIssue',
+    path: '/projects/:projectId/issues/new',
+    component: IssueForm
+  },
+
+  
+  {
+    name: 'EditIssue',
+    path: '/projects/:projectId/issues/:id/edit',
+    component: IssueForm
+  }
+,
   {
     path: '/select-project',
     component: SelectProject

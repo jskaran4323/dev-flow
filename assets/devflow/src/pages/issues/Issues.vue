@@ -3,7 +3,7 @@
     <div class="container py-5 text-white">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>🐛 Issues</h2>
-        <router-link to="/issues/new" class="btn btn-success">+ New Issue</router-link>
+        <button class="btn btn-success" @click="goToCreateIssue">+ New Issue</button>
       </div>
 
       <div v-if="issues.length === 0" class="alert alert-secondary text-muted">
@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useIssueStore } from '../../stores/issue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import BaseLayout from '../../layouts/BaseLayout.vue'
 
 
@@ -59,11 +59,15 @@ const route = useRoute()
 const issueStore = useIssueStore()
 const issues = issueStore.issues
 const projectId = route.params.projectId as string
-
+const router = useRouter()
 onMounted(() => {
   issueStore.fetchIssues(projectId)
 })
 
+
+function goToCreateIssue() {
+  router.push(`/projects/${projectId}/issues/new`)
+}  
 const deleteIssue = (id: string) => {
   issueStore.deleteIssue(id)
 }

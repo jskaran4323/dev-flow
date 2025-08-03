@@ -29,6 +29,7 @@ public class Project {
     @Column(name = "status")
     private ProjectStatusType status;
     @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
     
 

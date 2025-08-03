@@ -36,7 +36,7 @@ import BaseLayout from '../../layouts/BaseLayout.vue'
   
   const selectProject = (projectId: string) => {
     router.push({
-    name: 'createIssue',
+    name: 'ProjectIssues',
     params: { projectId }
   })
   }

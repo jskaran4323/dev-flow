@@ -78,9 +78,11 @@ export const useIssueStore = defineStore('issue',{
         }
     },
     async createIssue(projectId: string, data:{
-        title: string,
-        description: string,
-        status: number
+        title: string
+        description: string
+        status: string
+        assigneeId: string
+        labelIds: string[]
     }){
         this.error = null
         try {

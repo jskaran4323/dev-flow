@@ -4,7 +4,7 @@ export const registerUser = (data: {
   username: string
   email: string
   password: string
-  fullname: string
+  fullName: string
 
 }) => request.post('/auth/register', data)
 

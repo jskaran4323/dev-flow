@@ -6,8 +6,8 @@
           <h2 class="text-center mb-4">📝 Register for DevFlow</h2>
           <form @submit.prevent="handleRegister">
             <div class="mb-3">
-              <label for="fullname" class="form-label">Full Name</label>
-              <input v-model="fullname" type="fullname" class="form-control" id="fullname" required />
+              <label for="fullName" class="form-label">Full Name</label>
+              <input v-model="fullName" type="fullName" class="form-control" id="fullName" required />
             </div>
             <div class="mb-3">
               <label for="username" class="form-label">Username</label>
@@ -43,13 +43,13 @@ import { useRouter } from 'vue-router'
   const username = ref('')
   const email = ref('')
   const password = ref('')
-  const fullname = ref('')
+  const fullName = ref('')
   const errorMessage = ref('')
 
   const router = useRouter()
   const handleRegister = async() => {
     try{
-      await registerUser({username: username.value,email: email.value, password: password.value, fullname: fullname.value}
+      await registerUser({username: username.value,email: email.value, password: password.value, fullName: fullName.value}
       )
       router.push('/login')
     }catch (error: any) {

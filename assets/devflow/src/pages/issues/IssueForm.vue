@@ -29,7 +29,7 @@
           <select v-model="issue.assigneeId" class="form-select">
             <option disabled value="">Select a user</option>
             <option v-for="user in users" :key="user.id" :value="user.id">
-              {{ user.fullName }}
+              {{ user.fullName || user.username }}
             </option>
           </select>
         </div>
@@ -53,29 +53,17 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useIssueStore } from '../../stores/issue'
 import BaseLayout from '../../layouts/BaseLayout.vue'
-
-// Replace with your real store/API later
-const users = ref([
-  { id: 'user-1', fullName: 'Alice Johnson' },
-  { id: 'user-2', fullName: 'Bob Smith' },
-  { id: 'user-3', fullName: 'Charlie Lee' }
-])
-
-const labels = ref([
-  { id: 'label-1', name: 'bug' },
-  { id: 'label-2', name: 'feature' },
-  { id: 'label-3', name: 'urgent' }
-])
 
 const issueStore = useIssueStore()
 const route = useRoute()
 const router = useRouter()
 const projectId = route.params.projectId as string
-
+import { useTeamStore } from '../../stores/teams'
+const teamStore = useTeamStore()
 const issue = reactive({
   title: '',
   description: '',
@@ -86,6 +74,14 @@ const issue = reactive({
 
 const errorMessage = ref('')
 
+const assignableUsers = computed(() =>
+  teamStore.assignableUsers
+)
+
+onMounted(()=> {
+  teamStore.fetchTeam(projectId)
+})
+
 const handleSubmit = async () => {
   try {
     await issueStore.createIssue(projectId, issue)
@@ -94,4 +90,5 @@ const handleSubmit = async () => {
     errorMessage.value = err.response?.data?.message || 'Failed to create issue'
   }
 }
+
 </script>
