@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 @RestController
-@RequestMapping("/")
+// change this later
+@RequestMapping("/api/auth")
 public class UserController {
 
     @Autowired

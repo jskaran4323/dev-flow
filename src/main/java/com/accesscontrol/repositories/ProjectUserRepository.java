@@ -1,5 +1,6 @@
 package com.accesscontrol.repositories;
 
+
 import java.util.*;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,7 @@ public interface ProjectUserRepository extends JpaRepository<ProjectUser, UUID> 
 
     List<ProjectUser> findByProjectId(UUID projectId);
     boolean existsByProjectAndUser(Project project, User user);
-
+    List<ProjectUser> findByUserId(UUID userId);
     Optional<ProjectUser> findByProjectIdAndUserId(UUID projectId, UUID userId);
 }
 

@@ -13,7 +13,9 @@ export const loginUser = (data: {
   password: string
 }) => request.post('/auth/login', data)
 
-
+export function getCurrentUser() {
+  return request.get('/auth/me') 
+} 
 export const addProject = (data:{
     name: string;
     description: string;

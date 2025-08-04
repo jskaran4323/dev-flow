@@ -41,18 +41,46 @@
   + Create Issue
 </router-link>
         </div>
+        <div class="mt-5">
+ 
+</div>
+<div class="mt-5">
+  <h4 class="mb-3">🌍 Public Projects</h4>
+  <div v-if="publicProjectStore.loading">Loading projects...</div>
+  <div v-else-if="publicProjectStore.error" class="text-danger">{{ publicProjectStore.error }}</div>
+  <div v-else-if="publicProjectStore.publicProjects.length === 0">
+    <p>No public projects available.</p>
+  </div>
+  <div class="row g-4">
+    <div v-for="project in publicProjectStore.publicProjects" :key="project.id" class="col-md-6">
+      <div class="card bg-dark border-light shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ project.name }}</h5>
+          <p class="card-text">{{ project.description }}</p>
+          <router-link :to="`/projects/${project.id}`" class="btn btn-outline-light">View Details</router-link>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
       </div>
     </BaseLayout>
   </template>
   
   <script setup lang="ts">
+  
+
   import { computed, onMounted, ref } from 'vue'
   import BaseLayout from '../layouts/BaseLayout.vue'
   import { useProjectStore } from '../stores/project'
+  import { usePublicProjectStore } from '../stores/publicProject'
   // You’ll replace these with real API values later
   const projectStore = useProjectStore()
+  const publicProjectStore = usePublicProjectStore()
   onMounted(async ()=>{
     await projectStore.fetchProjects();
+    await publicProjectStore.fetchProjects()
   })
   const totalProjects = computed(() => projectStore.projects.length);
   
