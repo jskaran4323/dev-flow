@@ -38,7 +38,7 @@ export const usePublicProjectStore = defineStore('publicProject', {
 
       try {
         const res = await getPublicProjects()
-        this.publicProjects = res // or res.data depending on your API
+        this.publicProjects = res 
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Failed to fetch projects'
       } finally {

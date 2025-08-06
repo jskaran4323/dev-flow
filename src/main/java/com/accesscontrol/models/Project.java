@@ -7,7 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.accesscontrol.enums.ProjectStatusType;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,8 +34,7 @@ public class Project {
     
 
 
-    @OneToMany(mappedBy = "project")
-
+@OneToMany(mappedBy = "project")
 private List<Issue> issues;
 
 @OneToMany(mappedBy = "project")

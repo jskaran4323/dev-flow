@@ -37,7 +37,8 @@ export const useProjectStore = defineStore('project', {
       this.error = null
       try {
         const data = await getProjects()
-       
+         console.log(data);
+         
         
         this.projects = data
       } catch (err: any) {

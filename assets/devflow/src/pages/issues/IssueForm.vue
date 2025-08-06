@@ -17,25 +17,26 @@
         <div class="mb-3">
           <label class="form-label">Status</label>
           <select v-model="issue.status" class="form-select">
-            <option value="OPEN">Open</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="CLOSED">Closed</option>
+
+            <option :value="IssueStatusType.OPEN">OPEN</option>
+  <option :value="IssueStatusType.IN_PROGRESS">IN PROGRESS</option>
+  <option :value="IssueStatusType.CLOSED">CLOSED</option>
           </select>
         </div>
 
         <!-- Assignee Dropdown -->
         <div class="mb-3">
-          <label class="form-label">Assignee</label>
-          <select v-model="issue.assigneeId" class="form-select">
-            <option disabled value="">Select a user</option>
-            <option v-for="user in users" :key="user.id" :value="user.id">
-              {{ user.fullName || user.username }}
-            </option>
-          </select>
-        </div>
+  <label class="form-label">Assignee</label>
+  <select v-model="issue.assigneeId" class="form-select">
+    <option disabled value="">Select a user</option>
+    <option v-for="user in assignableUsers" :key="user.userId" :value="user.userId">
+  {{ user.fullName}}
+</option>
+  </select>
+</div>
 
-        <!-- Labels Multiselect -->
-        <div class="mb-3">
+       
+      <div class="mb-3">
           <label class="form-label">Labels</label>
           <select v-model="issue.labelIds" multiple class="form-select">
             <option v-for="label in labels" :key="label.id" :value="label.id">
@@ -63,11 +64,12 @@ const route = useRoute()
 const router = useRouter()
 const projectId = route.params.projectId as string
 import { useTeamStore } from '../../stores/teams'
+import { IssueStatusType } from '../../enums/IssueStatusType'
 const teamStore = useTeamStore()
 const issue = reactive({
   title: '',
   description: '',
-  status: 'OPEN',
+  status: IssueStatusType,
   assigneeId: '',
   labelIds: [] as string[]
 })
@@ -76,10 +78,13 @@ const errorMessage = ref('')
 
 const assignableUsers = computed(() =>
   teamStore.assignableUsers
+
+  
 )
 
 onMounted(()=> {
   teamStore.fetchTeam(projectId)
+  
 })
 
 const handleSubmit = async () => {

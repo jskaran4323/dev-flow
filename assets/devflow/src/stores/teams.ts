@@ -4,8 +4,8 @@ import { getTeams } from "../services/devFlow/teams";
 
 
 export interface TeamMember{
-  id: string
-  fullName: string | null
+  userId: string
+  fullName: string 
   username: string
   userType: string
 
@@ -23,6 +23,9 @@ export const useTeamStore = defineStore('team', {
         this.error = ''
         try {
           const data = await getTeams(projectId)
+          console.log(data);
+          
+          
           this.members = data
         } catch (err: any) {
           this.error = err.message || 'Failed to fetch team'
@@ -34,7 +37,7 @@ export const useTeamStore = defineStore('team', {
   
     getters: {
       assignableUsers(state) {
-        return state.members.filter(m => ['DEVELOPER', 'TESTER'].includes(m.userType))
+        return state.members.filter(m => ['DEVELOPER', 'TESTER', 'VIEWER'].includes(m.userType))
       }
     }
   })

@@ -14,7 +14,7 @@ public class ProjectUserResponse {
     private String username;
     private UserType userType;
 
-    // constructor
+    
     public ProjectUserResponse(User user, UserType type) {
         this.userId = user.getId();
         this.fullName = user.getFullname();

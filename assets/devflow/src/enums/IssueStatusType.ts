@@ -1,6 +1,6 @@
 export enum IssueStatusType{
-    COMPLETED = 0,
-    ACTIVE = 1,
-    IN_PROGRESS = 2,
+    OPEN = 0,
+    IN_PROGRESS = 1,
+    CLOSED = 2,
   }
   

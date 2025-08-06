@@ -22,6 +22,8 @@ public class IssueMapper {
         .stream()
         .map(c -> new CommentDto(c.getId(), c.getContent(), c.getCreatedAt(), c.getUpdatedAt()))
         .toList();
+
+        
         return new IssueResponse(
             issue.getId(),
             issue.getTitle(),

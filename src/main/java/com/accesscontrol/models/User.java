@@ -34,6 +34,9 @@ private int userType;
 @JsonIgnore
 private List<Comment> comments = new ArrayList<>();
 
+@OneToMany(mappedBy = "assignee",fetch = FetchType.EAGER)
+private List<Issue> assignedIssues;
+
 
 public UserType getUserTypeEnum() {
     return UserType.fromValue(this.userType);
