@@ -70,24 +70,39 @@ private UserRepository userRepository;
     
 
     
-   @Override
-public void requestToJoin(UUID projectId, UUID userId) {
-    Optional<ProjectJoinRequest> existing = joinRequestRepository.findByProjectIdAndUserId(projectId, userId);
-
-    if (existing.isPresent() && existing.get().getStatus().equals(JoinRequestStatus.PENDING.name())) {
-        throw new RuntimeException("You already requested to join this project");
+    @Override
+    public void requestToJoin(UUID projectId, UUID userId) {
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(() -> new RuntimeException("Project not found"));
+    
+       
+        if (project.getOwner().getId().equals(userId)) {
+            throw new RuntimeException("You are the project owner");
+        }
+    
+        
+        if (projectUserRepository.findByProjectIdAndUserId(projectId, userId).isPresent()) {
+            throw new RuntimeException("You are already a team member of this project");
+        }
+    
+        
+        Optional<ProjectJoinRequest> existing = joinRequestRepository.findByProjectIdAndUserId(projectId, userId);
+        if (existing.isPresent() && existing.get().getStatus().equals(JoinRequestStatus.PENDING.name())) {
+            throw new RuntimeException("You already requested to join this project");
+        }
+    
+        // ✅ Create new request
+        ProjectJoinRequest request = ProjectJoinRequest.builder()
+            .id(UUID.randomUUID())
+            .projectId(projectId)
+            .userId(userId)
+            .status(JoinRequestStatus.PENDING.name())
+            .createdAt(LocalDateTime.now())
+            .build();
+    
+        joinRequestRepository.save(request);
     }
-
-    ProjectJoinRequest request = ProjectJoinRequest.builder()
-        .id(UUID.randomUUID())
-        .projectId(projectId)
-        .userId(userId)
-        .status(JoinRequestStatus.PENDING.name())
-        .createdAt(LocalDateTime.now())
-        .build();
-
-    joinRequestRepository.save(request);
-}
+    
 
 
    @Override

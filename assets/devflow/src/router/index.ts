@@ -11,6 +11,7 @@ import Issues from '../pages/Issues/Issues.vue'
 import IssueForm from '../pages/Issues/IssueForm.vue'
 import ProjectDetails from '../pages/Project/ProjectDetails.vue'
 import IssueDetals from '../pages/Issues/IssueDetails.vue'
+import ProjectKanban from '../pages/ProjectKanban.vue'
 // ... your other routes
 
 const routes = [
@@ -66,7 +67,13 @@ const routes = [
     path: '/issues/:id',
     name: 'IssueDetails',
     component: IssueDetals // adjust path if needed
+  },
+  {
+    path: '/projects/:projectId/kanban',
+    name: 'ProjectKanban',
+    component: ProjectKanban
   }
+  
 
 
 

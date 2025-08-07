@@ -2,8 +2,13 @@ import request from "../request"
 
 export const getIssueById = (id: string) => request.get(`/issues/${id}`)
 export const getProjectIssues = (projectId: string) => request.get(`/issues/project/${projectId}`)
-
-
+export const getAISuggestions = async (payload: {
+  title: string
+  description: string
+}) => {
+  const res = await request.post('/ai/label-suggestions', payload)
+  return res.data 
+}
 export const addIssue = (projectId: string, data:{
   title: string
   description: string

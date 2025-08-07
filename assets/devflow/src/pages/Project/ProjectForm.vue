@@ -45,7 +45,7 @@ import {  useProjectStore } from '../../stores/project'
   })
   const errorMessage = ref('')
   
-  // TODO: Load project data if editing
+
   
   const handleSubmit = async() => {
     try{

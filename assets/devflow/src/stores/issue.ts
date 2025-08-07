@@ -1,6 +1,12 @@
 import { defineStore } from "pinia";
 import { getIssueById, getProjectIssues, updateIssue, deleteIssue, addIssue } from "../services/devFlow/issue";
 
+
+
+export interface Label {
+    id: string
+    type: number
+  }
 export interface Issue {
     id: string
     title: string,
@@ -12,7 +18,7 @@ export interface Issue {
         fullName: string,
         userType: string
     },
-    labels: number[]
+    labels: Label[]
     project: {
         id: string
         name: string
@@ -26,7 +32,8 @@ export const useIssueStore = defineStore('issue', {
         issues: [] as Issue[],
         selectedIssue: null as Issue | null,
         loading: false,
-        error: "" as string | null
+        error: "" as string | null,
+        suggestedLabels: [] as number[]
     }),
     getters: {
         getIssueById: (state) => (id: string) => {
@@ -115,6 +122,15 @@ export const useIssueStore = defineStore('issue', {
                 this.error = err.response?.data?.message || 'Failed to delete project'
                 throw err
             }
-        }
-    }
+        },
+    //     async fetchAISuggestions(title: string, description: string) {
+    //         this.error = null
+    //         try {
+    //             const data = await getAISuggestions({ title, description })
+    //             this.suggestedLabels = data.suggestedLabels // Expected [0, 2, 4]
+    //         } catch (err: any) {
+    //             this.error = err.response?.data?.message || 'AI label suggestion failed'
+    //         }
+    // }
+}
 })

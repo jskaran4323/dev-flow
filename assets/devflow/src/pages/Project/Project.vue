@@ -28,6 +28,9 @@
               <router-link :to="`/projects/${project.id}/edit`" class="btn btn-sm btn-outline-light">Edit</router-link>
               <button class="btn btn-sm btn-outline-danger" @click="deleteProject(project.id)">Delete</button>
             </div>
+            <router-link :to="`/projects/${project.id}/kanban`" class="btn btn-outline-light">
+  📊 View Kanban Board
+</router-link>
           </div>
         </div>
       </div>
