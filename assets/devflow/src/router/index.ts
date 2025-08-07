@@ -10,6 +10,7 @@ import SelectProject from '../pages/Project/SelectProject.vue'
 import Issues from '../pages/Issues/Issues.vue'
 import IssueForm from '../pages/Issues/IssueForm.vue'
 import ProjectDetails from '../pages/Project/ProjectDetails.vue'
+import IssueDetals from '../pages/Issues/IssueDetails.vue'
 // ... your other routes
 
 const routes = [
@@ -60,6 +61,11 @@ const routes = [
     path: '/projects/:projectId',
     name: 'ProjectDetail',
     component: ProjectDetails
+  },
+  {
+    path: '/issues/:id',
+    name: 'IssueDetails',
+    component: IssueDetals // adjust path if needed
   }
 
 

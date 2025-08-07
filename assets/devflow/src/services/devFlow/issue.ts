@@ -9,13 +9,14 @@ export const addIssue = (projectId: string, data:{
   description: string
   status: string
   assigneeId: string
-  labelIds: string[]
+  labels: number[]
 }) => request.post(`/issues/${projectId}`, data).then(res => res.data)
 
 export const updateIssue = (id: string, data:{
     title: string,
     description: string,
-    status: number
+    status: string
+    labels: number[]
   }) => request.put(`/issues/${id}`,data).then(res => res.data)
   
 export const deleteIssue = (id: string) => request.delete(`/issues/${id}`) 

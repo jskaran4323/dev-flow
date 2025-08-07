@@ -6,22 +6,26 @@
         <button class="btn btn-success" @click="goToCreateIssue">+ New Issue</button>
       </div>
 
+      <!-- Empty state -->
       <div v-if="issues.length === 0" class="alert alert-secondary text-muted">
         No issues found. Start by creating a new one.
       </div>
 
+      <!-- Issues List -->
       <div class="row g-4">
         <div class="col-md-6" v-for="issue in issues" :key="issue.id">
+          <router-link :to="`/issues/${issue.id}`" class="text-decoration-none">
           <div class="card bg-secondary text-white shadow-sm h-100">
             <div class="card-body">
               <h5 class="card-title fw-bold">{{ issue.title }}</h5>
               <p class="card-text small">{{ issue.description }}</p>
-              <p class="mb-2">
-                <span class="badge bg-light text-dark me-2">{{ issue.status }}</span>
-                <small class="text-muted">Project: {{ issue.project.name }}</small>
-              </p>
 
-              <p class="mb-1"><strong>Assignee:</strong> {{ issue.assignee.username }} ({{ issue.assignee.email }})</p>
+          
+
+              <p class="mb-1">
+                <strong>Assignee:</strong>
+                {{ issue.assignee.fullName }} ({{ issue.assignee.username }})
+              </p>
 
               <div class="mb-2">
                 <strong>Labels:</strong>
@@ -43,35 +47,46 @@
               <button class="btn btn-sm btn-outline-danger" @click="deleteIssue(issue.id)">Delete</button>
             </div>
           </div>
+        </router-link>
         </div>
       </div>
     </div>
   </BaseLayout>
 </template>
+
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useIssueStore } from '../../stores/issue'
+import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useIssueStore } from '../../stores/issue'
 import BaseLayout from '../../layouts/BaseLayout.vue'
 
-
+// Stores & Router
 const route = useRoute()
-const issueStore = useIssueStore()
-const issues = issueStore.issues
-const projectId = route.params.projectId as string
 const router = useRouter()
-onMounted(() => {
-  issueStore.fetchIssues(projectId)
+const projectId = route.params.projectId as string
+const issueStore = useIssueStore()
+
+// Reactive computed issues
+const issues = computed(() => issueStore.issues)
+
+// Load on mount
+onMounted(async () => {
+  await issueStore.fetchIssues(projectId)
+
+  
 })
 
-
+// Go to Create Issue
 function goToCreateIssue() {
   router.push(`/projects/${projectId}/issues/new`)
-}  
-const deleteIssue = (id: string) => {
-  issueStore.deleteIssue(id)
 }
 
+// Delete issue
+const deleteIssue = async (id: string) => {
+  await issueStore.deleteIssue(id)
+}
+
+// Date formatter
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleString()
 }
