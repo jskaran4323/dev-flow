@@ -1,6 +1,6 @@
 package com.accesscontrol.services;
 
-import com.accesscontrol.dto.response.RegisterRequest;
+import com.accesscontrol.dto.request.RegisterRequest;
 import com.accesscontrol.enums.UserType;
 import com.accesscontrol.models.User;
 import com.accesscontrol.repositories.UserRepository;
@@ -39,6 +39,28 @@ public class UserService implements UserDetailsService{
     public List<User> getUser(){
        return userRepository.findAll();
     }
+    public void deleteUser(UUID userId){
+        userRepository.deleteById(userId);
+
+    }
+    public User updateUser(UUID userId, RegisterRequest request) {
+        return userRepository.findById(userId).map(user -> {
+            user.setUsername(request.getUsername());
+            user.setFullname(request.getFullName());
+            user.setEmail(request.getEmail());
+    
+            if (request.getPassword() != null && !request.getPassword().isBlank()) {
+                user.setPassword(passwordEncoder.encode(request.getPassword()));
+            }
+    
+            if (request.getType() != null) {
+                user.setUserType(request.getType().getValue());
+            }
+    
+            return userRepository.save(user);
+        }).orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+    }
+    
 
     public User userById(UUID id){
         return userRepository.findById(id).orElse(new User());

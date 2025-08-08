@@ -21,7 +21,8 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(UserType.fromValue(user.getUserType()).toSpringRole());
+        UserType type = UserType.fromValue(user.getUserType()); 
+    return List.of(type.toSpringRole());
     }
 
     @Override

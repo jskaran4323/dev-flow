@@ -1,8 +1,8 @@
 package com.accesscontrol.controllers;
 
 import com.accesscontrol.dto.request.LoginRequest;
+import com.accesscontrol.dto.request.RegisterRequest;
 import com.accesscontrol.dto.response.LoginResponse;
-import com.accesscontrol.dto.response.RegisterRequest;
 import com.accesscontrol.models.User;
 import com.accesscontrol.services.UserService;
 import com.accesscontrol.utils.JwtUtil;
@@ -68,7 +68,7 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
-                .maxAge(0)
+                .maxAge(24 * 60 * 60)
                 .sameSite("Lax")
                 .build();
 

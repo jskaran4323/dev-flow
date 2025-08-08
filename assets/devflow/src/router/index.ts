@@ -14,6 +14,7 @@ import IssueDetals from '../pages/Issues/IssueDetails.vue'
 import ProjectKanban from '../pages/ProjectKanban.vue'
 import PublicProjects from '../pages/Project/PublicProjects.vue'
 import UserProfile from '../pages/user/UserProfile.vue'
+import AdminDashboard from '../pages/AdminDashboard.vue'
 // ... your other routes
 
 const routes = [
@@ -84,6 +85,12 @@ const routes = [
     path: '/profile',
     name: 'UserProfile',
     component: UserProfile
+  },
+  {
+    path: '/admin',
+    name: 'AdminDashboard',
+    component: AdminDashboard,
+    
   }
   
   

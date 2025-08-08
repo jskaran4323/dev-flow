@@ -1,4 +1,4 @@
-package com.accesscontrol.dto.response;
+package com.accesscontrol.dto.request;
 
 import lombok.Data;
 
