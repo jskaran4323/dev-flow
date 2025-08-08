@@ -5,16 +5,37 @@
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
+          <!-- Guest Links -->
           <li class="nav-item" v-if="!isAuthenticated">
-  <router-link class="nav-link" to="/login">Login</router-link>
-</li>
-<li class="nav-item" v-if="!isAuthenticated">
-  <router-link class="nav-link" to="/register">Register</router-link>
-</li>
-<li class="nav-item" v-if="isAuthenticated">
-  <a class="nav-link" href="#" @click.prevent="handleLogout">Logout</a>
-</li>
+            <router-link class="nav-link" to="/login">Login</router-link>
+          </li>
+          <li class="nav-item" v-if="!isAuthenticated">
+            <router-link class="nav-link" to="/register">Register</router-link>
+          </li>
 
+          <!-- Authenticated Dropdown -->
+          <li class="nav-item dropdown" v-if="isAuthenticated">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              👤 Account
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary shadow">
+              <li>
+                <router-link class="dropdown-item text-white" to="/profile">Profile</router-link>
+              </li>
+              <li>
+                <hr class="dropdown-divider border-secondary" />
+              </li>
+              <li>
+                <a class="dropdown-item text-danger" href="#" @click.prevent="handleLogout">Logout</a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>
@@ -27,8 +48,10 @@ import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 
 const auth = useAuthStore()
-const router = useRouter()
+
 const { isAuthenticated } = storeToRefs(auth)
+const router = useRouter()
+
 const handleLogout = () => {
   auth.logout()
   router.push('/login')

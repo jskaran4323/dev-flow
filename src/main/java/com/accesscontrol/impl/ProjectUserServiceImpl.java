@@ -54,7 +54,7 @@ private UserRepository userRepository;
         ProjectUser pu = ProjectUser.builder()
                 .project(project)
                 .user(user)
-                .usertype(request.getUserType()) 
+                .userType(request.getUserType()) 
                 .build();
 
         projectUserRepository.save(pu);
@@ -64,7 +64,7 @@ private UserRepository userRepository;
         List<ProjectUser> team = projectUserRepository.findByProjectId(projectId);
 
         return team.stream()
-                .map(pu -> new ProjectUserResponse(pu.getUser(), pu.getUsertype()))
+                .map(pu -> new ProjectUserResponse(pu.getUser(), pu.getUserType()))
                 .collect(Collectors.toList());
     }
     
@@ -160,7 +160,7 @@ public void approveJoinRequest(UUID projectId, UUID userId, UUID ownerId) {
     ProjectUser projectUser = ProjectUser.builder()
         .project(project)
         .user(user)
-        .usertype(UserType.fromValue(user.getUserType()))
+        .userType(UserType.fromValue(user.getUserType()))
         .build();
 
     projectUserRepository.save(projectUser);

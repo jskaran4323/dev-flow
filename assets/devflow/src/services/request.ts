@@ -3,8 +3,6 @@ import api from './api'
 const request = {
   get: async (url: string, params?: any) => {
     const res = await api.get(url, { params })
-    console.log(res);
-    
     return res.data
   },
 

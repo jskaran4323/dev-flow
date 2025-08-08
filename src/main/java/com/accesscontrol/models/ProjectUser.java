@@ -28,7 +28,7 @@ public class ProjectUser {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "User_type", nullable = false)
-    private UserType usertype;
+    private UserType userType;
 
   
 }

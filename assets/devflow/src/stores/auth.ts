@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
-import { getCurrentUser } from '../services/authRequests' // assumes you have an endpoint to get user from token
+import { getCurrentUser } from '../services/authRequests'
 
 export interface User {
-  id: string
+  userId: string
   username: string
   fullName: string
   email: string
-  // add other fields if needed
+  userType: string
+  createdAt: string | null
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -24,7 +25,7 @@ export const useAuthStore = defineStore('auth', {
 
   getters: {
     isAuthenticated: (state): boolean => !!state.token,
-    userId: (state): string | null => state.user?.id || null
+    userId: (state): string | null => state.user?.userId || null
   },
 
   actions: {
@@ -42,7 +43,8 @@ export const useAuthStore = defineStore('auth', {
     async fetchUser(): Promise<void> {
       if (!this.token) return
       try {
-        const res = await getCurrentUser() 
+        const res = await getCurrentUser()
+        
         this.user = res
       } catch (err) {
         console.error('Failed to fetch user', err)

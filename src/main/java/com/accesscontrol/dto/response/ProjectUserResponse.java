@@ -6,11 +6,13 @@ import com.accesscontrol.enums.UserType;
 import com.accesscontrol.models.User;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ProjectUserResponse {
  
     private UUID userId;

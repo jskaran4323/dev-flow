@@ -14,7 +14,10 @@ export const loginUser = (data: {
 }) => request.post('/auth/login', data)
 
 export function getCurrentUser() {
-  return request.get('/auth/me') 
+  const res =  request.get('/auth/me')
+  console.log(res);
+  return res
+   
 } 
 export const addProject = (data:{
     name: string;

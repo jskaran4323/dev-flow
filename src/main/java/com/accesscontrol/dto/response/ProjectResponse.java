@@ -10,5 +10,5 @@ public class ProjectResponse {
     private UUID id;
     private String name;
     private String description;
-    private String ownerUsername;
+    private ProjectUserResponse owner; 
 }

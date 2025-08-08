@@ -12,6 +12,8 @@ import IssueForm from '../pages/Issues/IssueForm.vue'
 import ProjectDetails from '../pages/Project/ProjectDetails.vue'
 import IssueDetals from '../pages/Issues/IssueDetails.vue'
 import ProjectKanban from '../pages/ProjectKanban.vue'
+import PublicProjects from '../pages/Project/PublicProjects.vue'
+import UserProfile from '../pages/user/UserProfile.vue'
 // ... your other routes
 
 const routes = [
@@ -72,7 +74,18 @@ const routes = [
     path: '/projects/:projectId/kanban',
     name: 'ProjectKanban',
     component: ProjectKanban
+  },
+  {
+    path: '/public-projects',
+    name: 'PublicProjects',
+    component: PublicProjects 
+  },
+  {
+    path: '/profile',
+    name: 'UserProfile',
+    component: UserProfile
   }
+  
   
 
 
