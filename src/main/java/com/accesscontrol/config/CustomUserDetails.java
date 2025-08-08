@@ -1,14 +1,17 @@
 package com.accesscontrol.config;
 
 
+import com.accesscontrol.enums.UserType;
 import com.accesscontrol.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -18,8 +21,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // You can add roles/authorities here if needed
-        return Collections.emptyList();
+        return List.of(UserType.fromValue(user.getUserType()).toSpringRole());
     }
 
     @Override

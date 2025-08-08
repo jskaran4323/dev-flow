@@ -6,6 +6,7 @@ import com.accesscontrol.mapper.UserMapper;
 import com.accesscontrol.models.User;
 import com.accesscontrol.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public UserDto getMyDetails(Authentication authentication) {
     User user = userDetails.getUser();
     return UserMapper.toDto(user);
 }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public List<UserDto> getUsers() {
         return userService.getUser()
