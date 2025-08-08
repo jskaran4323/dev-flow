@@ -1,53 +1,67 @@
 <template>
   <BaseLayout>
     <div class="container py-5 text-white">
+      <!-- Header -->
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>🐛 Issues</h2>
+        <h2>Issues</h2>
         <button class="btn btn-success" @click="goToCreateIssue">+ New Issue</button>
       </div>
 
-      <!-- Empty state -->
-      <div v-if="issues.length === 0" class="alert alert-secondary text-muted">
-        No issues found. Start by creating a new one.
+      <!-- Empty State -->
+      <div v-if="issues.length === 0" class="alert alert-secondary text-muted text-center">
+        No issues found in this project. Start by creating a new one.
       </div>
 
-      <!-- Issues List -->
-      <div class="row g-4">
+      <!-- Issues Grid -->
+      <div class="row g-4" v-else>
         <div class="col-md-6" v-for="issue in issues" :key="issue.id">
-          <router-link :to="`/issues/${issue.id}`" class="text-decoration-none">
           <div class="card bg-secondary text-white shadow-sm h-100">
             <div class="card-body">
-              <h5 class="card-title fw-bold">{{ issue.title }}</h5>
-              <p class="card-text small">{{ issue.description }}</p>
-
-          
-
-              <p class="mb-1">
-                <strong>Assignee:</strong>
-                {{ issue.assignee.fullName }} ({{ issue.assignee.username }})
+              <!-- Title + Description -->
+              <h5 class="card-title fw-bold">
+                <router-link :to="`/issues/${issue.id}`" class="text-white text-decoration-none">
+                  {{ issue.title }}
+                </router-link>
+              </h5>
+              <p class="card-text small text-light">
+                {{ issue.description.length > 100 ? issue.description.slice(0, 100) + '...' : issue.description }}
               </p>
 
+              <!-- Assignee -->
+              <p class="mb-2">
+                <strong>👤 Assignee:</strong>
+                {{ issue.assignee.fullName }} <span class="text-muted">({{ issue.assignee.username }})</span>
+              </p>
+
+              <!-- Labels -->
               <div class="mb-2">
-                <strong>Labels:</strong>
+                <strong>🏷️ Labels:</strong>
                 <span
                   v-for="label in issue.labels"
                   :key="label.id"
                   class="badge bg-info text-dark me-1"
                 >
-                  {{ label.name }} - {{ label.type }}
+                 {{ label.type }}
                 </span>
               </div>
 
-              <small class="text-muted">Created: {{ formatDate(issue.createdAt) }}</small><br />
-              <small class="text-muted">Updated: {{ formatDate(issue.updatedAt) }}</small>
+              <!-- Timestamps -->
+              <div class="text-muted small">
+                <div>🕒 Created: {{ formatDate(issue.createdAt) }}</div>
+                <div>🔄 Updated: {{ formatDate(issue.updatedAt) }}</div>
+              </div>
             </div>
 
+            <!-- Footer Actions -->
             <div class="card-footer bg-transparent d-flex justify-content-between border-top border-light">
-              <router-link :to="`/issues/${issue.id}/edit`" class="btn btn-sm btn-outline-light">Edit</router-link>
-              <button class="btn btn-sm btn-outline-danger" @click="deleteIssue(issue.id)">Delete</button>
+              <router-link :to="`/issues/${issue.id}/edit`" class="btn btn-sm btn-outline-light">
+                ✏️ Edit
+              </router-link>
+              <button class="btn btn-sm btn-outline-danger" @click="deleteIssue(issue.id)">
+                🗑️ Delete
+              </button>
             </div>
           </div>
-        </router-link>
         </div>
       </div>
     </div>

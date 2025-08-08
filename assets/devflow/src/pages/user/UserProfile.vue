@@ -40,7 +40,7 @@
    () => authStore.user,
    (user) => {
      if (user) {
-       console.log('✅ User fetched:', user)
+       console.log('User fetched:', user)
      }
    },
    { immediate: true }

@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.accesscontrol.config.CustomUserDetails;
 import com.accesscontrol.dto.request.IssueRequest;
 import com.accesscontrol.dto.response.IssueResponse;
 import com.accesscontrol.mapper.IssueMapper;
@@ -38,12 +39,12 @@ public class IssueController {
         if (projectOpt.isEmpty()) {
             return ResponseEntity.status(404).body(null);
         }
-        
+    
         Project project = projectOpt.get();
-        
+    
         UUID assigneeId = request.getAssigneeId();
         User assignee;
-        
+    
         if (assigneeId != null) {
             Optional<User> assigneeOpt = userRepository.findById(assigneeId);
             if (assigneeOpt.isEmpty()) {
@@ -51,8 +52,11 @@ public class IssueController {
             }
             assignee = assigneeOpt.get();
         } else {
-            assignee = (User) auth.getPrincipal();
+            CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+            assignee = userDetails.getUser(); // ✅ Extract the actual User object
         }
+    
+    
         
         // Handle labels by type - find or create labels for this project
         Set<Label> labels = new HashSet<>();

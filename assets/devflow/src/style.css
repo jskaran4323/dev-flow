@@ -1,11 +1,18 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --color-bg: #0d1117;
+  --color-surface: #161b22;
+  --color-border: #30363d;
+  --color-text: #c9d1d9;
+  --color-accent: #58a6ff;
+  --font-base: system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  font-family: var(--font-base);
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--color-text);
+  background-color: var(--color-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,67 +20,102 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* Layout Base */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
+#app {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+/* Headings */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  margin: 0.5em 0;
 }
 
+/* Links */
+a {
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+a:hover {
+  color: #1f6feb;
+}
+
+/* Buttons */
 button {
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #238636;
+  color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 button:hover {
-  border-color: #646cff;
+  background-color: #2ea043;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Optional button variants */
+.btn-blue {
+  background-color: var(--color-accent);
+}
+.btn-blue:hover {
+  background-color: #1f6feb;
+}
+
+/* Card / Panel */
 .card {
-  padding: 2em;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  margin: 1rem 0;
+  text-align: left;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
+/* Light theme override */
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --color-bg: #ffffff;
+    --color-surface: #f9f9f9;
+    --color-border: #e1e4e8;
+    --color-text: #1f2328;
+    --color-accent: #0969da;
   }
+
   a:hover {
-    color: #747bff;
+    color: #174ea6;
   }
+
   button {
-    background-color: #f9f9f9;
+    background-color: #f3f4f6;
+    color: #1f2328;
+  }
+
+  button:hover {
+    background-color: #e2e4e8;
   }
 }

@@ -1,19 +1,26 @@
 <template>
   <BaseLayout>
     <div class="container py-5 text-white">
-      <h2 class="mb-4">📜 Create New Issue</h2>
+      <h2 class="mb-4 text-center">📜 Create New Issue</h2>
 
-      <form @submit.prevent="handleSubmit" class="card bg-secondary text-white p-4 shadow-sm" style="max-width: 600px;">
+      <form
+        @submit.prevent="handleSubmit"
+        class="card bg-secondary text-white p-4 shadow-sm mx-auto"
+        style="max-width: 700px;"
+      >
+        <!-- Title -->
         <div class="mb-3">
           <label class="form-label">Title</label>
           <input v-model="issue.title" type="text" class="form-control" required />
         </div>
 
+        <!-- Description -->
         <div class="mb-3">
           <label class="form-label">Description</label>
           <textarea v-model="issue.description" class="form-control" rows="4"></textarea>
         </div>
 
+        <!-- Status -->
         <div class="mb-3">
           <label class="form-label">Status</label>
           <select v-model="issue.status" class="form-select">
@@ -28,7 +35,11 @@
           <label class="form-label">Assignee</label>
           <select v-model="issue.assigneeId" class="form-select">
             <option disabled value="">Select a user</option>
-            <option v-for="user in assignableUsers" :key="user.userId" :value="user.userId">
+            <option
+              v-for="user in assignableUsers"
+              :key="user.userId"
+              :value="user.userId"
+            >
               {{ user.fullName }}
             </option>
           </select>
@@ -37,33 +48,51 @@
         <!-- Labels -->
         <div class="mb-3">
           <label class="form-label">Labels</label>
-          <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
-            <div v-for="(labelName, index) in labelTypeMap" :key="index" class="form-check">
+          <div
+            class="border rounded bg-dark p-3"
+            style="max-height: 200px; overflow-y: auto;"
+          >
+            <div
+              v-for="(labelName, index) in labelTypeMap"
+              :key="index"
+              class="form-check form-check-inline"
+            >
               <input
                 class="form-check-input"
                 type="checkbox"
                 :id="`label-${index}`"
                 :value="index"
                 v-model="issue.labels"
-              >
+              />
               <label class="form-check-label" :for="`label-${index}`">
                 {{ labelName }}
               </label>
             </div>
           </div>
-          <small class="form-text text-muted">Select one or more labels for this issue</small>
+          <small class="form-text text-light">Select one or more labels for this issue</small>
         </div>
 
-        <!-- Suggested Labels Display -->
+        <!-- Suggested Labels -->
         <div v-if="suggestedLabels.length > 0" class="alert alert-info">
           Suggested:
-          <span v-for="type in suggestedLabels" :key="type" class="badge bg-primary mx-1">
+          <span
+            v-for="type in suggestedLabels"
+            :key="type"
+            class="badge bg-primary mx-1"
+          >
             {{ labelTypeMap[type] }}
           </span>
         </div>
 
-        <button type="submit" class="btn btn-success w-100">Create Issue</button>
-        <p class="text-danger mt-2" v-if="errorMessage">{{ errorMessage }}</p>
+        <!-- Submit -->
+        <button type="submit" class="btn btn-success w-100">
+          Create Issue
+        </button>
+
+        <!-- Error -->
+        <p class="text-danger mt-3 mb-0 text-center" v-if="errorMessage">
+          {{ errorMessage }}
+        </p>
       </form>
     </div>
   </BaseLayout>

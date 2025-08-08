@@ -5,6 +5,7 @@ import java.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.accesscontrol.config.CustomUserDetails;
 import com.accesscontrol.dto.request.AddTeamMemberRequest;
 import com.accesscontrol.dto.request.ApproveRequestDto;
 import com.accesscontrol.dto.request.JoinRequestDto;
@@ -46,7 +47,8 @@ public class ProjectUserController {
         Authentication auth
     ) {
         
-        User principal = (User) auth.getPrincipal(); 
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        User principal = userDetails.getUser();
         UUID userId = principal.getId();
         projectUserService.requestToJoin(projectId, userId);
         return ResponseEntity.ok().build();
@@ -58,7 +60,8 @@ public class ProjectUserController {
         @PathVariable UUID projectId,
         Authentication auth
     ) {
-        User principal = (User) auth.getPrincipal(); 
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        User principal = userDetails.getUser();
         UUID userId = principal.getId();
         List<JoinRequestDto> requests = projectUserService.getJoinRequests(projectId, userId);
         return ResponseEntity.ok(requests);
@@ -71,7 +74,8 @@ public class ProjectUserController {
         @RequestBody ApproveRequestDto request,
         Authentication auth
     ) {
-        User principal = (User) auth.getPrincipal(); 
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        User principal = userDetails.getUser();
         UUID userId = principal.getId();
         projectUserService.approveJoinRequest(projectId, request.getUserId(), userId);
         return ResponseEntity.ok().build();

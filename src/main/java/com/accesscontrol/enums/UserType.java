@@ -1,5 +1,8 @@
 package com.accesscontrol.enums;
 import java.util.*;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 public enum UserType {
     ADMIN(0),
     MANAGER(1),
@@ -24,8 +27,9 @@ public enum UserType {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid UserType: " + value));
     }
 
-    public String toSpringRole() {
-        return "ROLE_" + this.name(); 
+   
+     public GrantedAuthority toSpringRole() {
+        return new SimpleGrantedAuthority("ROLE_" + this.name());
     }
 }
 

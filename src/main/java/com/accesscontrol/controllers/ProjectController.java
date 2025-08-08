@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import com.accesscontrol.config.CustomUserDetails;
 import com.accesscontrol.dto.response.ProjectResponse;
 import com.accesscontrol.mapper.ProjectMapper;
 import com.accesscontrol.models.Project;
@@ -39,7 +40,8 @@ public class ProjectController {
 
   @PostMapping("/project/register")
   public ResponseEntity<ProjectResponse> createProject(@RequestBody Project project, Authentication auth) {
-    User user = (User) auth.getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+    User user = userDetails.getUser();
     project.setOwner(user);
     Project savedProject = projectService.createProject(project);
     return ResponseEntity.ok(ProjectMapper.toResponse(savedProject));
@@ -47,7 +49,8 @@ public class ProjectController {
 
   @GetMapping("/projects")
   public ResponseEntity<List<ProjectResponse>> getUserProjects(Authentication auth) {
-    User user = (User) auth.getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+    User user = userDetails.getUser();
     List<Project> projects = projectService.getProjectsByOwnerId(user.getId());
 
     List<ProjectResponse> response = projects.stream()

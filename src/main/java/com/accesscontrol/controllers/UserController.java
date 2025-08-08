@@ -1,5 +1,6 @@
 package com.accesscontrol.controllers;
 
+import com.accesscontrol.config.CustomUserDetails;
 import com.accesscontrol.dto.response.UserDto;
 import com.accesscontrol.mapper.UserMapper;
 import com.accesscontrol.models.User;
@@ -18,10 +19,11 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/me")
-    public UserDto getMyDetails(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        return UserMapper.toDto(user);
-    }
+public UserDto getMyDetails(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    User user = userDetails.getUser();
+    return UserMapper.toDto(user);
+}
 
     @GetMapping("/users")
     public List<UserDto> getUsers() {
