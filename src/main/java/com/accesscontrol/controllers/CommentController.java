@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.accesscontrol.models.Issue;
 import com.accesscontrol.models.User;
+import com.accesscontrol.config.CustomUserDetails;
 import com.accesscontrol.dto.CommentDto;
 import com.accesscontrol.dto.request.CommentRequest;
 import com.accesscontrol.mapper.CommentMapper;
@@ -51,8 +52,8 @@ public class CommentController {
             }
             author = authorOpt.get();
         } else {
-            
-            author = (User) auth.getPrincipal();
+             CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+            author = userDetails.getUser();
         }
       
 

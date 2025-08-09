@@ -8,6 +8,6 @@ import com.accesscontrol.models.Label;
 
 
 public interface LabelService {
-    public Label createLabel(UUID proejcrtId, LabelRequest request);
+    public Label createLabel(UUID projecttId, LabelRequest request);
     public List<Label> getLabelByProjectId(UUID id);
 }

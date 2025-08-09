@@ -1,5 +1,6 @@
 package com.accesscontrol.impl;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,6 +48,11 @@ public class IssueServiceImpl implements IssueService{
     public Page<Issue> findByAssigneeId(UUID assigneeId, Pageable pageable) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findByAssigneeId'");
+    }
+
+    @Override
+    public List<Issue> getProjectIssues(UUID projectId) {
+        return issueRepository.findByProjectId(projectId);
     }
     
 }

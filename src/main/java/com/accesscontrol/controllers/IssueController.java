@@ -3,10 +3,10 @@ package com.accesscontrol.controllers;
 import java.util.*;
 
 import org.springframework.security.core.Authentication;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.accesscontrol.config.CustomUserDetails;
 import com.accesscontrol.dto.request.IssueRequest;
 import com.accesscontrol.dto.response.IssueResponse;
 import com.accesscontrol.mapper.IssueMapper;
@@ -21,87 +21,147 @@ import com.accesscontrol.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/{projectId}/issues")
+@RequestMapping("/api/issues")
 @RequiredArgsConstructor
 public class IssueController {
     private final IssueService issueService;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final LabelRepository labelRepository;
-    @PostMapping
+    
+    @PostMapping("/{projectId}")
     public ResponseEntity<IssueResponse> createEntity(
         @PathVariable UUID projectId,
         @RequestBody IssueRequest request,
         Authentication auth
     ) {
-        // 1. Fetch project
         Optional<Project> projectOpt = projectRepository.findById(projectId);
         if (projectOpt.isEmpty()) {
             return ResponseEntity.status(404).body(null);
         }
     
-        // 2. Determine assignee
+        Project project = projectOpt.get();
+    
         UUID assigneeId = request.getAssigneeId();
         User assignee;
     
         if (assigneeId != null) {
             Optional<User> assigneeOpt = userRepository.findById(assigneeId);
             if (assigneeOpt.isEmpty()) {
-                return ResponseEntity.badRequest().build(); 
+                return ResponseEntity.badRequest().build();
             }
             assignee = assigneeOpt.get();
         } else {
-            
-            assignee = (User) auth.getPrincipal();
+            CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+            assignee = userDetails.getUser(); // ✅ Extract the actual User object
         }
+    
     
         
+        // Handle labels by type - find or create labels for this project
         Set<Label> labels = new HashSet<>();
-        if (request.getLabelIds() != null && !request.getLabelIds().isEmpty()) {
-            labels.addAll(labelRepository.findAllById(request.getLabelIds()));
+        if (request.getLabels() != null && !request.getLabels().isEmpty()) {
+            for (Integer labelType : request.getLabels()) {
+                // Try to find existing label for this project and type
+                Label existingLabel = labelRepository.findByProjectAndType(project, labelType);
+                
+                if (existingLabel != null) {
+                    labels.add(existingLabel);
+                } else {
+                    // Create new label for this project
+                    Label newLabel = new Label();
+                    newLabel.setType(labelType);
+                    newLabel.setProject(project);
+                    Label savedLabel = labelRepository.save(newLabel);
+                    labels.add(savedLabel);
+                }
+            }
         }
-    
-       
+        
         Issue issue = Issue.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .status(request.getStatus())
                 .assignee(assignee)
-                .project(projectOpt.get())
+                .project(project)
                 .labels(labels)
                 .build();
-    
+        
         Issue saved = issueService.createIssue(issue);
         return ResponseEntity.ok(IssueMapper.toIssueResponse(saved));
     }
+    
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<List<IssueResponse>> getProjectIssue(
+        @PathVariable UUID projectId, 
+        Authentication auth
+    ) {
+        List<Issue> issues = issueService.getProjectIssues(projectId);
+        List<IssueResponse> response = issues.stream()
+            .map(IssueMapper::toIssueResponse)
+            .toList();
+        return ResponseEntity.ok(response);
+    }
+    
     @GetMapping("/{issueId}")
-    public ResponseEntity<IssueResponse> getSingleIssue(@PathVariable UUID issueId){
-        return issueService.getIssueById(issueId).map(IssueMapper::toIssueResponse).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<IssueResponse> getSingleIssue(
+        @PathVariable UUID issueId,
+        Authentication auth
+    ) {
+        return issueService.getIssueById(issueId)
+            .map(IssueMapper::toIssueResponse)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
      
     @PutMapping("/{issueId}")
-    public ResponseEntity<IssueResponse> updateIssue(@PathVariable UUID projectId, @PathVariable UUID issueId,
-    @RequestBody IssueRequest request){
-        Optional<User> assigneeOpt = userRepository.findById(request.getAssigneeId());
-        Set<Label> labels = new HashSet<>(labelRepository.findAllById(request.getLabelIds()));
-
-        return issueService.getIssueById(issueId).map(existing-> {
+    public ResponseEntity<IssueResponse> updateIssue(
+        @PathVariable UUID issueId,
+        @RequestBody IssueRequest request,
+        Authentication auth
+    ) {
+        return issueService.getIssueById(issueId).map(existing -> {
+            // Update basic fields
             existing.setTitle(request.getTitle());
             existing.setDescription(request.getDescription());
             existing.setStatus(request.getStatus());
-            assigneeOpt.ifPresent(existing::setAssignee);
-            Issue updated = issueService.updateIssue(existing);
+            
+            // Update assignee if provided
+            if (request.getAssigneeId() != null) {
+                Optional<User> assigneeOpt = userRepository.findById(request.getAssigneeId());
+                assigneeOpt.ifPresent(existing::setAssignee);
+            }
+            
+            // Update labels - find or create labels for this project
+            Set<Label> labels = new HashSet<>();
+            if (request.getLabels() != null && !request.getLabels().isEmpty()) {
+                Project project = existing.getProject();
+                for (Integer labelType : request.getLabels()) {
+                    // Try to find existing label for this project and type
+                    Label existingLabel = labelRepository.findByProjectAndType(project, labelType);
+                    
+                    if (existingLabel != null) {
+                        labels.add(existingLabel);
+                    } else {
+                        // Create new label for this project
+                        Label newLabel = new Label();
+                        newLabel.setType(labelType);
+                        newLabel.setProject(project);
+                        Label savedLabel = labelRepository.save(newLabel);
+                        labels.add(savedLabel);
+                    }
+                }
+            }
             existing.setLabels(labels);
+            
+            Issue updated = issueService.updateIssue(existing);
             return ResponseEntity.ok(IssueMapper.toIssueResponse(updated));
         }).orElse(ResponseEntity.notFound().build());
     }
+    
     @DeleteMapping("/{issueId}")
     public ResponseEntity<Void> deleteIssue(@PathVariable UUID issueId) {
         issueService.deleteIssue(issueId);
         return ResponseEntity.noContent().build();
     }
-    
-
-
-
 }

@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LabelDto {
     private UUID id;
-    private String name;
+    
     private int type;
 }

@@ -10,4 +10,5 @@ import com.accesscontrol.models.Project;
 public interface LabelRepository extends JpaRepository<Label, UUID>{
     List<Label> findByProject(Project project);
     //List<Label> findByIssue(Issue issue);
+    Label findByProjectAndType(Project project, Integer type);
 }

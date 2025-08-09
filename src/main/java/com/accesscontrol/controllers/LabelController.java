@@ -18,6 +18,11 @@ import lombok.RequiredArgsConstructor;
 public class LabelController {
     private final LabelService labelService;
 
+    @GetMapping
+    public ResponseEntity<List<Label>> getLabels(@PathVariable UUID projectId){
+        List<Label> labels = labelService.getLabelByProjectId(projectId);
+        return ResponseEntity.ok(labels);
+    }
 
     @PostMapping
     public ResponseEntity<Label> createLabel(@PathVariable UUID projectId, 
@@ -26,10 +31,5 @@ public class LabelController {
      return ResponseEntity.ok(savedLabel);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Label>> getLabels(@PathVariable UUID projectId){
-        List<Label> labels = labelService.getLabelByProjectId(projectId);
-        return ResponseEntity.ok(labels);
-    }
-
+    
 }

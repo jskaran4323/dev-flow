@@ -26,7 +26,7 @@ public class LabelServiceImpl implements LabelService{
        .orElseThrow(() -> new RuntimeException("Project not found"));
 
        Label label = new Label();
-       label.setName(request.getName());
+       
        label.setLabelTypeEnum(request.getType());
        label.setProject(project);
        

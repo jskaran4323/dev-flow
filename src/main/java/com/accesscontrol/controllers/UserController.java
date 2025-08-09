@@ -1,27 +1,36 @@
 package com.accesscontrol.controllers;
+
+import com.accesscontrol.config.CustomUserDetails;
+import com.accesscontrol.dto.response.UserDto;
+import com.accesscontrol.mapper.UserMapper;
 import com.accesscontrol.models.User;
 import com.accesscontrol.services.UserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/auth")
 public class UserController {
 
     @Autowired
-        private UserService userService;
-    @GetMapping("/me")
-    public User getmyDetails(Authentication authentication){
-        return (User) authentication.getPrincipal();
-    }
+    private UserService userService;
 
+    @GetMapping("/me")
+public UserDto getMyDetails(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    User user = userDetails.getUser();
+    return UserMapper.toDto(user);
+}
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
-    public List<User> getUsers(){
-        return userService.getUser(); 
+    public List<UserDto> getUsers() {
+        return userService.getUser()
+                          .stream()
+                          .map(UserMapper::toDto)
+                          .toList();
     }
-   
-    
 }

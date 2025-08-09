@@ -11,5 +11,5 @@ public class IssueRequest {
     private String description;
     private int status;
     private UUID assigneeId; 
-    private List<UUID> labelIds;
+    private List<Integer> labels;
 }

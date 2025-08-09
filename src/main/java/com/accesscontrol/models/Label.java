@@ -21,7 +21,6 @@ public class Label {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
    
-    private String name;
     @Column(name = "type")
     private int type;
 
