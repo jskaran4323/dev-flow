@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getIssueById, getProjectIssues, updateIssue, deleteIssue, addIssue } from "../services/devFlow/issue";
+import { getIssueById, getProjectIssues, updateIssue, deleteIssue, addIssue,getAISuggestions } from "../services/devFlow/issue";
 
 
 
@@ -123,14 +123,16 @@ export const useIssueStore = defineStore('issue', {
                 throw err
             }
         },
-    //     async fetchAISuggestions(title: string, description: string) {
-    //         this.error = null
-    //         try {
-    //             const data = await getAISuggestions({ title, description })
-    //             this.suggestedLabels = data.suggestedLabels // Expected [0, 2, 4]
-    //         } catch (err: any) {
-    //             this.error = err.response?.data?.message || 'AI label suggestion failed'
-    //         }
-    // }
+        async fetchAISuggestions(title: string, description: string) {
+            this.error = null
+            try {
+                const data = await getAISuggestions({ title, description })
+                console.log(data);
+                
+                this.suggestedLabels = data.suggestedLabels 
+            } catch (err: any) {
+                this.error = err.response?.data?.message || 'AI label suggestion failed'
+            }
+    }
 }
 })

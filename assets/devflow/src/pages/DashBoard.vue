@@ -60,7 +60,7 @@ import { useAuthStore } from '../stores/auth'
 
 const projectStore = useProjectStore()
 const publicProjectStore = usePublicProjectStore()
-const authStore = useAuthStore()
+
 
 onMounted(async () => {
   await projectStore.fetchAllProjects()
@@ -69,6 +69,6 @@ onMounted(async () => {
 
 // Dummy values — replace with actual computed values or API result
 const totalProjects = computed(() => projectStore.projects.length)
-const totalIssues = ref(12) // Replace with real count from issue store
-const totalComments = ref(27) // Replace with real count from comment store
+const totalIssues = ref(12) 
+const totalComments = ref(27) 
 </script>

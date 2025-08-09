@@ -73,6 +73,10 @@
         </div>
 
         <!-- Suggested Labels -->
+        <div v-if="aiLoading" class="alert alert-warning py-2">
+  🤖 Getting AI label suggestions...
+</div>
+
         <div v-if="suggestedLabels.length > 0" class="alert alert-info">
           Suggested:
           <span
@@ -109,7 +113,7 @@ import { IssueStatusType } from '../../enums/IssueStatusType'
 const route = useRoute()
 const router = useRouter()
 const projectId = route.params.projectId as string
-
+const aiLoading = ref(false) 
 const issueStore = useIssueStore()
 const teamStore = useTeamStore()
 
@@ -143,16 +147,26 @@ const labelTypeMap: Record<number, string> = {
   10: 'FRONTEND'
 }
 
-// watch(
-//   () => [issue.title, issue.description],
-//   async ([title, description]) => {
-//     if (title.length > 5 || description.length > 10) {
-//       await issueStore.fetchAISuggestions(title, description)
-//       issue.labels = [...issueStore.suggestedLabels]
-//     }
-//   },
-//   { immediate: false }
-// )
+let aiSuggestionTimer: ReturnType<typeof setTimeout> | null = null
+
+watch(
+  () => [issue.title, issue.description],
+  async ([title, description]) => {
+   
+    if (aiSuggestionTimer) {
+      clearTimeout(aiSuggestionTimer)
+    }
+
+   
+    if (title.length > 15 || description.length > 25) {
+      aiSuggestionTimer = setTimeout(async () => {
+        await issueStore.fetchAISuggestions(title, description)
+        issue.labels = [...issueStore.suggestedLabels]
+      }, 10000) 
+    }
+  },
+  { immediate: false }
+)
 
 const handleSubmit = async () => {
   try {
