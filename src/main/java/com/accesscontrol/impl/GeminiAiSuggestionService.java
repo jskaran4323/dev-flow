@@ -1,24 +1,21 @@
-// Updated Service to map AI labels to your numeric system
 package com.accesscontrol.impl;
 
 import com.accesscontrol.dto.LabelSuggestionDto;
 import com.accesscontrol.dto.request.AiSuggestionRequest;
 import com.accesscontrol.dto.response.AiSuggestionResponse;
 import com.accesscontrol.services.AiSuggestionService;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientException;
 
 import java.time.Duration;
-import java.util.*;
-import java.util.stream.Collectors;
-import com.accesscontrol.enums.LabelType;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -26,148 +23,105 @@ import com.accesscontrol.enums.LabelType;
 public class GeminiAiSuggestionService implements AiSuggestionService {
 
     private final WebClient googleWebClient;
-    private final ObjectMapper objectMapper;
-    
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Value("${gemini.api.key}")
     private String apiKey;
-    
+
     @Value("${gemini.model:gemini-2.0-flash}")
     private String model;
-    
+
     @Value("${gemini.timeout:20}")
     private int timeoutSeconds;
 
-    // Mapping from AI string labels to your LabelType enum
-    private static final Map<String, LabelType> LABEL_MAPPING = Map.of(
-        "bug", LabelType.BUG,
-        "feature", LabelType.FEATURE,
-        "enhancement", LabelType.ENHANCEMENT,
-        "documentation", LabelType.DOCUMENTATION,
-        "design", LabelType.DESIGN,
-        "test", LabelType.TEST,
-        "performance", LabelType.PERFORMANCE,
-        "security", LabelType.SECURITY,
-        "backend", LabelType.BACKEND,
-        "frontend", LabelType.FRONTEND
-    );
-    
-   
-   
     @Override
-    public AiSuggestionResponse suggest(AiSuggestionRequest request) {
+    public AiSuggestionResponse suggest(AiSuggestionRequest req) {
         try {
-            log.info("Generating AI suggestions for title: {}", request.getTitle());
-            
-            String prompt = buildPrompt(request);
-            JsonNode response = callGeminiApi(prompt);
-            List<LabelSuggestionDto> aiSuggestions = parseResponse(response);
-            
-            // Convert AI suggestions to numeric labels
-            List<LabelSuggestionDto> mappedSuggestions = mapToNumericLabels(aiSuggestions);
-            
-            log.info("Generated {} mapped suggestions", mappedSuggestions.size());
-            return new AiSuggestionResponse(mappedSuggestions);
-            
-        } catch (WebClientException e) {
-            log.error("Error calling Gemini API: {}", e.getMessage());
-            return AiSuggestionResponse.error("Failed to connect to AI service");
+            String prompt = buildPrompt(req);
+            String text = extractResponseText(callGeminiApi(prompt));
+            List<LabelSuggestionDto> suggestions = parseSuggestions(extractJsonArray(text));
+            return AiSuggestionResponse.ok(suggestions.stream().distinct().limit(5).toList());
         } catch (Exception e) {
-            log.error("Unexpected error generating suggestions", e);
-            return AiSuggestionResponse.error("An unexpected error occurred");
+            log.error("AI suggestion error", e);
+            return AiSuggestionResponse.error("Failed to generate suggestions");
         }
     }
 
-    private String buildPrompt(AiSuggestionRequest request) {
-        return String.format(
-            "You are a label recommender for an issue tracker. " +
-            "Analyze the following issue and suggest up to 5 relevant labels from this list: " +
-            "bug, feature, enhancement, documentation, urgent, design, test, performance, security, backend, frontend, mobile, ui, api, database. " +
-            "Return ONLY a JSON array in this exact format: " +
-            "[{\"label\":\"bug\",\"confidence\":0.95},{\"label\":\"frontend\",\"confidence\":0.80}]\n\n" +
-            "TITLE: %s\n" +
-            "DESCRIPTION: %s\n\n" +
-            "JSON Response:",
-            request.getTitle(),
-            request.getDescription() != null ? request.getDescription() : ""
-        );
-    }
-
-    private List<LabelSuggestionDto> mapToNumericLabels(List<LabelSuggestionDto> aiSuggestions) {
-        return aiSuggestions.stream()
-            .map(suggestion -> {
-                String aiLabel =  String.valueOf(suggestion.getLabel()).toLowerCase().trim();
-                
-                // Try primary mapping first
-                LabelType labelType = LABEL_MAPPING.get(aiLabel);
-                
-                // If not found, try additional mappings
-              
-                
-                if (labelType != null) {
-                    // Use the enum's ordinal value (which matches your numeric system)
-                    return new LabelSuggestionDto(labelType.ordinal(), suggestion.getConfidence());
-                } else {
-                    log.warn("Unknown AI label '{}', skipping", aiLabel);
-                    return null;
-                }
-            })
-            .filter(Objects::nonNull)
-            .distinct() // Remove duplicates
-            .limit(5)   // Limit to 5 suggestions max
-            .collect(Collectors.toList());
+    private String buildPrompt(AiSuggestionRequest r) {
+        return """
+            You are a label recommender. Choose up to 5 labels ONLY from:
+            0:BUG, 1:FEATURE, 2:ENHANCEMENT, 3:DOCUMENTATION, 4:URGENT, 5:DESIGN,
+            6:TEST, 7:PERFORMANCE, 8:SECURITY, 9:BACKEND, 10:FRONTEND.
+            Return ONLY JSON: [{"label": 10, "confidence": 0.90}, {"label": 5, "confidence": 0.75}]
+            TITLE: %s
+            DESCRIPTION: %s
+            JSON:
+            """.formatted(r.getTitle(), r.getDescription());
     }
 
     private JsonNode callGeminiApi(String prompt) {
-        var payload = Map.of(
-            "contents", List.of(Map.of(
-                "parts", List.of(Map.of("text", prompt))
-            )),
-            "generationConfig", Map.of(
-                "temperature", 0.2,
-                "maxOutputTokens", 1000
-            )
-        );
-
+        var payload = mapper.createObjectNode();
+    
+        var contents = mapper.createArrayNode();
+        var user = mapper.createObjectNode();
+        var parts = mapper.createArrayNode();
+        parts.add(mapper.createObjectNode().put("text", prompt));
+        user.set("parts", parts);
+        contents.add(user);
+        payload.set("contents", contents);
+    
+        var genConfig = mapper.createObjectNode();
+        genConfig.put("temperature", 0.2);
+        genConfig.put("maxOutputTokens", 512);
+        payload.set("generationConfig", genConfig);
+    
         return googleWebClient.post()
             .uri(uriBuilder -> uriBuilder
                 .path("/v1beta/models/{model}:generateContent")
                 .queryParam("key", apiKey)
                 .build(model))
+            .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(payload)
             .retrieve()
             .bodyToMono(JsonNode.class)
             .timeout(Duration.ofSeconds(timeoutSeconds))
             .block();
     }
+    
 
-    private List<LabelSuggestionDto> parseResponse(JsonNode response) {
-        try {
-            String text = extractResponseText(response);
-            String jsonArray = extractJsonArray(text);
-            
-            return objectMapper.readValue(jsonArray, 
-                new TypeReference<List<LabelSuggestionDto>>(){});
-                
-        } catch (Exception e) {
-            log.warn("Failed to parse AI response, returning empty list", e);
-            return List.of();
-        }
-    }
-
-    private String extractResponseText(JsonNode response) {
-        return response.path("candidates").get(0)
-            .path("content").path("parts").get(0)
-            .path("text").asText("[]");
+    private String extractResponseText(JsonNode res) {
+        return res.path("candidates").path(0)
+                  .path("content").path("parts").path(0)
+                  .path("text").asText("[]");
     }
 
     private String extractJsonArray(String text) {
-        int start = text.indexOf('[');
-        int end = text.lastIndexOf(']') + 1;
-        
-        if (start >= 0 && end > start) {
-            return text.substring(start, end);
+        int start = text.indexOf('['), end = text.lastIndexOf(']');
+        return (start >= 0 && end > start) ? text.substring(start, end + 1) : "[]";
+    }
+
+    private List<LabelSuggestionDto> parseSuggestions(String jsonArray) {
+        List<LabelSuggestionDto> out = new ArrayList<>();
+        try {
+            JsonNode arr = mapper.readTree(jsonArray);
+            if (arr.isArray()) {
+                for (JsonNode n : arr) {
+                    int label = n.path("label").isInt()
+                        ? n.path("label").asInt()
+                        : tryParseInt(n.path("label").asText());
+                    if (label >= 0) {
+                        double conf = Math.max(0, Math.min(1, n.path("confidence").asDouble(0.5)));
+                        out.add(new LabelSuggestionDto(label, conf));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Parse suggestions failed", e);
         }
-        
-        return "[]";
+        return out;
+    }
+
+    private int tryParseInt(String s) {
+        try { return Integer.parseInt(s.trim()); } catch (Exception e) { return -1; }
     }
 }

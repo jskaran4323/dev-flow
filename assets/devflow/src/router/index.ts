@@ -108,12 +108,6 @@ router.beforeEach((to, from, next) => {
   const auth = useAuthStore()
 
 
-  if (!auth.token && typeof window !== 'undefined') {
-    const storedToken = localStorage.getItem('token')
-    if (storedToken) {
-      auth.initializeAuth()
-    }
-  }
 
   
   if (auth.isAuthenticated && (to.path === '/login' || to.path === '/register')) {
