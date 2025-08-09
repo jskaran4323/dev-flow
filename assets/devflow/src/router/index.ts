@@ -19,7 +19,7 @@ import AdminDashboard from '../pages/AdminDashboard.vue'
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/login', component: Login },
+  { path: '/login', component: Login, name:"Login" },
   { path: '/register', component: Register },
   { path: '/dashboard', component: DashBoard },
   {
