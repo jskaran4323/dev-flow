@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import com.accesscontrol.models.Project;
 import com.accesscontrol.models.User;
 import com.accesscontrol.repositories.ProjectRepository;
 import com.accesscontrol.services.ProjectService;
+import com.accesscontrol.services.ProjectUserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,7 +27,8 @@ public class ProjectController {
 
   @Autowired
   private ProjectService projectService;
-
+ @Autowired
+ private ProjectUserService projectUserService;
   @Autowired
   private ProjectRepository projectRepository;
   @GetMapping("/all-projects")
@@ -72,4 +75,27 @@ public class ProjectController {
     projectService.deleteProject(id);
     return ResponseEntity.noContent().build();
   }
+
+  @GetMapping("/projects/{projectId}")
+public ResponseEntity<ProjectResponse> getProjectDetails(
+    @PathVariable UUID projectId,
+    Authentication authentication
+) {
+  CustomUserDetails currentUser = (CustomUserDetails) authentication.getPrincipal();
+  UUID currentUserId = currentUser.getUser().getId();
+  
+
+    if (!projectUserService.isOwnerOrMember(projectId, currentUserId)) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    Optional<Project> projectOpt = projectRepository.findById(projectId);
+    if (projectOpt.isEmpty()) {
+        return ResponseEntity.notFound().build();
+    }
+    
+    return ResponseEntity.ok(ProjectMapper.toResponse(projectOpt.get()));
+    
+}
+
 }

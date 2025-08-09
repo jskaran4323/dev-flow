@@ -5,14 +5,15 @@ import {
   getProjectById,
   addProject,
   updateProject,
-  deleteProject
+  deleteProject,
+  fetchProjectDetails
 } from '../services/devFlow/project'
 
 export interface Project {
   id: string
   name: string
   description: string
-  status: 'ACTIVE' | 'IN_PROGRESS' | 'COMPLETED'
+  status: string
   createdAt: string
   updatedAt: string
 }
@@ -48,23 +49,24 @@ export const useProjectStore = defineStore('project', {
       }
     },
 
-    async fetchProject(id: string) {
+    async fetchProject(id: string): Promise<Project | null> {
       this.loading = true
       this.error = null
       try {
         const project = await getProjectById(id)
+       
+        
         this.selectedProject = project
-
         const index = this.projects.findIndex(p => p.id === id)
         if (index === -1) {
           this.projects.push(project)
         } else {
           this.projects[index] = project
         }
-
         return project
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Failed to load project'
+        return null
       } finally {
         this.loading = false
       }
@@ -116,8 +118,29 @@ export const useProjectStore = defineStore('project', {
        this.error = err.response?.data?.message || 'Failed to delete project'
        throw err
       }
-     } 
-  },
- 
+     } ,
+  
+  async fetchteamProject(id: string): Promise <Project | null>{
+    this.loading = true
+    this.error = null
+   try{
+    const teamProject = await fetchProjectDetails(id)
+    this.selectedProject = teamProject
+    const index = this.projects.findIndex(p => p.id === id)
+    if (index === -1) {
+      this.projects.push(teamProject)
+    } else {
+      this.projects[index] = teamProject
+    }
+    return teamProject
+  } catch (err: any) {
+    this.error = err.response?.data?.message || 'Failed to load project'
+    return null
+  } finally {
+    this.loading = false
+   
+  }
+  }
 
+},
 })

@@ -5,6 +5,7 @@ export const registerUser = (data: {
   email: string
   password: string
   fullName: string
+  type: number
 
 }) => request.post('/auth/register', data)
 
@@ -13,9 +14,8 @@ export const loginUser = (data: {
   password: string
 }) => request.post('/auth/login', data)
 
-export function getCurrentUser() {
-  const res =  request.get('/auth/me')
-  console.log(res);
+export async function getCurrentUser() {
+  const res =  await request.get('/auth/me')
   return res
    
 } 
@@ -24,3 +24,7 @@ export const addProject = (data:{
     description: string;
     status: number
 }) => request.post('api/projects/register', data)
+
+export const logoutUser = () =>{
+
+}

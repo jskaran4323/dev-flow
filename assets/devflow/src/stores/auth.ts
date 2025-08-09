@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getCurrentUser } from '../services/authRequests'
+import { getCurrentUser, loginUser, logoutUser } from '../services/authRequests'
 
 export interface User {
   userId: string
@@ -11,52 +11,41 @@ export interface User {
 }
 
 export const useAuthStore = defineStore('auth', {
-  state: () => {
-    let initialToken: string | null = null
-    if (typeof window !== 'undefined' && window.localStorage) {
-      initialToken = localStorage.getItem('token')
-    }
-
-    return {
-      token: initialToken,
-      user: null as User | null
-    }
-  },
+  state: () => ({
+    user: null as User | null
+  }),
 
   getters: {
-    isAuthenticated: (state): boolean => !!state.token,
+    isAuthenticated: (state): boolean => !!state.user,
     userId: (state): string | null => state.user?.userId || null
   },
 
   actions: {
-    login(token: string): void {
-      this.token = token
-      localStorage.setItem('token', token)
+    async login(credentials: { identifier: string; password: string }): Promise<User | null> {
+     const user =  await loginUser(credentials)        
+            await this.fetchUser()
+            return user              
     },
 
-    logout(): void {
-      this.token = null
+    async logout(): Promise<void> {
+      await logoutUser()                
       this.user = null
-      localStorage.removeItem('token')
     },
 
-    async fetchUser(): Promise<void> {
-      if (!this.token) return
+    async fetchUser(): Promise<User | null> {
       try {
         const res = await getCurrentUser()
-        
         this.user = res
+        return res
       } catch (err) {
         console.error('Failed to fetch user', err)
-        this.logout()
+        this.user = null
+        return null
       }
     },
 
-    initializeAuth(): void {
-      const storedToken = localStorage.getItem('token')
-      if (storedToken) {
-        this.token = storedToken
-      }
+    async initializeAuth(): Promise<void> {
+      await this.fetchUser()
     }
   }
 })

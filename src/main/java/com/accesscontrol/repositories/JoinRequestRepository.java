@@ -1,13 +1,15 @@
 package com.accesscontrol.repositories;
 
-import com.accesscontrol.models.ProjectJoinRequest;
+import java.util.*;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import com.accesscontrol.models.ProjectJoinRequest;
 
+@Repository
 public interface JoinRequestRepository extends JpaRepository<ProjectJoinRequest, UUID> {
     Optional<ProjectJoinRequest> findByProjectIdAndUserId(UUID projectId, UUID userId);
+    boolean existsByProjectIdAndUserIdAndStatus(UUID projectId, UUID userId, String status);
     List<ProjectJoinRequest> findByProjectIdAndStatus(UUID projectId, String status);
 }

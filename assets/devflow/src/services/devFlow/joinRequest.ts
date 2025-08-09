@@ -11,3 +11,13 @@ export async function fetchJoinRequests(projectId: string) {
   export async function approveJoinRequest(projectId: string, userId: string) {
     return request.post(`/projects/${projectId}/approve-request`, { userId })
   }
+
+
+  export async function checkJoinRequestStatus(projectId: string) {
+    const res = await request.get(`/projects/${projectId}/join-request/status`, {
+      withCredentials: true, 
+    })
+  
+    return res.data.exists 
+  }
+  

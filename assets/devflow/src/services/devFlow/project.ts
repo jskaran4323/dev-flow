@@ -9,6 +9,10 @@ export const getPublicProjects = () => request.get('/all-projects')
 export const getProjectById = (id: string) =>
   request.get(`/projects/${id}`).then(res => res.data)
 
+
+  
+  
+
 export const addProject = (data: {
   name: string
   description: string
@@ -22,3 +26,8 @@ export const updateProject = (id: string, data: {
 }) => request.put(`/projects/${id}`, data).then(res => res.data)
 
 export const deleteProject = (id: string) => request.delete(`/project/delete/${id}`)
+
+
+export async function fetchProjectDetails(projectId: string) {
+  return request.get(`/projects/${projectId}`)
+}

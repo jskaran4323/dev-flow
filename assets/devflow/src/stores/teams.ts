@@ -23,10 +23,11 @@ export const useTeamStore = defineStore('team', {
         this.error = ''
         try {
           const data = await getTeams(projectId)
-          console.log(data);
+         
           
           
           this.members = data
+          return data
         } catch (err: any) {
           this.error = err.message || 'Failed to fetch team'
         } finally {

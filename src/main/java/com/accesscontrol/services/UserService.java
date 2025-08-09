@@ -26,7 +26,16 @@ public class UserService implements UserDetailsService{
         if (userRepository.findByUsername(request.getUsername()).isPresent()){
             throw new RuntimeException("Username already exists");
         }
-              UserType userType = request.getType() != null ? request.getType() : UserType.VIEWER;
+
+        UserType userType = request.getType();
+        if (userType == null) {
+            userType = UserType.VIEWER;
+        }
+        if (userType == UserType.ADMIN || userType == UserType.MANAGER) {
+            throw new IllegalArgumentException("Cannot assign reserved roles.");
+        }
+    
+              
               User user = User.builder()
               .username(request.getUsername()).
               password(passwordEncoder.encode(request.getPassword())).fullname(request.getFullName()).email(request.getEmail()).userType(userType.getValue()).build();
