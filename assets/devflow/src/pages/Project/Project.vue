@@ -60,7 +60,7 @@ const projectStore = useProjectStore()
 const { projects } = storeToRefs(projectStore)
 
 onMounted(async () => {
-  await projectStore.fetchProjects()
+  await projectStore.fetchAllProjects()
 })
 
 const goToProjectDetails = (projectId: string) => {

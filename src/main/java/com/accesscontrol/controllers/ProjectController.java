@@ -97,5 +97,13 @@ public ResponseEntity<ProjectResponse> getProjectDetails(
     return ResponseEntity.ok(ProjectMapper.toResponse(projectOpt.get()));
     
 }
+// ProjectController.java
+@GetMapping("/projects/my")
+public ResponseEntity<List<ProjectResponse>> getMyProjects(Authentication auth) {
+  CustomUserDetails currentUser = (CustomUserDetails) auth.getPrincipal();
+  UUID userId = currentUser.getUser().getId(); 
+    return ResponseEntity.ok(projectService.getMyProjects(userId));
+}
+
 
 }

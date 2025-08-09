@@ -6,7 +6,7 @@ import {
   addProject,
   updateProject,
   deleteProject,
-  fetchProjectDetails
+  fetchProjectDetails,getAllProjects
 } from '../services/devFlow/project'
 
 export interface Project {
@@ -48,7 +48,21 @@ export const useProjectStore = defineStore('project', {
         this.loading = false
       }
     },
-
+    async fetchAllProjects() {
+      this.loading = true
+      this.error = null
+      try {
+        const data = await getAllProjects()
+         console.log(data);
+         
+        
+        this.projects = data
+      } catch (err: any) {
+        this.error = err.response?.data?.message || 'Failed to load projects'
+      } finally {
+        this.loading = false
+      }
+    },
     async fetchProject(id: string): Promise<Project | null> {
       this.loading = true
       this.error = null

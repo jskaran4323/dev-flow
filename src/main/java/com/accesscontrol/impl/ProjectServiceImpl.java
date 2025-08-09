@@ -6,6 +6,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.accesscontrol.dto.response.ProjectResponse;
+import com.accesscontrol.mapper.ProjectMapper;
 import com.accesscontrol.models.Project;
 import com.accesscontrol.repositories.ProjectRepository;
 import com.accesscontrol.services.ProjectService;
@@ -40,6 +43,12 @@ public class ProjectServiceImpl implements ProjectService{
     @Override
     public void deleteProject(UUID id) {
      projectRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ProjectResponse> getMyProjects(UUID userId) {
+List<Project> projects = projectRepository.findOwnedOrMemberProjects(userId);
+    return projects.stream().map(ProjectMapper::toResponse).toList();
     }
     
 }

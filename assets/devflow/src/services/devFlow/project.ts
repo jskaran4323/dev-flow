@@ -4,14 +4,10 @@ export const getProjects = () => request.get('/projects')
 
 export const getPublicProjects = () => request.get('/all-projects')
 
-
-
+export const getAllProjects = ()=> request.get('/projects/my')
 export const getProjectById = (id: string) =>
   request.get(`/projects/${id}`).then(res => res.data)
 
-
-  
-  
 
 export const addProject = (data: {
   name: string

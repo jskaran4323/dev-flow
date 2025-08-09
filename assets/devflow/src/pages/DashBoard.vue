@@ -63,7 +63,7 @@ const publicProjectStore = usePublicProjectStore()
 const authStore = useAuthStore()
 
 onMounted(async () => {
-  await projectStore.fetchProjects()
+  await projectStore.fetchAllProjects()
   await publicProjectStore.fetchProjects()
 })
 
