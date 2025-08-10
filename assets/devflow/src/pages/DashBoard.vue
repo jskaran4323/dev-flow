@@ -1,53 +1,66 @@
 <template>
   <BaseLayout>
-    <div class="container py-5 text-white">
-      <h2 class="mb-4">📊 Dashboard</h2>
+    <!-- Page header -->
+    <section class="py-6">
+      <h2 class="text-2xl font-semibold tracking-tight">📊 Dashboard</h2>
+      <p class="text-sm text-muted-foreground mt-1">Overview of your workspace</p>
+    </section>
 
-      <!-- Metrics -->
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="card bg-secondary shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title">📝 Total Issues</h5>
-              <p class="card-text display-6">{{ totalIssues }}</p>
-            </div>
-          </div>
+    <!-- Metrics -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="card">
+        <div class="flex items-start justify-between">
+          <h5 class="text-sm font-medium text-muted-foreground">📝 Total Issues</h5>
         </div>
-
-        <div class="col-md-4">
-          <div class="card bg-secondary shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title">📦 Projects</h5>
-              <p class="card-text display-6">{{ totalProjects }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card bg-secondary shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title">💬 Comments</h5>
-              <p class="card-text display-6">{{ totalComments }}</p>
-            </div>
-          </div>
-        </div>
+        <p class="mt-3 text-4xl font-semibold">{{ totalIssues }}</p>
       </div>
 
-      <!-- Quick Actions -->
-      <div class="mt-5">
-        <h4 class="mb-3">Quick Actions</h4>
-        <router-link to="/projects" class="btn btn-outline-light me-2">View Projects</router-link>
-        <router-link to="/issues" class="btn btn-outline-light me-2">View Issues</router-link>
-        <router-link to="/select-project?next=create-issue" class="btn btn-success">+ Create Issue</router-link>
+      <div class="card">
+        <div class="flex items-start justify-between">
+          <h5 class="text-sm font-medium text-muted-foreground">📦 Projects</h5>
+        </div>
+        <p class="mt-3 text-4xl font-semibold">{{ totalProjects }}</p>
       </div>
 
-      <!-- Public Projects -->
-      <router-link to="/public-projects" class="btn btn-outline-light mb-3">
-  View All Public Projects
-</router-link>
+      <div class="card">
+        <div class="flex items-start justify-between">
+          <h5 class="text-sm font-medium text-muted-foreground">💬 Comments</h5>
+        </div>
+        <p class="mt-3 text-4xl font-semibold">{{ totalComments }}</p>
+      </div>
+    </section>
 
+    <!-- Quick Actions -->
+    <section class="mt-8">
+      <h4 class="text-lg font-semibold mb-3">Quick Actions</h4>
+      <div class="flex flex-wrap gap-3">
+        <router-link
+          to="/projects"
+          class="inline-flex h-9 items-center rounded-lg border border-border bg-background px-4 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+          >View Projects</router-link
+        >
+        <router-link
+          to="/issues"
+          class="inline-flex h-9 items-center rounded-lg border border-border bg-background px-4 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+          >View Issues</router-link
+        >
+        <router-link
+          to="/select-project?next=create-issue"
+          class="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+          >+ Create Issue</router-link
+        >
+      </div>
+    </section>
 
-    </div>
+    <!-- Public Projects -->
+    <section class="mt-8">
+      <router-link
+        to="/public-projects"
+        class="inline-flex h-9 items-center rounded-lg border border-border bg-background px-4 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+      >
+        View All Public Projects
+      </router-link>
+    </section>
   </BaseLayout>
 </template>
 
@@ -56,19 +69,16 @@ import { computed, onMounted, ref } from 'vue'
 import BaseLayout from '../layouts/BaseLayout.vue'
 import { useProjectStore } from '../stores/project'
 import { usePublicProjectStore } from '../stores/publicProject'
-import { useAuthStore } from '../stores/auth'
 
 const projectStore = useProjectStore()
 const publicProjectStore = usePublicProjectStore()
-
 
 onMounted(async () => {
   await projectStore.fetchAllProjects()
   await publicProjectStore.fetchProjects()
 })
 
-// Dummy values — replace with actual computed values or API result
 const totalProjects = computed(() => projectStore.projects.length)
-const totalIssues = ref(12) 
-const totalComments = ref(27) 
+const totalIssues = ref(12)
+const totalComments = ref(27)
 </script>
