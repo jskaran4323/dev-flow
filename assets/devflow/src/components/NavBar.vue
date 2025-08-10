@@ -10,21 +10,15 @@
       </router-link>
 
       <!-- Desktop Menu -->
-      <div class="hidden md:flex items-center gap-6">
+      <div class="hidden md:flex items-center gap-3">
         <!-- Guest Links -->
         <template v-if="!isAuthenticated">
-          <router-link
-            to="/login"
-            class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-          >
+          <Button as="router-link" :to="'/login'" variant="secondary" size="sm">
             Login
-          </router-link>
-          <router-link
-            to="/register"
-            class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-          >
+          </Button>
+          <Button as="router-link" :to="'/register'" variant="primary" size="sm">
             Register
-          </router-link>
+          </Button>
         </template>
 
         <!-- Authenticated Dropdown -->
@@ -82,6 +76,7 @@ import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+import Button from '../components/ui/Button.vue'
 
 const auth = useAuthStore()
 const { isAuthenticated } = storeToRefs(auth)
@@ -97,11 +92,7 @@ const handleLogout = () => {
 
 <style scoped>
 .fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.15s ease;
-}
+.fade-leave-active { transition: opacity 0.15s ease; }
 .fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
+.fade-leave-to { opacity: 0; }
 </style>
