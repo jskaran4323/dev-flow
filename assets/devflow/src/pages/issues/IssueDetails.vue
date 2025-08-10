@@ -10,11 +10,9 @@
         </p>
 
         <div class="mt-4 flex flex-wrap items-center gap-3 text-sm">
-          <div>
+          <div class="flex items-center gap-2">
             <span class="text-muted-foreground">Status:</span>
-            <span class="inline-flex items-center rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
-              {{ issue.status }}
-            </span>
+            <Badge variant="info" rounded>{{ issue.status }}</Badge>
           </div>
 
           <div>
@@ -31,13 +29,14 @@
       <section class="card">
         <h3 class="text-lg font-medium">🏷️ Labels</h3>
         <div class="mt-3 flex flex-wrap gap-2">
-          <span
+          <Badge
             v-for="label in issue.labels"
             :key="label.id"
-            class="inline-flex items-center rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground"
+            variant="default"
+            rounded
           >
             {{ labelTypeMap[label.type] || 'Unknown' }}
-          </span>
+          </Badge>
         </div>
       </section>
 
@@ -64,18 +63,14 @@
 
         <form @submit.prevent="submitComment" class="mt-4">
           <label class="block text-sm font-medium text-foreground mb-1">Add a comment</label>
-          <textarea
+          <Textarea
             v-model="newComment"
-            rows="3"
+            :rows="3"
             placeholder="Write your comment…"
-            class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          ></textarea>
-          <button
-            type="submit"
-            class="mt-2 inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
-          >
+          />
+          <Button type="submit" variant="primary" class="mt-2">
             Post Comment
-          </button>
+          </Button>
         </form>
       </section>
 
@@ -97,9 +92,7 @@
                 <td class="py-2 pr-4">{{ member.fullName }}</td>
                 <td class="py-2 pr-4 text-muted-foreground">{{ member.username }}</td>
                 <td class="py-2">
-                  <span class="inline-flex items-center rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-foreground">
-                    {{ member.userType }}
-                  </span>
+                  <Badge variant="secondary" rounded>{{ member.userType }}</Badge>
                 </td>
               </tr>
               <tr v-if="team.length === 0">
@@ -122,6 +115,9 @@ import BaseLayout from '../../layouts/BaseLayout.vue'
 import { useIssueStore } from '../../stores/issue'
 import { useCommentStore } from '../../stores/comments'
 import { useTeamStore } from '../../stores/teams'
+import Badge from '../../components/ui/Badge.vue'
+import Textarea from '../../components/ui/Textarea.vue'
+import Button from '../../components/ui/Button.vue'
 
 const route = useRoute()
 const issueId = route.params.id as string
