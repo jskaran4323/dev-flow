@@ -1,11 +1,10 @@
-
 <template>
-  <div class="min-vh-100 bg-dark text-white d-flex flex-column">
+  <div class="min-h-screen bg-background text-foreground flex flex-col">
     <!-- Global Navbar -->
     <NavBar />
 
     <!-- Page Content -->
-    <main class="container flex-grow-1 py-4">
+    <main class="container flex-1 py-6">
       <slot />
     </main>
   </div>
