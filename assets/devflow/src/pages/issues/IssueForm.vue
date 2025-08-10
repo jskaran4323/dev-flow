@@ -6,84 +6,55 @@
     </section>
 
     <!-- Form card -->
-    <form
-      @submit.prevent="handleSubmit"
-      class="card mx-auto max-w-2xl"
-    >
+    <form @submit.prevent="handleSubmit" class="card mx-auto max-w-2xl">
       <!-- Title -->
       <div class="mb-4">
         <label class="block text-sm font-medium mb-1">Title</label>
-        <input
-          v-model="issue.title"
-          type="text"
-          required
-          class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        />
+        <Input v-model="issue.title" type="text" required />
       </div>
 
       <!-- Description -->
       <div class="mb-4">
         <label class="block text-sm font-medium mb-1">Description</label>
-        <textarea
-          v-model="issue.description"
-          rows="4"
-          class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        ></textarea>
+        <Textarea v-model="issue.description" :rows="4" />
       </div>
 
       <!-- Status -->
       <div class="mb-4">
         <label class="block text-sm font-medium mb-1">Status</label>
-        <select
-          v-model="issue.status"
-          class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
+        <Select v-model="issue.status">
           <option :value="IssueStatusType.OPEN">OPEN</option>
           <option :value="IssueStatusType.IN_PROGRESS">IN PROGRESS</option>
           <option :value="IssueStatusType.CLOSED">CLOSED</option>
-        </select>
+        </Select>
       </div>
 
       <!-- Assignee -->
       <div class="mb-4">
         <label class="block text-sm font-medium mb-1">Assignee</label>
-        <select
-          v-model="issue.assigneeId"
-          class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
+        <Select v-model="issue.assigneeId">
           <option disabled value="">Select a user</option>
-          <option
-            v-for="user in assignableUsers"
-            :key="user.userId"
-            :value="user.userId"
-          >
+          <option v-for="user in assignableUsers" :key="user.userId" :value="user.userId">
             {{ user.fullName }}
           </option>
-        </select>
+        </Select>
       </div>
 
       <!-- Labels -->
       <div class="mb-4">
         <label class="block text-sm font-medium">Labels</label>
         <div class="mt-2 rounded-lg border border-input bg-background p-3 max-h-52 overflow-y-auto">
-          <label
+          <Checkbox
             v-for="(labelName, index) in labelTypeMap"
             :key="index"
-            class="mr-4 mb-2 inline-flex items-center gap-2 text-sm"
-          >
-            <input
-              class="h-4 w-4 rounded border-input text-primary focus-visible:ring-ring"
-              type="checkbox"
-              :id="`label-${index}`"
-              :value="index"
-              v-model="issue.labels"
-            />
-            <span>{{ labelName }}</span>
-          </label>
+            v-model="issue.labels"
+            :value="index"
+            :id="`label-${index}`"
+            :label="labelName"
+            class="mr-4 mb-2"
+          />
         </div>
-        <p class="mt-1 text-xs text-muted-foreground">
-          Select one or more labels for this issue
-        </p>
+        <p class="mt-1 text-xs text-muted-foreground">Select one or more labels for this issue</p>
       </div>
 
       <!-- AI Loading -->
@@ -104,18 +75,12 @@
       </div>
 
       <!-- Submit -->
-      <button
-        type="submit"
-        class="w-full inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
-      >
+      <Button type="submit" variant="primary" size="lg" class="w-full">
         Create Issue
-      </button>
+      </Button>
 
       <!-- Error -->
-      <p
-        v-if="errorMessage"
-        class="mt-3 mb-0 text-center text-sm text-destructive"
-      >
+      <p v-if="errorMessage" class="mt-3 mb-0 text-center text-sm text-destructive">
         {{ errorMessage }}
       </p>
     </form>
@@ -129,6 +94,13 @@ import { useIssueStore } from '../../stores/issue'
 import { useTeamStore } from '../../stores/teams'
 import BaseLayout from '../../layouts/BaseLayout.vue'
 import { IssueStatusType } from '../../enums/IssueStatusType'
+
+// UI primitives
+import Input from '../../components/ui/Input.vue'
+import Textarea from '../../components/ui/Textarea.vue'
+import Select from '../../components/ui/Select.vue'
+import Checkbox from '../../components/ui/Checkbox.vue'
+import Button from '../../components/ui/Button.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -172,10 +144,7 @@ let aiSuggestionTimer: ReturnType<typeof setTimeout> | null = null
 watch(
   () => [issue.title, issue.description],
   async ([title, description]) => {
-    if (aiSuggestionTimer) {
-      clearTimeout(aiSuggestionTimer)
-    }
-
+    if (aiSuggestionTimer) clearTimeout(aiSuggestionTimer)
     if (title.length > 15 || description.length > 25) {
       aiSuggestionTimer = setTimeout(async () => {
         await issueStore.fetchAISuggestions(title, description)
