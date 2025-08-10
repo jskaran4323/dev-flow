@@ -3,61 +3,64 @@
     <!-- Header -->
     <section class="py-6">
       <h2 class="text-2xl font-semibold tracking-tight">🌍 Public Projects</h2>
-      <p class="text-sm text-muted-foreground mt-1">
-        Discover projects you can explore and join
-      </p>
     </section>
 
     <!-- Loading -->
-    <section v-if="publicProjectStore.loading" class="py-10">
-      <p class="text-sm text-muted-foreground">Loading public projects...</p>
+    <section v-if="publicProjectStore.loading" class="py-10 flex items-center gap-3">
+      <Spinner />
+      <span class="text-sm text-muted-foreground">Loading public projects…</span>
     </section>
 
     <!-- Empty -->
-    <section v-else-if="filteredProjects.length === 0" class="py-10">
-      <div class="card">
+    <section v-else-if="filteredProjects.length === 0" class="py-6">
+      <Card>
         <h3 class="text-lg font-medium">No public projects available</h3>
         <p class="text-sm text-muted-foreground mt-1">
-          Check back later or create a project and make it public.
+          Check back later for new projects from other users.
         </p>
-      </div>
+      </Card>
     </section>
 
     <!-- Grid -->
-    <section v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <article
+    <section v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <Card
         v-for="project in filteredProjects"
         :key="project.id"
-        class="card h-full flex flex-col"
+        class="h-full flex flex-col"
       >
-        <header>
-          <h3 class="text-lg font-semibold">{{ project.name }}</h3>
-          <p class="text-sm text-muted-foreground mt-1 line-clamp-3">
-            {{ project.description }}
-          </p>
-        </header>
+        <h3 class="text-lg font-semibold">{{ project.name }}</h3>
+        <p class="mt-2 text-sm text-muted-foreground line-clamp-3">
+          {{ project.description }}
+        </p>
+        <p class="mt-3 text-xs text-muted-foreground">
+          by <span class="font-medium text-foreground">{{ project.owner.fullName || project.owner.username }}</span>
+        </p>
 
-        <footer class="mt-4 flex items-center justify-between">
-          <div class="text-xs text-muted-foreground">
-            by <span class="font-medium text-foreground">{{ project.owner.username }}</span>
+        <template #footer>
+          <div class="pt-4 flex justify-end">
+            <Button
+              as="router-link"
+              :to="`/projects/${project.id}`"
+              variant="secondary"
+              size="sm"
+            >
+              View Details
+            </Button>
           </div>
-          <router-link
-            :to="`/projects/${project.id}`"
-            class="inline-flex h-9 items-center rounded-lg border border-border bg-background px-3 text-sm font-medium hover:bg-muted transition-colors"
-          >
-            View Details
-          </router-link>
-        </footer>
-      </article>
+        </template>
+      </Card>
     </section>
   </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
+import BaseLayout from '../../layouts/BaseLayout.vue'
 import { usePublicProjectStore } from '../../stores/publicProject'
 import { useAuthStore } from '../../stores/auth'
-import BaseLayout from '../../layouts/BaseLayout.vue'
+import Card from '../../components/ui/Card.vue'
+import Button from '../../components/ui/Button.vue'
+import Spinner from '../../components/ui/Spinner.vue'
 
 const publicProjectStore = usePublicProjectStore()
 const authStore = useAuthStore()
@@ -69,7 +72,7 @@ onMounted(() => {
 const filteredProjects = computed(() => {
   const currentUsername = authStore.user?.username
   return publicProjectStore.publicProjects.filter(
-    (project) => project.owner.username !== currentUsername
+    (p) => p.owner.username !== currentUsername
   )
 })
 </script>
