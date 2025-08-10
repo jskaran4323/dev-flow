@@ -9,34 +9,29 @@
           <!-- Username / Email -->
           <div>
             <label for="identifier" class="block text-sm font-medium mb-1">Username or Email</label>
-            <input
+            <Input
               v-model="identifier"
               id="identifier"
               type="text"
               required
-              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
           <!-- Password -->
           <div>
             <label for="password" class="block text-sm font-medium mb-1">Password</label>
-            <input
+            <Input
               v-model="password"
               id="password"
               type="password"
               required
-              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
           <!-- Submit -->
-          <button
-            type="submit"
-            class="w-full inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
-          >
+          <Button type="submit" variant="primary" size="lg" class="w-full">
             Login
-          </button>
+          </Button>
 
           <!-- Error -->
           <p v-if="errorMessage" class="text-sm text-destructive">
@@ -61,6 +56,8 @@ import BaseLayout from '../layouts/BaseLayout.vue'
 import { useRouter } from 'vue-router'
 import { loginUser } from '../services/authRequests'
 import { useAuthStore } from '../stores/auth'
+import Input from '../components/ui/Input.vue'
+import Button from '../components/ui/Button.vue'
 
 const identifier = ref('')
 const password = ref('')
