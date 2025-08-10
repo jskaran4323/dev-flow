@@ -9,73 +9,42 @@
           <!-- Full Name -->
           <div>
             <label for="fullName" class="block text-sm font-medium mb-1">Full Name</label>
-            <input
-              v-model="fullName"
-              id="fullName"
-              type="text"
-              required
-              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
+            <Input id="fullName" v-model="fullName" type="text" required />
           </div>
 
           <!-- Username -->
           <div>
             <label for="username" class="block text-sm font-medium mb-1">Username</label>
-            <input
-              v-model="username"
-              id="username"
-              type="text"
-              required
-              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
+            <Input id="username" v-model="username" type="text" required />
           </div>
 
           <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium mb-1">Email</label>
-            <input
-              v-model="email"
-              id="email"
-              type="email"
-              required
-              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
+            <Input id="email" v-model="email" type="email" required />
           </div>
 
           <!-- Password -->
           <div>
             <label for="password" class="block text-sm font-medium mb-1">Password</label>
-            <input
-              v-model="password"
-              id="password"
-              type="password"
-              required
-              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
+            <Input id="password" v-model="password" type="password" required />
           </div>
 
           <!-- Role -->
           <div>
             <label for="role" class="block text-sm font-medium mb-1">Role</label>
-            <select
-              v-model="role"
+            <Select
               id="role"
+              v-model="role"
+              :options="roleOptions"
               required
-              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <option :value="2">Developer</option>
-              <option :value="3">Tester</option>
-              <option :value="4">Viewer</option>
-            </select>
+            />
           </div>
 
           <!-- Submit -->
-          <button
-            type="submit"
-            class="w-full inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
-          >
+          <Button type="submit" variant="primary" size="lg" class="w-full">
             Register
-          </button>
+          </Button>
 
           <!-- Error -->
           <p v-if="errorMessage" class="text-sm text-destructive">
@@ -96,18 +65,28 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import BaseLayout from '../layouts/BaseLayout.vue'
 import { useRouter } from 'vue-router'
 import { registerUser } from '../services/authRequests'
-import BaseLayout from '../layouts/BaseLayout.vue'
+import Input from '../components/ui/Input.vue'
+import Select from '../components/ui/Select.vue'
+import Button from '../components/ui/Button.vue'
 
 const fullName = ref('')
 const username = ref('')
 const email = ref('')
 const password = ref('')
-const role = ref(4) // default = Viewer
+// Select emits strings; allow string|number here, coerce before submit
+const role = ref<string | number>(4)
 
 const errorMessage = ref('')
 const router = useRouter()
+
+const roleOptions = [
+  { label: 'Developer', value: 2 },
+  { label: 'Tester', value: 3 },
+  { label: 'Viewer', value: 4 },
+]
 
 const handleRegister = async () => {
   try {
@@ -116,7 +95,7 @@ const handleRegister = async () => {
       username: username.value,
       email: email.value,
       password: password.value,
-      type: role.value
+      type: Number(role.value), // ensure backend gets a number
     })
     router.push('/login')
   } catch (error: any) {
