@@ -1,42 +1,96 @@
 <!-- src/pages/Register.vue -->
 <template>
   <BaseLayout>
-    <div class="min-vh-100 d-flex align-items-center justify-content-center bg-dark text-white">
-      <div class="card bg-secondary text-white p-4 shadow-lg" style="min-width: 350px; max-width: 400px;">
-        <h2 class="text-center mb-4">📝 Register for DevFlow</h2>
-        <form @submit.prevent="handleRegister">
-          <div class="mb-3">
-            <label for="fullName" class="form-label">Full Name</label>
-            <input v-model="fullName" type="text" class="form-control" id="fullName" required />
+    <section class="py-12 flex items-center justify-center">
+      <div class="card w-full max-w-sm">
+        <h2 class="text-center text-2xl font-semibold tracking-tight">📝 Register for DevFlow</h2>
+
+        <form @submit.prevent="handleRegister" class="mt-6 space-y-4">
+          <!-- Full Name -->
+          <div>
+            <label for="fullName" class="block text-sm font-medium mb-1">Full Name</label>
+            <input
+              v-model="fullName"
+              id="fullName"
+              type="text"
+              required
+              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
           </div>
-          <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input v-model="username" type="text" class="form-control" id="username" required />
+
+          <!-- Username -->
+          <div>
+            <label for="username" class="block text-sm font-medium mb-1">Username</label>
+            <input
+              v-model="username"
+              id="username"
+              type="text"
+              required
+              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
           </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input v-model="email" type="email" class="form-control" id="email" required />
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-medium mb-1">Email</label>
+            <input
+              v-model="email"
+              id="email"
+              type="email"
+              required
+              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
           </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input v-model="password" type="password" class="form-control" id="password" required />
+
+          <!-- Password -->
+          <div>
+            <label for="password" class="block text-sm font-medium mb-1">Password</label>
+            <input
+              v-model="password"
+              id="password"
+              type="password"
+              required
+              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
           </div>
-          <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select v-model="role" class="form-select" required>
+
+          <!-- Role -->
+          <div>
+            <label for="role" class="block text-sm font-medium mb-1">Role</label>
+            <select
+              v-model="role"
+              id="role"
+              required
+              class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               <option :value="2">Developer</option>
               <option :value="3">Tester</option>
               <option :value="4">Viewer</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-primary w-100">Register</button>
+
+          <!-- Submit -->
+          <button
+            type="submit"
+            class="w-full inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+          >
+            Register
+          </button>
+
+          <!-- Error -->
+          <p v-if="errorMessage" class="text-sm text-destructive">
+            {{ errorMessage }}
+          </p>
         </form>
-        <p class="mt-3 text-center text-muted">
+
+        <p class="mt-4 text-center text-sm text-muted-foreground">
           Already have an account?
-          <router-link to="/login" class="text-white text-decoration-underline">Login here</router-link>
+          <router-link to="/login" class="font-medium text-foreground hover:text-primary transition-colors">
+            Login here
+          </router-link>
         </p>
       </div>
-    </div>
+    </section>
   </BaseLayout>
 </template>
 
@@ -44,6 +98,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { registerUser } from '../services/authRequests'
+import BaseLayout from '../layouts/BaseLayout.vue'
 
 const fullName = ref('')
 const username = ref('')
