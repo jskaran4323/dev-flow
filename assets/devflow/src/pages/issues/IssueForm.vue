@@ -1,104 +1,124 @@
 <template>
   <BaseLayout>
-    <div class="container py-5 text-white">
-      <h2 class="mb-4 text-center">📜 Create New Issue</h2>
+    <!-- Page title -->
+    <section class="py-6 text-center">
+      <h2 class="text-2xl font-semibold tracking-tight">📜 Create New Issue</h2>
+    </section>
 
-      <form
-        @submit.prevent="handleSubmit"
-        class="card bg-secondary text-white p-4 shadow-sm mx-auto"
-        style="max-width: 700px;"
-      >
-        <!-- Title -->
-        <div class="mb-3">
-          <label class="form-label">Title</label>
-          <input v-model="issue.title" type="text" class="form-control" required />
-        </div>
+    <!-- Form card -->
+    <form
+      @submit.prevent="handleSubmit"
+      class="card mx-auto max-w-2xl"
+    >
+      <!-- Title -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Title</label>
+        <input
+          v-model="issue.title"
+          type="text"
+          required
+          class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        />
+      </div>
 
-        <!-- Description -->
-        <div class="mb-3">
-          <label class="form-label">Description</label>
-          <textarea v-model="issue.description" class="form-control" rows="4"></textarea>
-        </div>
+      <!-- Description -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Description</label>
+        <textarea
+          v-model="issue.description"
+          rows="4"
+          class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        ></textarea>
+      </div>
 
-        <!-- Status -->
-        <div class="mb-3">
-          <label class="form-label">Status</label>
-          <select v-model="issue.status" class="form-select">
-            <option :value="IssueStatusType.OPEN">OPEN</option>
-            <option :value="IssueStatusType.IN_PROGRESS">IN PROGRESS</option>
-            <option :value="IssueStatusType.CLOSED">CLOSED</option>
-          </select>
-        </div>
+      <!-- Status -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Status</label>
+        <select
+          v-model="issue.status"
+          class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <option :value="IssueStatusType.OPEN">OPEN</option>
+          <option :value="IssueStatusType.IN_PROGRESS">IN PROGRESS</option>
+          <option :value="IssueStatusType.CLOSED">CLOSED</option>
+        </select>
+      </div>
 
-        <!-- Assignee -->
-        <div class="mb-3">
-          <label class="form-label">Assignee</label>
-          <select v-model="issue.assigneeId" class="form-select">
-            <option disabled value="">Select a user</option>
-            <option
-              v-for="user in assignableUsers"
-              :key="user.userId"
-              :value="user.userId"
-            >
-              {{ user.fullName }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Labels -->
-        <div class="mb-3">
-          <label class="form-label">Labels</label>
-          <div
-            class="border rounded bg-dark p-3"
-            style="max-height: 200px; overflow-y: auto;"
+      <!-- Assignee -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">Assignee</label>
+        <select
+          v-model="issue.assigneeId"
+          class="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <option disabled value="">Select a user</option>
+          <option
+            v-for="user in assignableUsers"
+            :key="user.userId"
+            :value="user.userId"
           >
-            <div
-              v-for="(labelName, index) in labelTypeMap"
-              :key="index"
-              class="form-check form-check-inline"
-            >
-              <input
-                class="form-check-input"
-                type="checkbox"
-                :id="`label-${index}`"
-                :value="index"
-                v-model="issue.labels"
-              />
-              <label class="form-check-label" :for="`label-${index}`">
-                {{ labelName }}
-              </label>
-            </div>
-          </div>
-          <small class="form-text text-light">Select one or more labels for this issue</small>
-        </div>
+            {{ user.fullName }}
+          </option>
+        </select>
+      </div>
 
-        <!-- Suggested Labels -->
-        <div v-if="aiLoading" class="alert alert-warning py-2">
-  🤖 Getting AI label suggestions...
-</div>
-
-        <div v-if="suggestedLabels.length > 0" class="alert alert-info">
-          Suggested:
-          <span
-            v-for="type in suggestedLabels"
-            :key="type"
-            class="badge bg-primary mx-1"
+      <!-- Labels -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium">Labels</label>
+        <div class="mt-2 rounded-lg border border-input bg-background p-3 max-h-52 overflow-y-auto">
+          <label
+            v-for="(labelName, index) in labelTypeMap"
+            :key="index"
+            class="mr-4 mb-2 inline-flex items-center gap-2 text-sm"
           >
-            {{ labelTypeMap[type] }}
-          </span>
+            <input
+              class="h-4 w-4 rounded border-input text-primary focus-visible:ring-ring"
+              type="checkbox"
+              :id="`label-${index}`"
+              :value="index"
+              v-model="issue.labels"
+            />
+            <span>{{ labelName }}</span>
+          </label>
         </div>
-
-        <!-- Submit -->
-        <button type="submit" class="btn btn-success w-100">
-          Create Issue
-        </button>
-
-        <!-- Error -->
-        <p class="text-danger mt-3 mb-0 text-center" v-if="errorMessage">
-          {{ errorMessage }}
+        <p class="mt-1 text-xs text-muted-foreground">
+          Select one or more labels for this issue
         </p>
-      </form>
-    </div>
+      </div>
+
+      <!-- AI Loading -->
+      <div v-if="aiLoading" class="mb-4 rounded-lg border border-border bg-muted px-3 py-2 text-sm">
+        🤖 Getting AI label suggestions...
+      </div>
+
+      <!-- Suggested Labels -->
+      <div v-if="suggestedLabels.length > 0" class="mb-4 rounded-lg border border-border bg-muted px-3 py-2 text-sm">
+        <span class="mr-2">Suggested:</span>
+        <span
+          v-for="type in suggestedLabels"
+          :key="type"
+          class="inline-flex items-center rounded-full bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground mr-2"
+        >
+          {{ labelTypeMap[type] }}
+        </span>
+      </div>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="w-full inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+      >
+        Create Issue
+      </button>
+
+      <!-- Error -->
+      <p
+        v-if="errorMessage"
+        class="mt-3 mb-0 text-center text-sm text-destructive"
+      >
+        {{ errorMessage }}
+      </p>
+    </form>
   </BaseLayout>
 </template>
 
@@ -113,7 +133,7 @@ import { IssueStatusType } from '../../enums/IssueStatusType'
 const route = useRoute()
 const router = useRouter()
 const projectId = route.params.projectId as string
-const aiLoading = ref(false) 
+const aiLoading = ref(false)
 const issueStore = useIssueStore()
 const teamStore = useTeamStore()
 
@@ -152,17 +172,15 @@ let aiSuggestionTimer: ReturnType<typeof setTimeout> | null = null
 watch(
   () => [issue.title, issue.description],
   async ([title, description]) => {
-   
     if (aiSuggestionTimer) {
       clearTimeout(aiSuggestionTimer)
     }
 
-   
     if (title.length > 15 || description.length > 25) {
       aiSuggestionTimer = setTimeout(async () => {
         await issueStore.fetchAISuggestions(title, description)
         issue.labels = [...issueStore.suggestedLabels]
-      }, 10000) 
+      }, 10000)
     }
   },
   { immediate: false }
