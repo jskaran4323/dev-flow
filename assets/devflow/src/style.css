@@ -1,9 +1,9 @@
+@import './styles/tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Import theme tokens */
-@import './styles/tokens.css';
 
 /* Base layer: minimal global styles */
 @layer base {
