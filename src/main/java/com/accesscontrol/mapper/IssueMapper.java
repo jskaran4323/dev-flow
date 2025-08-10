@@ -35,6 +35,17 @@ public class IssueMapper {
                 userTypeEnum
             );
         }
+
+        ProjectResponse projectResponse = null;
+if (issue.getProject() != null) {
+    projectResponse = new ProjectResponse(
+         issue.getProject().getId(),
+         issue.getProject().getName(),
+         issue.getProject().getDescription(),
+         toProjectUserResponse(issue.getProject().getOwner())
+    );
+}
+        
                           
         return new IssueResponse(
             issue.getId(),
@@ -43,9 +54,21 @@ public class IssueMapper {
             issue.getStatus(),
             labelDtos,
             commentDtos,
-            assigneeResponse,  // Add assignee to response
+            assigneeResponse,
+            projectResponse,  // Add assignee to response
             issue.getCreatedAt(),
             issue.getUpdatedAt()
         );
+        
     }
+    private static ProjectUserResponse toProjectUserResponse(User owner) {
+        if (owner == null) return null;
+        return new ProjectUserResponse(
+            owner.getId(),
+            owner.getFullname(),
+            owner.getUsername(),
+            owner.getUserTypeEnum()
+        );
+    }
+
 }

@@ -18,7 +18,7 @@ export interface Issue {
         fullName: string,
         userType: string
     },
-    labels: Label[]
+    labels: Label[],
     project: {
         id: string
         name: string
@@ -61,6 +61,8 @@ export const useIssueStore = defineStore('issue', {
             this.error = null
             try {
                 const data = await getIssueById(id)
+                console.log(data);
+                
                 this.selectedIssue = data
                 const index = this.issues.findIndex(p => p.id === id)
                 if (index === -1) {

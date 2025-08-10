@@ -1,6 +1,7 @@
 package com.accesscontrol.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import com.accesscontrol.dto.LabelDto;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class IssueResponse {
     private UUID id;
     private String title;
@@ -21,7 +23,8 @@ public class IssueResponse {
     private int status;
     private List<LabelDto> labels;
     private List<CommentDto> comments;
-    private ProjectUserResponse assignee;  // ADD THIS FIELD
+    private ProjectUserResponse assignee; 
+    private ProjectResponse project; 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

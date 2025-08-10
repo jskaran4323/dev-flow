@@ -147,8 +147,12 @@
     return new Date(dateString).toLocaleDateString()
   }
   
-  const navigateToIssue = (issueId: string) => {
-    router.push(`/issues/${issueId}`)
-  }
+  const navigateToIssue = (issueId: string, projectId: string) => {
+  router.push({ 
+    name: 'IssueDetails', 
+    params: { id: issueId },
+    query: { projectId } 
+  })
+}
   </script>
   
