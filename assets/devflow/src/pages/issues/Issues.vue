@@ -7,12 +7,9 @@
         <p class="text-sm text-muted-foreground mt-1">All issues in this project</p>
       </div>
 
-      <button
-        class="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
-        @click="goToCreateIssue"
-      >
+      <Button variant="primary" size="md" @click="goToCreateIssue">
         + New Issue
-      </button>
+      </Button>
     </section>
 
     <!-- Empty State -->
@@ -23,12 +20,9 @@
           Start by creating a new one.
         </p>
         <div class="mt-4">
-          <button
-            class="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
-            @click="goToCreateIssue"
-          >
+          <Button variant="primary" size="md" @click="goToCreateIssue">
             + Create Issue
-          </button>
+          </Button>
         </div>
       </div>
     </section>
@@ -43,10 +37,7 @@
         <div class="flex-1">
           <!-- Title -->
           <h3 class="text-lg font-semibold">
-            <router-link
-              :to="`/issues/${issue.id}`"
-              class="hover:underline"
-            >
+            <router-link :to="`/issues/${issue.id}`" class="hover:underline">
               {{ issue.title }}
             </router-link>
           </h3>
@@ -69,13 +60,14 @@
           <div class="mt-3">
             <span class="text-sm text-muted-foreground">🏷️ Labels:</span>
             <div class="mt-2 flex flex-wrap gap-2">
-              <span
+              <Badge
                 v-for="label in issue.labels"
                 :key="label.id"
-                class="inline-flex items-center rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground"
+                variant="default"
+                rounded
               >
                 {{ label.type }}
-              </span>
+              </Badge>
             </div>
           </div>
 
@@ -94,12 +86,14 @@
           >
             ✏️ Edit
           </router-link>
-          <button
-            class="inline-flex h-8 items-center rounded-lg border border-destructive/20 text-destructive px-3 text-sm font-medium hover:bg-destructive/10 transition-colors"
+
+          <Button
+            variant="destructive"
+            size="sm"
             @click="deleteIssue(issue.id)"
           >
             🗑️ Delete
-          </button>
+          </Button>
         </div>
       </article>
     </section>
@@ -109,8 +103,10 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useIssueStore } from '../../stores/issue'
 import BaseLayout from '../../layouts/BaseLayout.vue'
+import { useIssueStore } from '../../stores/issue'
+import Button from '../../components/ui/Button.vue'
+import Badge from '../../components/ui/Badge.vue'
 
 const route = useRoute()
 const router = useRouter()
