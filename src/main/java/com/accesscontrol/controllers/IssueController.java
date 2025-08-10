@@ -53,7 +53,7 @@ public class IssueController {
             assignee = assigneeOpt.get();
         } else {
             CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
-            assignee = userDetails.getUser(); // ✅ Extract the actual User object
+            assignee = userDetails.getUser(); 
         }
     
     

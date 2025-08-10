@@ -148,7 +148,7 @@
   }
   
   const navigateToIssue = (issueId: string) => {
-    router.push(`/projects/${projectId}/issues/${issueId}`)
+    router.push(`/issues/${issueId}`)
   }
   </script>
   

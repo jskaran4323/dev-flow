@@ -23,8 +23,7 @@ export const addProject = (data:{
     name: string;
     description: string;
     status: number
-}) => request.post('api/projects/register', data)
+}) => request.post('/projects/register', data)
 
-export const logoutUser = () =>{
-
-}
+export const logoutUser = () =>
+  request.post('/auth/logout')
