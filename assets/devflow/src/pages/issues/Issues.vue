@@ -81,7 +81,7 @@
         <!-- Footer Actions -->
         <div class="mt-4 pt-4 border-t border-border flex items-center justify-between">
           <router-link
-            :to="`/issues/${issue.id}/edit`"
+            :to="`/projects/${projectId}/issues/${issue.id}/edit`"
             class="inline-flex h-8 items-center rounded-lg border border-border bg-background px-3 text-sm font-medium hover:bg-muted transition-colors"
           >
             ✏️ Edit
