@@ -1,58 +1,92 @@
 <!-- src/pages/Register.vue -->
 <template>
   <BaseLayout>
-    <div class="min-vh-100 d-flex align-items-center justify-content-center bg-dark text-white">
-      <div class="card bg-secondary text-white p-4 shadow-lg" style="min-width: 350px; max-width: 400px;">
-        <h2 class="text-center mb-4">📝 Register for DevFlow</h2>
-        <form @submit.prevent="handleRegister">
-          <div class="mb-3">
-            <label for="fullName" class="form-label">Full Name</label>
-            <input v-model="fullName" type="text" class="form-control" id="fullName" required />
+    <section class="py-12 flex items-center justify-center">
+      <div class="card w-full max-w-sm">
+        <h2 class="text-center text-2xl font-semibold tracking-tight">📝 Register for DevFlow</h2>
+
+        <form @submit.prevent="handleRegister" class="mt-6 space-y-4">
+          <!-- Full Name -->
+          <div>
+            <label for="fullName" class="block text-sm font-medium mb-1">Full Name</label>
+            <Input id="fullName" v-model="fullName" type="text" required />
           </div>
-          <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input v-model="username" type="text" class="form-control" id="username" required />
+
+          <!-- Username -->
+          <div>
+            <label for="username" class="block text-sm font-medium mb-1">Username</label>
+            <Input id="username" v-model="username" type="text" required />
           </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input v-model="email" type="email" class="form-control" id="email" required />
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-medium mb-1">Email</label>
+            <Input id="email" v-model="email" type="email" required />
           </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input v-model="password" type="password" class="form-control" id="password" required />
+
+          <!-- Password -->
+          <div>
+            <label for="password" class="block text-sm font-medium mb-1">Password</label>
+            <Input id="password" v-model="password" type="password" required />
           </div>
-          <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
-            <select v-model="role" class="form-select" required>
-              <option :value="2">Developer</option>
-              <option :value="3">Tester</option>
-              <option :value="4">Viewer</option>
-            </select>
+
+          <!-- Role -->
+          <div>
+            <label for="role" class="block text-sm font-medium mb-1">Role</label>
+            <Select
+              id="role"
+              v-model="role"
+              :options="roleOptions"
+              required
+            />
           </div>
-          <button type="submit" class="btn btn-primary w-100">Register</button>
+
+          <!-- Submit -->
+          <Button type="submit" variant="primary" size="lg" class="w-full">
+            Register
+          </Button>
+
+          <!-- Error -->
+          <p v-if="errorMessage" class="text-sm text-destructive">
+            {{ errorMessage }}
+          </p>
         </form>
-        <p class="mt-3 text-center text-muted">
+
+        <p class="mt-4 text-center text-sm text-muted-foreground">
           Already have an account?
-          <router-link to="/login" class="text-white text-decoration-underline">Login here</router-link>
+          <router-link to="/login" class="font-medium text-foreground hover:text-primary transition-colors">
+            Login here
+          </router-link>
         </p>
       </div>
-    </div>
+    </section>
   </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import BaseLayout from '../layouts/BaseLayout.vue'
 import { useRouter } from 'vue-router'
 import { registerUser } from '../services/authRequests'
+import Input from '../components/ui/Input.vue'
+import Select from '../components/ui/Select.vue'
+import Button from '../components/ui/Button.vue'
 
 const fullName = ref('')
 const username = ref('')
 const email = ref('')
 const password = ref('')
-const role = ref(4) // default = Viewer
+// Select emits strings; allow string|number here, coerce before submit
+const role = ref<string | number>(4)
 
 const errorMessage = ref('')
 const router = useRouter()
+
+const roleOptions = [
+  { label: 'Developer', value: 2 },
+  { label: 'Tester', value: 3 },
+  { label: 'Viewer', value: 4 },
+]
 
 const handleRegister = async () => {
   try {
@@ -61,7 +95,7 @@ const handleRegister = async () => {
       username: username.value,
       email: email.value,
       password: password.value,
-      type: role.value
+      type: Number(role.value), // ensure backend gets a number
     })
     router.push('/login')
   } catch (error: any) {

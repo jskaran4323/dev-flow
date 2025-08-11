@@ -1,0 +1,93 @@
+/* src/styles/tokens.css */
+
+/* 
+Design Tokens
+- Light/Dark palettes via CSS variables
+- Tailwind reads these through tailwind.config.js (hsl(var(--token)))
+- Keep values minimal & neutral-friendly
+*/
+
+:root {
+  /* Base */
+  --background: 0 0% 100%;
+  --foreground: 222.2 47.4% 11.2%;
+
+  /* Surfaces */
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 47.4% 11.2%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 47.4% 11.2%;
+
+  /* Brand (purple) */
+  --primary: 252 82% 55%;
+  --primary-foreground: 0 0% 100%;
+
+  /* Secondary (subtle gray) */
+  --secondary: 220 14.3% 95.9%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  /* Accent (used for small highlights like pills) */
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+
+  /* Feedback */
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 152 59% 48%;
+  --warning: 43 89% 55%;
+  --info: 210 90% 56%;
+
+  /* UI */
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 252 82% 55%;
+
+  /* Radius */
+  --radius: 12px;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+
+  --card: 222.2 84% 5.5%;
+  --card-foreground: 210 40% 98%;
+
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --popover: 222.2 84% 5.5%;
+  --popover-foreground: 210 40% 98%;
+
+  --primary: 252 82% 65%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 96%;
+
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 96%;
+
+  --destructive: 0 63% 45%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 152 59% 48%;
+  --warning: 43 89% 55%;
+  --info: 210 90% 60%;
+
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 252 82% 65%;
+}
+
+/* Utility tokens for text colors on demand */
+:root, .dark {
+  --success-foreground: 0 0% 100%;
+  --warning-foreground: 24 100% 10%;
+  --info-foreground: 0 0% 100%;
+}

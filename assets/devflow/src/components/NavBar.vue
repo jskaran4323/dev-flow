@@ -1,59 +1,133 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary shadow-sm">
-    <div class="container">
-      <router-link class="navbar-brand fw-bold text-white" to="/">DevFlow</router-link>
+  <nav class="bg-background border-b border-border shadow-sm">
+    <div class="container flex h-14 items-center justify-between">
+      <!-- Brand: Bigger wordmark -->
+      <router-link to="/" class="flex items-center gap-2" aria-label="DevFlow Home">
+        <span class="text-3xl font-extrabold tracking-tight text-foreground">
+          Dev<span class="text-primary">Flow</span>
+        </span>
+      </router-link>
 
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-          <!-- Guest Links -->
-          <li class="nav-item" v-if="!isAuthenticated">
-            <router-link class="nav-link" to="/login">Login</router-link>
-          </li>
-          <li class="nav-item" v-if="!isAuthenticated">
-            <router-link class="nav-link" to="/register">Register</router-link>
-          </li>
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center gap-6">
+        <router-link
+          to="/about"
+          class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          About
+        </router-link>
+        <router-link
+          to="/team"
+          class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          Team
+        </router-link>
 
-          <!-- Authenticated Dropdown -->
-          <li class="nav-item dropdown" v-if="isAuthenticated">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
+        <!-- Guest -->
+        <template v-if="!isAuthenticated">
+          <router-link
+            to="/login"
+            class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
+            Login
+          </router-link>
+          <router-link
+            to="/register"
+            class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
+            Register
+          </router-link>
+        </template>
+
+        <!-- Authenticated -->
+        <div class="relative" ref="menuRef">
+          <button
+            ref="buttonRef"
+            @click="toggleDropdown"
+            @keydown.escape="closeDropdown"
+            class="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-2 py-1"
+            aria-haspopup="menu"
+            :aria-expanded="dropdownOpen"
+          >
+            👤 Account
+            <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': dropdownOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <transition name="fade">
+            <!-- Solid background dropdown -->
+            <ul
+              v-if="dropdownOpen"
+              class="absolute right-0 mt-2 w-44 rounded-md border border-border bg-background shadow-soft p-1"
+              role="menu"
             >
-              👤 Account
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary shadow">
               <li>
-                <router-link class="dropdown-item text-white" to="/profile">Profile</router-link>
+                <router-link
+                  to="/profile"
+                  class="block w-full rounded-sm px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                  role="menuitem"
+                  @click="closeDropdown"
+                >
+                  Profile
+                </router-link>
               </li>
+              <li><div class="my-1 border-t border-border"></div></li>
               <li>
-                <hr class="dropdown-divider border-secondary" />
-              </li>
-              <li>
-                <a class="dropdown-item text-danger" href="#" @click.prevent="handleLogout">Logout</a>
+                <button
+                  @click.prevent="handleLogout"
+                  class="block w-full rounded-sm px-3 py-2 text-sm text-destructive hover:bg-muted transition-colors text-left"
+                  role="menuitem"
+                >
+                  Logout
+                </button>
               </li>
             </ul>
-          </li>
-        </ul>
+          </transition>
+        </div>
       </div>
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 
 const auth = useAuthStore()
-
 const { isAuthenticated } = storeToRefs(auth)
 const router = useRouter()
 
+const dropdownOpen = ref(false)
+const menuRef = ref<HTMLElement | null>(null)
+const buttonRef = ref<HTMLElement | null>(null)
+
+const toggleDropdown = () => (dropdownOpen.value = !dropdownOpen.value)
+const closeDropdown = () => (dropdownOpen.value = false)
+
+const onClickOutside = (e: MouseEvent) => {
+  const t = e.target as Node
+  if (!menuRef.value) return
+  if (!menuRef.value.contains(t) && buttonRef.value && !buttonRef.value.contains(t)) {
+    dropdownOpen.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('click', onClickOutside))
+onBeforeUnmount(() => document.removeEventListener('click', onClickOutside))
+
 const handleLogout = () => {
   auth.logout()
-  router.push("Login")
+  closeDropdown()
+  router.push('/login')
 }
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active { transition: opacity 0.15s ease; }
+.fade-enter-from,
+.fade-leave-to { opacity: 0; }
+</style>

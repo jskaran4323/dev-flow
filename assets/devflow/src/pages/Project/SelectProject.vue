@@ -1,54 +1,59 @@
 <template>
   <BaseLayout>
-    <div class="container py-5 text-white">
-      <h2 class="mb-4 text-center">📁 Select a Project to Continue</h2>
+    <!-- Header -->
+    <section class="py-6 text-center">
+      <h2 class="text-2xl font-semibold tracking-tight">📁 Select a Project to Continue</h2>
+    </section>
 
-      <div class="card bg-dark border border-secondary shadow-sm p-4">
-        <ul class="list-group list-group-flush">
-          <li
-            v-for="project in projectStore.projects"
-            :key="project.id"
-            class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center border-secondary"
-          >
-            <div>
-              <h5 class="mb-0">{{ project.name }}</h5>
-              <small class="text-muted">ID: {{ project.id }}</small>
-            </div>
-            <button class="btn btn-outline-info btn-sm" @click="selectProject(project.id)">
-              Continue →
-            </button>
-          </li>
-        </ul>
-
-        <div v-if="projectStore.projects.length === 0" class="text-center text-muted py-3">
-          <p>No projects available.</p>
-        </div>
+    <!-- Card -->
+    <Card class="max-w-3xl mx-auto">
+      <!-- Empty State -->
+      <div v-if="projectStore.projects.length === 0" class="text-center py-6">
+        <p class="text-sm text-muted-foreground">No projects available.</p>
       </div>
-    </div>
+
+      <!-- Project List -->
+      <ul v-else class="divide-y divide-border">
+        <li
+          v-for="project in projectStore.projects"
+          :key="project.id"
+          class="flex items-center justify-between py-4"
+        >
+          <div>
+            <h5 class="text-base font-semibold">{{ project.name }}</h5>
+            <small class="text-xs text-muted-foreground">ID: {{ project.id }}</small>
+          </div>
+
+          <Button size="sm" variant="secondary" @click="selectProject(project.id)">
+            Continue →
+          </Button>
+        </li>
+      </ul>
+    </Card>
   </BaseLayout>
 </template>
-  
-  <script setup lang="ts">
-  import { onMounted } from 'vue'
-  import { useRouter, useRoute } from 'vue-router'
- import { useProjectStore } from '../../stores/project'
+
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useProjectStore } from '../../stores/project'
 import BaseLayout from '../../layouts/BaseLayout.vue'
-  
-  const router = useRouter()
-  const route = useRoute()
-  const projectStore = useProjectStore()
-  
-  onMounted(async () => {
-    if (projectStore.projects.length === 0) {
-      await projectStore.fetchProjects()
-    }
-  })
-  
-  const selectProject = (projectId: string) => {
-    router.push({
+import Card from '../../components/ui/Card.vue'
+import Button from '../../components/ui/Button.vue'
+
+const router = useRouter()
+const projectStore = useProjectStore()
+
+onMounted(async () => {
+  if (projectStore.projects.length === 0) {
+    await projectStore.fetchProjects()
+  }
+})
+
+const selectProject = (projectId: string) => {
+  router.push({
     name: 'ProjectIssues',
     params: { projectId }
   })
-  }
-  </script>
-  
+}
+</script>
