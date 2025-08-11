@@ -1,75 +1,110 @@
 <template>
   <BaseLayout>
-    <div class="container py-5 text-white" v-if="issue">
-      <h2 class="mb-4">🐛 {{ issue.title }}</h2>
-      
-      <p class="mb-2"><strong>Description:</strong> {{ issue.description }}</p>
-      <p class="mb-2">
-        <strong>Status:</strong>
-        <span class="badge bg-warning text-dark">{{ issue.status }}</span>
-      </p>
-      
-      <p class="mb-2">
-        <strong>Assignee:</strong>
-        {{ issue.assignee?.fullName }} ({{ issue.assignee?.username }})
-      </p>
-      
-      <div class="mb-3">
-        <strong>Labels:</strong>
-        <span
-          v-for="label in issue.labels"
-          :key="label.id"
-          class="badge bg-info text-dark me-1"
-        >
-          {{ label.type }} - {{ labelTypeMap[label.type] || 'Unknown' }}
-        </span>
-      </div>
-      
-      <hr class="border-light" />
-      
-      <!-- Comments Section -->
-      <div class="mt-4">
-        <h4 class="text-white">💬 Comments</h4>
-        
-        <div v-if="comments.length === 0" class="text-muted">No comments yet.</div>
-        
-        <div v-for="comment in comments" :key="comment.id" class="bg-light text-dark p-2 mb-2 rounded">
-          <p class="mb-1">{{ comment.content }}</p>
-          <small class="text-muted">{{ formatDate(comment.createdAt) }}</small>
+    <!-- Guard -->
+    <section v-if="issue" class="space-y-6">
+      <!-- Header -->
+      <header>
+        <h2 class="text-2xl font-semibold tracking-tight">🐛 {{ issue.title }}</h2>
+        <p class="mt-2 text-sm text-muted-foreground">
+          {{ issue.description }}
+        </p>
+
+        <div class="mt-4 flex flex-wrap items-center gap-3 text-sm">
+          <div class="flex items-center gap-2">
+            <span class="text-muted-foreground">Status:</span>
+            <Badge variant="info" rounded>{{ issue.status }}</Badge>
+          </div>
+
+          <div>
+            <span class="text-muted-foreground">Assignee:</span>
+            <span class="font-medium text-foreground">
+              {{ issue.assignee?.fullName }}
+            </span>
+            <span class="text-muted-foreground">({{ issue.assignee?.username }})</span>
+          </div>
         </div>
-        
-        <form @submit.prevent="submitComment" class="mt-3">
-          <textarea v-model="newComment" class="form-control" rows="3" placeholder="Add a comment..."></textarea>
-          <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+      </header>
+
+      <!-- Labels -->
+      <section class="card">
+        <h3 class="text-lg font-medium">🏷️ Labels</h3>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <Badge
+            v-for="label in issue.labels"
+            :key="label.id"
+            variant="default"
+            rounded
+          >
+            {{ labelTypeMap[label.type] || 'Unknown' }}
+          </Badge>
+        </div>
+      </section>
+
+      <!-- Comments -->
+      <section class="card">
+        <h3 class="text-lg font-medium">💬 Comments</h3>
+
+        <div v-if="comments.length === 0" class="mt-2 text-sm text-muted-foreground">
+          No comments yet.
+        </div>
+
+        <ul v-else class="mt-4 space-y-3">
+          <li
+            v-for="comment in comments"
+            :key="comment.id"
+            class="rounded-lg border border-border bg-card/60 p-3"
+          >
+            <p class="text-sm">{{ comment.content }}</p>
+            <small class="mt-1 block text-xs text-muted-foreground">
+              {{ formatDate(comment.createdAt) }}
+            </small>
+          </li>
+        </ul>
+
+        <form @submit.prevent="submitComment" class="mt-4">
+          <label class="block text-sm font-medium text-foreground mb-1">Add a comment</label>
+          <Textarea
+            v-model="newComment"
+            :rows="3"
+            placeholder="Write your comment…"
+          />
+          <Button type="submit" variant="primary" class="mt-2">
+            Post Comment
+          </Button>
         </form>
-      </div>
+      </section>
 
       <!-- Team Members -->
-      <div class="mt-4">
-        <h4>👥 Team Members</h4>
-        <table class="table table-dark table-striped table-bordered align-middle">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Username</th>
-              <th>Role</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="member in team" :key="member.userId">
-              <td>{{ member.fullName }}</td>
-              <td>{{ member.username }}</td>
-              <td><span class="badge bg-primary">{{ member.userType }}</span></td>
-            </tr>
-            <tr v-if="team.length === 0">
-              <td colspan="3" class="text-center text-muted">No team members found.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <section class="card">
+        <h3 class="text-lg font-medium">👥 Team Members</h3>
 
-      <hr class="border-light" />
-    </div>
+        <div class="mt-3 overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead>
+              <tr class="text-left text-muted-foreground">
+                <th class="py-2 pr-4">Name</th>
+                <th class="py-2 pr-4">Username</th>
+                <th class="py-2">Role</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr v-for="member in team" :key="member.userId">
+                <td class="py-2 pr-4">{{ member.fullName }}</td>
+                <td class="py-2 pr-4 text-muted-foreground">{{ member.username }}</td>
+                <td class="py-2">
+                  <Badge variant="secondary" rounded>{{ member.userType }}</Badge>
+                </td>
+              </tr>
+              <tr v-if="team.length === 0">
+                <td colspan="3" class="py-4 text-center text-muted-foreground">
+                  No team members found.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
   </BaseLayout>
 </template>
 
@@ -80,6 +115,9 @@ import BaseLayout from '../../layouts/BaseLayout.vue'
 import { useIssueStore } from '../../stores/issue'
 import { useCommentStore } from '../../stores/comments'
 import { useTeamStore } from '../../stores/teams'
+import Badge from '../../components/ui/Badge.vue'
+import Textarea from '../../components/ui/Textarea.vue'
+import Button from '../../components/ui/Button.vue'
 
 const route = useRoute()
 const issueId = route.params.id as string
@@ -90,7 +128,7 @@ const teamStore = useTeamStore()
 
 const issue = computed(() => issueStore.getIssueById(issueId))
 const comments = computed(() => commentStore.comments)
-const team = computed(() => teamStore.members || []) // Add this computed property
+const team = computed(() => teamStore.members || [])
 const newComment = ref('')
 
 const labelTypeMap: Record<number, string> = {
@@ -112,8 +150,8 @@ onMounted(async () => {
   await commentStore.fetchComments(issueId)
   const projectId = issue.value?.project?.id
   if (projectId) {
-    await teamStore.fetchTeam(projectId) // Fixed: use teamStore instead of team
-    console.log('Team data:', teamStore.members) // Fixed: log the actual data
+    await teamStore.fetchTeam(projectId)
+    console.log('Team data:', teamStore.members)
   }
 })
 
@@ -129,7 +167,7 @@ const formatDate = (date: string) => {
 
 export interface TeamMember {
   userId: string
-  fullName: string // Make sure this matches your template usage
+  fullName: string
   username: string
   userType: string
 }

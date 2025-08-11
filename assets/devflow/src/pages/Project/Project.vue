@@ -1,59 +1,88 @@
 <template>
   <BaseLayout>
-    <div class="container py-5 text-white">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>📦 My Projects</h2>
-        <router-link to="/projects/new" class="btn btn-success">+ New Project</router-link>
-      </div>
+    <!-- Header -->
+    <section class="py-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <h2 class="text-2xl font-semibold tracking-tight">📦 My Projects</h2>
+      <Button as="router-link" :to="'/projects/new'" variant="primary" size="md">
+        + New Project
+      </Button>
+    </section>
 
-      <!-- Show alert if no projects -->
-      <div v-if="projects.length === 0" class="alert alert-secondary text-muted">
-        You don’t have any projects yet. Click “New Project” to create one.
-      </div>
+    <!-- Empty state -->
+    <section v-if="projects.length === 0" class="py-6">
+      <Card>
+        <h3 class="text-lg font-medium">You don’t have any projects yet</h3>
+        <p class="text-sm text-muted-foreground mt-1">
+          Click “New Project” to create one.
+        </p>
+      </Card>
+    </section>
 
-      <!-- Project Cards -->
-      <div class="row g-4">
-        <div
-          class="col-md-6 col-lg-4"
-          v-for="project in projects"
-          :key="project.id"
-        >
-          <div
-            class="card bg-secondary text-white shadow-sm h-100 border-light project-card"
-            @click="goToProjectDetails(project.id)"
-          >
-            <div class="card-body">
-              <h5 class="card-title fw-bold">{{ project.name }}</h5>
-              <p class="card-text small text-light-emphasis">{{ project.description }}</p>
-              <span class="badge bg-light text-dark">{{ project.status }}</span>
-            </div>
-            <div
-              class="card-footer bg-transparent d-flex justify-content-between border-top border-light"
-              @click.stop
-            >
-              <router-link :to="`/projects/${project.id}/edit`" class="btn btn-sm btn-outline-light">Edit</router-link>
-              <button class="btn btn-sm btn-outline-danger" @click="deleteProject(project.id)">Delete</button>
-            </div>
-            <router-link
-              :to="`/projects/${project.id}/kanban`"
-              class="btn btn-outline-light"
-              @click.stop
-            >
-              📊 View Kanban Board
-            </router-link>
-          </div>
+    <!-- Project grid -->
+    <section v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <Card
+        v-for="project in projects"
+        :key="project.id"
+        clickable
+        class="h-full flex flex-col"
+        @click="goToProjectDetails(project.id)"
+      >
+        <!-- Body -->
+        <div class="flex-1">
+          <h3 class="text-lg font-semibold">{{ project.name }}</h3>
+          <p class="mt-2 text-sm text-muted-foreground line-clamp-3">
+            {{ project.description }}
+          </p>
+          <Badge variant="secondary" rounded class="mt-3">
+            {{ project.status }}
+          </Badge>
         </div>
-      </div>
-    </div>
-   
+
+        <!-- Footer actions -->
+        <template #footer>
+          <div class="pt-4 flex items-center justify-between" @click.stop>
+            <div class="flex items-center gap-2">
+              <Button
+                as="router-link"
+                :to="`/projects/${project.id}/edit`"
+                variant="secondary"
+                size="sm"
+              >
+                Edit
+              </Button>
+              <Button
+                as="router-link"
+                :to="`/projects/${project.id}/kanban`"
+                variant="secondary"
+                size="sm"
+              >
+                📊 Kanban
+              </Button>
+            </div>
+
+            <Button
+              variant="destructive"
+              size="sm"
+              @click="deleteProject(project.id)"
+            >
+              Delete
+            </Button>
+          </div>
+        </template>
+      </Card>
+    </section>
   </BaseLayout>
 </template>
+
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import BaseLayout from '../../layouts/BaseLayout.vue'
 import { useProjectStore } from '../../stores/project'
+import Button from '../../components/ui/Button.vue'
+import Card from '../../components/ui/Card.vue'
+import Badge from '../../components/ui/Badge.vue'
 
 const router = useRouter()
 const projectStore = useProjectStore()

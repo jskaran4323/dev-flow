@@ -10,94 +10,42 @@ import SelectProject from '../pages/Project/SelectProject.vue'
 import Issues from '../pages/Issues/Issues.vue'
 import IssueForm from '../pages/Issues/IssueForm.vue'
 import ProjectDetails from '../pages/Project/ProjectDetails.vue'
-
 import ProjectKanban from '../pages/ProjectKanban.vue'
 import PublicProjects from '../pages/Project/PublicProjects.vue'
 import UserProfile from '../pages/user/UserProfile.vue'
 import AdminDashboard from '../pages/AdminDashboard.vue'
 import IssueDetails from '../pages/Issues/IssueDetails.vue'
-// ... your other routes
+
+// NEW
+import About from '../pages/About.vue'
+import Team from '../pages/Team.vue'
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/login', component: Login, name:"Login" },
+  { path: '/login', component: Login, name: 'Login' },
   { path: '/register', component: Register },
   { path: '/dashboard', component: DashBoard },
-  {
-    path: '/projects',
-    component: Project,
-  },
-  {
-    path: '/projects/new',
-    component: ProjectForm,
-  },
-  {
-    path: '/projects/:id/edit',
-    component: ProjectForm
-  },
-  {
-    name: 'ProjectIssues',
-    path: '/projects/:projectId/issues',
-    component: Issues
-  },
 
-  {
-    name: 'CreateIssue',
-    path: '/projects/:projectId/issues/new',
-    component: IssueForm
-  },
+  { path: '/about', component: About, name: 'About' },     // NEW
+  { path: '/team', component: Team, name: 'Team' },         // NEW
 
-  
-  {
-    name: 'EditIssue',
-    path: '/projects/:projectId/issues/:id/edit',
-    component: IssueForm
-  }
-,
-  {
-    path: '/select-project',
-    component: SelectProject
-  },
-  {
-    path: '/projects/:projectId/issues/new',
-    component: SelectProject
-  }, 
-  {
-    path: '/projects/:projectId',
-    name: 'ProjectDetail',
-    component: ProjectDetails
-  },
-  {
-    path: '/issues/:id',
-    name: 'IssueDetails',
-    component: IssueDetails // adjust path if needed
-  },
-  {
-    path: '/projects/:projectId/kanban',
-    name: 'ProjectKanban',
-    component: ProjectKanban
-  },
-  {
-    path: '/public-projects',
-    name: 'PublicProjects',
-    component: PublicProjects 
-  },
-  {
-    path: '/profile',
-    name: 'UserProfile',
-    component: UserProfile
-  },
-  {
-    path: '/admin',
-    name: 'AdminDashboard',
-    component: AdminDashboard,
-    
-  }
-  
-  
+  { path: '/projects', component: Project },
+  { path: '/projects/new', component: ProjectForm },
+  { path: '/projects/:id/edit', component: ProjectForm },
 
+  { name: 'ProjectIssues', path: '/projects/:projectId/issues', component: Issues },
+  { name: 'CreateIssue', path: '/projects/:projectId/issues/new', component: IssueForm },
 
+  { name: 'EditIssue', path: '/projects/:projectId/issues/:id/edit', component: IssueForm },
 
+  { path: '/select-project', component: SelectProject },
+  { path: '/projects/:projectId/issues/new', component: SelectProject }, // (left as-is per your current routes)
+  { path: '/projects/:projectId', name: 'ProjectDetail', component: ProjectDetails },
+  { path: '/issues/:id', name: 'IssueDetails', component: IssueDetails },
+  { path: '/projects/:projectId/kanban', name: 'ProjectKanban', component: ProjectKanban },
+  { path: '/public-projects', name: 'PublicProjects', component: PublicProjects },
+  { path: '/profile', name: 'UserProfile', component: UserProfile },
+  { path: '/admin', name: 'AdminDashboard', component: AdminDashboard }
 ]
 
 const router = createRouter({
@@ -108,13 +56,9 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore()
 
-
-
-  
   if (auth.isAuthenticated && (to.path === '/login' || to.path === '/register')) {
     return next('/dashboard')
   }
-
   next()
 })
 

@@ -1,46 +1,77 @@
 <template>
   <BaseLayout>
-    <div class="container py-5 text-white">
-      <div v-if="loading">
-        <p>Loading project details...</p>
-      </div>
+    <!-- Loading -->
+    <section v-if="loading" class="py-10">
+      <p class="text-sm text-muted-foreground">Loading project details...</p>
+    </section>
 
-      <div v-else>
-        <h2 class="mb-3">{{ project?.name }}</h2>
-        <p>{{ project?.description }}</p>
-        <p>🧑 Owner: {{ project?.owner?.fullName || 'Unknown' }}</p>
+    <!-- Content -->
+    <section v-else class="space-y-6">
+      <!-- Header -->
+      <header>
+        <h2 class="text-2xl font-semibold tracking-tight">
+          {{ project?.name }}
+        </h2>
+        <p class="text-sm text-muted-foreground mt-1">
+          {{ project?.description }}
+        </p>
+        <p class="mt-3 text-sm">
+          🧑 <span class="text-muted-foreground">Owner:</span>
+          <span class="font-medium text-foreground">{{ project?.owner?.fullName || 'Unknown' }}</span>
+        </p>
+      </header>
 
-        <!-- OWNER -->
-        <div v-if="isOwner">
-          <h5 class="mt-4">📥 Join Requests</h5>
-          <JoinRequestPanel :project-id="project.id" />
-        </div>
+      <!-- Owner tools -->
+      <section v-if="isOwner" class="card">
+        <h3 class="text-lg font-medium mb-4">📥 Join Requests</h3>
+        <JoinRequestPanel :project-id="project.id" />
+      </section>
 
-        <!-- MEMBER -->
-        <div v-else-if="isMember">
-          <router-link
+      <!-- Member tools -->
+      <section v-else-if="isMember" class="card">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-medium">Project Workspace</h3>
+            <p class="text-sm text-muted-foreground">Access issues and collaborate with your team.</p>
+          </div>
+          <Button
+            as="router-link"
             :to="`/projects/${project.id}/issues`"
-            class="btn btn-primary mt-4"
+            variant="primary"
+            size="md"
           >
             View Issues
-          </router-link>
+          </Button>
         </div>
+      </section>
 
-        <!-- NON-MEMBER -->
-        <div v-else>
-          <div v-if="hasSentJoinRequest">
-            <p class="text-success mt-3">✅ Join request already sent!</p>
-          </div>
-          <div v-else>
-            <button class="btn btn-success mt-4" @click="handleJoinRequest">
-              Request to Join
-            </button>
-          </div>
+      <!-- Non-member actions -->
+      <section v-else class="card">
+        <div v-if="hasSentJoinRequest" class="text-sm">
+          <span class="inline-flex items-center rounded-md bg-muted px-3 py-2">
+            ✅ Join request already sent!
+          </span>
         </div>
+        <div v-else class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-medium">Interested in this project?</h3>
+            <p class="text-sm text-muted-foreground">Send a join request to the owner.</p>
+          </div>
+          <Button
+            variant="primary"
+            size="md"
+            @click="handleJoinRequest"
+          >
+            Request to Join
+          </Button>
+        </div>
+      </section>
 
-        <p v-if="errorMessage" class="text-danger mt-3">{{ errorMessage }}</p>
-      </div>
-    </div>
+      <!-- Error -->
+      <p v-if="errorMessage" class="text-sm text-destructive">
+        {{ errorMessage }}
+      </p>
+    </section>
   </BaseLayout>
 </template>
 
@@ -48,18 +79,19 @@
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth'
-
 import { checkJoinRequestStatus, sendJoinRequest } from '../../services/devFlow/joinRequest'
 import JoinRequestPanel from '../../components/JoinRequestPanel.vue'
 import BaseLayout from '../../layouts/BaseLayout.vue'
 import { useProjectStore } from '../../stores/project'
 import { useTeamStore } from '../../stores/teams'
+import Button from '../../components/ui/Button.vue'
 
 const route = useRoute()
 const projectId = route.params.projectId as string
 const authStore = useAuthStore()
 const projectStore = useProjectStore()
 const teamStore = useTeamStore()
+
 const project = ref<any>(null)
 const isOwner = ref(false)
 const isMember = ref(false)
@@ -69,27 +101,20 @@ const loading = ref(true)
 
 onMounted(async () => {
   try {
-    const user = await authStore.fetchUser()            
-    
-    
-    const projectRes = await projectStore.fetchteamProject(projectId);
-    console.log(projectRes);
-    
-    project.value = projectRes
-    const currentUserId = authStore.user?.userId
+    await authStore.fetchUser()
 
-   
-   const members = await teamStore.fetchTeam(projectId);
-    
+    const projectRes = await projectStore.fetchteamProject(projectId)
+    project.value = projectRes
+
+    const currentUserId = authStore.user?.userId
+    const members = await teamStore.fetchTeam(projectId)
+
     isOwner.value = project.value.owner?.userId === currentUserId
-   
     isMember.value = members.some((m: any) => m.userId === currentUserId)
-   
 
     if (!isOwner.value && !isMember.value) {
       hasSentJoinRequest.value = await checkJoinRequestStatus(projectId)
     }
-    
   } catch (err: any) {
     errorMessage.value = '⚠️ Failed to load project details.'
   } finally {
