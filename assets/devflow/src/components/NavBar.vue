@@ -1,55 +1,73 @@
 <template>
   <nav class="bg-background border-b border-border shadow-sm">
     <div class="container flex h-14 items-center justify-between">
-      <!-- Brand -->
-      <router-link
-        to="/"
-        class="text-lg font-semibold text-foreground hover:text-primary transition-colors"
-      >
-        DevFlow
+      <!-- Brand: Bigger wordmark -->
+      <router-link to="/" class="flex items-center gap-2" aria-label="DevFlow Home">
+        <span class="text-3xl font-extrabold tracking-tight text-foreground">
+          Dev<span class="text-primary">Flow</span>
+        </span>
       </router-link>
 
       <!-- Desktop Menu -->
-      <div class="hidden md:flex items-center gap-3">
-        <!-- Guest Links -->
+      <div class="hidden md:flex items-center gap-6">
+        <router-link
+          to="/about"
+          class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          About
+        </router-link>
+        <router-link
+          to="/team"
+          class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          Team
+        </router-link>
+
+        <!-- Guest -->
         <template v-if="!isAuthenticated">
-          <Button as="router-link" :to="'/login'" variant="secondary" size="sm">
+          <router-link
+            to="/login"
+            class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
             Login
-          </Button>
-          <Button as="router-link" :to="'/register'" variant="primary" size="sm">
+          </router-link>
+          <router-link
+            to="/register"
+            class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
             Register
-          </Button>
+          </router-link>
         </template>
 
-        <!-- Authenticated Dropdown -->
-        <div v-else class="relative" @mouseleave="dropdownOpen = false">
+        <!-- Authenticated -->
+        <div class="relative" ref="menuRef">
           <button
-            @click="dropdownOpen = !dropdownOpen"
+            ref="buttonRef"
+            @click="toggleDropdown"
+            @keydown.escape="closeDropdown"
             class="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-2 py-1"
+            aria-haspopup="menu"
+            :aria-expanded="dropdownOpen"
           >
             👤 Account
-            <svg
-              class="w-4 h-4 transition-transform"
-              :class="{ 'rotate-180': dropdownOpen }"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 9l-7 7-7-7" />
+            <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': dropdownOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 
-          <!-- Dropdown menu -->
           <transition name="fade">
+            <!-- Solid background dropdown -->
             <ul
               v-if="dropdownOpen"
-              class="absolute right-0 mt-2 w-40 rounded-md border border-border bg-popover shadow-soft p-1"
+              class="absolute right-0 mt-2 w-44 rounded-md border border-border bg-background shadow-soft p-1"
+              role="menu"
             >
               <li>
                 <router-link
                   to="/profile"
-                  class="block w-full rounded-sm px-3 py-2 text-sm text-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  class="block w-full rounded-sm px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                  role="menuitem"
+                  @click="closeDropdown"
                 >
                   Profile
                 </router-link>
@@ -59,6 +77,7 @@
                 <button
                   @click.prevent="handleLogout"
                   class="block w-full rounded-sm px-3 py-2 text-sm text-destructive hover:bg-muted transition-colors text-left"
+                  role="menuitem"
                 >
                   Logout
                 </button>
@@ -72,21 +91,37 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
-import Button from '../components/ui/Button.vue'
 
 const auth = useAuthStore()
 const { isAuthenticated } = storeToRefs(auth)
 const router = useRouter()
 
 const dropdownOpen = ref(false)
+const menuRef = ref<HTMLElement | null>(null)
+const buttonRef = ref<HTMLElement | null>(null)
+
+const toggleDropdown = () => (dropdownOpen.value = !dropdownOpen.value)
+const closeDropdown = () => (dropdownOpen.value = false)
+
+const onClickOutside = (e: MouseEvent) => {
+  const t = e.target as Node
+  if (!menuRef.value) return
+  if (!menuRef.value.contains(t) && buttonRef.value && !buttonRef.value.contains(t)) {
+    dropdownOpen.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('click', onClickOutside))
+onBeforeUnmount(() => document.removeEventListener('click', onClickOutside))
 
 const handleLogout = () => {
   auth.logout()
-  router.push('Login')
+  closeDropdown()
+  router.push('/login')
 }
 </script>
 
