@@ -34,12 +34,14 @@
             <h3 class="text-lg font-medium">Project Workspace</h3>
             <p class="text-sm text-muted-foreground">Access issues and collaborate with your team.</p>
           </div>
-          <router-link
+          <Button
+            as="router-link"
             :to="`/projects/${project.id}/issues`"
-            class="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+            variant="primary"
+            size="md"
           >
             View Issues
-          </router-link>
+          </Button>
         </div>
       </section>
 
@@ -55,12 +57,13 @@
             <h3 class="text-lg font-medium">Interested in this project?</h3>
             <p class="text-sm text-muted-foreground">Send a join request to the owner.</p>
           </div>
-          <button
-            class="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+          <Button
+            variant="primary"
+            size="md"
             @click="handleJoinRequest"
           >
             Request to Join
-          </button>
+          </Button>
         </div>
       </section>
 
@@ -76,18 +79,19 @@
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '../../stores/auth'
-
 import { checkJoinRequestStatus, sendJoinRequest } from '../../services/devFlow/joinRequest'
 import JoinRequestPanel from '../../components/JoinRequestPanel.vue'
 import BaseLayout from '../../layouts/BaseLayout.vue'
 import { useProjectStore } from '../../stores/project'
 import { useTeamStore } from '../../stores/teams'
+import Button from '../../components/ui/Button.vue'
 
 const route = useRoute()
 const projectId = route.params.projectId as string
 const authStore = useAuthStore()
 const projectStore = useProjectStore()
 const teamStore = useTeamStore()
+
 const project = ref<any>(null)
 const isOwner = ref(false)
 const isMember = ref(false)
@@ -97,15 +101,13 @@ const loading = ref(true)
 
 onMounted(async () => {
   try {
-    const user = await authStore.fetchUser()
+    await authStore.fetchUser()
 
-    const projectRes = await projectStore.fetchteamProject(projectId);
-    console.log(projectRes);
-
+    const projectRes = await projectStore.fetchteamProject(projectId)
     project.value = projectRes
-    const currentUserId = authStore.user?.userId
 
-    const members = await teamStore.fetchTeam(projectId);
+    const currentUserId = authStore.user?.userId
+    const members = await teamStore.fetchTeam(projectId)
 
     isOwner.value = project.value.owner?.userId === currentUserId
     isMember.value = members.some((m: any) => m.userId === currentUserId)
