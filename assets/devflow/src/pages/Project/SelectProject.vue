@@ -6,7 +6,7 @@
     </section>
 
     <!-- Card -->
-    <section class="card max-w-3xl mx-auto">
+    <Card class="max-w-3xl mx-auto">
       <!-- Empty State -->
       <div v-if="projectStore.projects.length === 0" class="text-center py-6">
         <p class="text-sm text-muted-foreground">No projects available.</p>
@@ -23,26 +23,25 @@
             <h5 class="text-base font-semibold">{{ project.name }}</h5>
             <small class="text-xs text-muted-foreground">ID: {{ project.id }}</small>
           </div>
-          <button
-            class="inline-flex h-8 items-center rounded-lg border border-border bg-background px-3 text-sm font-medium hover:bg-muted transition-colors"
-            @click="selectProject(project.id)"
-          >
+
+          <Button size="sm" variant="secondary" @click="selectProject(project.id)">
             Continue →
-          </button>
+          </Button>
         </li>
       </ul>
-    </section>
+    </Card>
   </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useProjectStore } from '../../stores/project'
 import BaseLayout from '../../layouts/BaseLayout.vue'
+import Card from '../../components/ui/Card.vue'
+import Button from '../../components/ui/Button.vue'
 
 const router = useRouter()
-const route = useRoute()
 const projectStore = useProjectStore()
 
 onMounted(async () => {
