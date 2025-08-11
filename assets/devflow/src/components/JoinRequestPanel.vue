@@ -1,39 +1,59 @@
 <template>
-  <div class="card bg-dark text-white p-4 shadow-sm">
-    <h4 class="mb-3">👥 Join Requests</h4>
+  <Card>
+    <h4 class="text-lg font-semibold">👥 Join Requests</h4>
 
-    <!-- No requests -->
-    <div v-if="requests.length === 0" class="text-muted">No join requests.</div>
+    <!-- Empty -->
+    <p v-if="requests.length === 0" class="mt-2 text-sm text-muted-foreground">
+      No join requests.
+    </p>
 
-    <!-- Request list -->
-    <ul class="list-group">
+    <!-- List -->
+    <ul v-else class="mt-4 divide-y divide-border">
       <li
         v-for="req in requests"
         :key="req.userId"
-        class="list-group-item d-flex justify-content-between align-items-center bg-secondary text-white"
+        class="flex items-center justify-between py-3"
       >
-        <div>
-          <strong>{{ req.fullName || req.username }}</strong><br />
-          <small>Status: {{ req.status }} | Requested: {{ formatDate(req.createdAt) }}</small>
+        <div class="min-w-0">
+          <p class="font-medium text-foreground truncate">
+            {{ req.fullName || req.username }}
+          </p>
+          <p class="text-xs text-muted-foreground mt-0.5">
+            Status: {{ req.status }} • Requested: {{ formatDate(req.createdAt) }}
+          </p>
         </div>
-        <button
-          class="btn btn-success btn-sm"
+
+        <Button
+          variant="primary"
+          size="sm"
+          class="shrink-0"
           @click="approve(req.userId)"
           :disabled="loadingUserId === req.userId"
         >
-          ✅ Approve
-        </button>
+          <span v-if="loadingUserId === req.userId" class="inline-flex items-center gap-2">
+            <Spinner size="sm" />
+            Approving…
+          </span>
+          <span v-else>✅ Approve</span>
+        </Button>
       </li>
     </ul>
 
     <!-- Error -->
-    <p v-if="errorMessage" class="text-danger mt-3">{{ errorMessage }}</p>
-  </div>
+    <p v-if="errorMessage" class="mt-3 text-sm text-destructive">
+      {{ errorMessage }}
+    </p>
+  </Card>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import { fetchJoinRequests, approveJoinRequest } from '../services/devFlow/joinRequest'
+
+// UI primitives
+import Card from './ui/Card.vue'
+import Button from './ui/Button.vue'
+import Spinner from './ui/Spinner.vue'
 
 interface Props {
   projectId: string
@@ -44,7 +64,6 @@ const requests = ref<any[]>([])
 const errorMessage = ref('')
 const loadingUserId = ref<string | null>(null)
 
-// Fetch join requests
 const fetchRequests = async () => {
   try {
     const res = await fetchJoinRequests(props.projectId)
@@ -54,13 +73,11 @@ const fetchRequests = async () => {
   }
 }
 
-// Approve a request
 const approve = async (userId: string) => {
   loadingUserId.value = userId
   try {
     await approveJoinRequest(props.projectId, userId)
-    // Remove from UI
-    requests.value = requests.value.filter(r => r.userId !== userId)
+    requests.value = requests.value.filter((r: any) => r.userId !== userId)
   } catch (err: any) {
     errorMessage.value = err.response?.data?.message || '❌ Approval failed'
   } finally {
@@ -68,7 +85,6 @@ const approve = async (userId: string) => {
   }
 }
 
-// Format ISO date to readable
 const formatDate = (iso: string) => new Date(iso).toLocaleString()
 
 onMounted(fetchRequests)
