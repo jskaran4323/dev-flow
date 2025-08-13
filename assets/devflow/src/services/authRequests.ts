@@ -14,8 +14,8 @@ export const loginUser = (data: {
   password: string
 }) => request.post('/auth/login', data)
 
-export async function getCurrentUser() {
-  const res =  await request.get('/auth/me')
+export  function getCurrentUser() {
+  const res =   request.get('/auth/me')
   return res
    
 } 
