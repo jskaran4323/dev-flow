@@ -12,7 +12,8 @@ export interface User {
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null as User | null
+    user: null as User | null,
+    initialized: false            
   }),
 
   getters: {
@@ -30,6 +31,7 @@ export const useAuthStore = defineStore('auth', {
     async logout(): Promise<void> {
       await logoutUser()                
       this.user = null
+      this.initialized = true 
     },
 
     async fetchUser(): Promise<User | null> {
@@ -41,11 +43,13 @@ export const useAuthStore = defineStore('auth', {
         console.error('Failed to fetch user', err)
         this.user = null
         return null
+      }finally {
+        this.initialized = true              
       }
     },
 
     async initializeAuth(): Promise<void> {
-      await this.fetchUser()
+      if (!this.initialized) await this.fetchUser()
     }
   }
 })

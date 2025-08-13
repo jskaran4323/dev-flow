@@ -30,16 +30,15 @@ public class Project {
     @Column(name = "status")
     private ProjectStatusType status;
     @ManyToOne
-    
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
     
 
 
-@OneToMany(mappedBy = "project")
+@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
 private List<Issue> issues;
 
-@OneToMany(mappedBy = "project")
+@OneToMany(mappedBy = "project",cascade = CascadeType.REMOVE, orphanRemoval = true)
 private List<Label> labels;
 
 

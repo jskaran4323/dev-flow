@@ -22,7 +22,7 @@ import Team from '../pages/Team.vue'
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/login', component: Login, name: 'Login' },
+  { path: '/login', component: Login, name: 'LoginPage' },
   { path: '/register', component: Register },
   { path: '/dashboard', component: DashBoard },
 
@@ -53,9 +53,11 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach (async(to, from, next) => {
   const auth = useAuthStore()
-
+  if (!auth.initialized) {
+    await auth.initializeAuth()
+  }
   if (auth.isAuthenticated && (to.path === '/login' || to.path === '/register')) {
     return next('/dashboard')
   }
