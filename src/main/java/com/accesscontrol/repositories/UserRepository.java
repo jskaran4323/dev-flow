@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID>{
     Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String email);
-
+    
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.comments WHERE u.id = :id")
     Optional<User> findByIdWithComments(@Param("id") UUID id);
 

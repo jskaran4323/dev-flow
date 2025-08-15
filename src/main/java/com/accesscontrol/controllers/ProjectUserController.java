@@ -5,12 +5,10 @@ import java.util.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
-
-import com.accesscontrol.config.CustomUserDetails;
-import com.accesscontrol.dto.request.AddTeamMemberRequest;
 import com.accesscontrol.dto.request.ApproveRequestDto;
 import com.accesscontrol.dto.request.JoinRequestDto;
 import com.accesscontrol.dto.response.ProjectUserResponse;
+import com.accesscontrol.models.CustomUserDetails;
 import com.accesscontrol.repositories.ProjectUserRepository;
 import com.accesscontrol.repositories.JoinRequestRepository;
 import com.accesscontrol.services.ProjectUserService;

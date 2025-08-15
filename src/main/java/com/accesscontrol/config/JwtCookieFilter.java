@@ -1,5 +1,7 @@
 package com.accesscontrol.config;
 
+import com.accesscontrol.models.CustomUserDetails;
+import com.accesscontrol.services.CustomUserDetailsService;
 import com.accesscontrol.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

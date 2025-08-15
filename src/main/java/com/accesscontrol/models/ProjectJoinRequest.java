@@ -23,7 +23,7 @@ public class ProjectJoinRequest {
     private UUID userId;
 
     @Column(nullable = false)
-    private String status; // e.g., "PENDING", "APPROVED", "REJECTED"
+    private String status;// "PENDING", "APPROVED", "REJECTED"
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

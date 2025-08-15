@@ -95,7 +95,7 @@ public class UserService implements UserDetailsService{
     return new org.springframework.security.core.userdetails.User(
         user.getUsername(),
         user.getPassword(),
-        List.of(user.getUserTypeEnum().toSpringRole()) // explained below
+        List.of(user.getUserTypeEnum().toSpringRole()) 
     );
      }
 }
