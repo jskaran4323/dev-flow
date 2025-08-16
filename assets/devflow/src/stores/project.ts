@@ -94,8 +94,6 @@ export const useProjectStore = defineStore('project', {
       this.error = null
       try {
         const newProject = await addProject(data)
-        console.log(newProject);
-        
         this.projects.unshift(newProject)
         return newProject
       } catch (err: any) {

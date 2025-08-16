@@ -165,7 +165,7 @@ const handleSubmit = async () => {
       labels: issue.labels
     }
     await issueStore.createIssue(projectId, payload)
-    router.push(`/projects/${projectId}/issues`)
+    router.push({name : "Issues"})
   } catch (err: any) {
     errorMessage.value = err.response?.data?.message || 'Failed to create issue'
   }
