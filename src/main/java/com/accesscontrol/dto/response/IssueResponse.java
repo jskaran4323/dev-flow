@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import com.accesscontrol.dto.CommentDto;
 import com.accesscontrol.dto.LabelDto;
+import com.accesscontrol.enums.IssueType;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +21,7 @@ public class IssueResponse {
     private UUID id;
     private String title;
     private String description;
-    private int status;
+    private IssueType status;
     private List<LabelDto> labels;
     private List<CommentDto> comments;
     private ProjectUserResponse assignee; 

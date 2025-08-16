@@ -52,7 +52,7 @@ if (issue.getProject() != null) {
             issue.getId(),
             issue.getTitle(),
             issue.getDescription(),
-            issue.getStatus(),
+            issue.getIssueTypeEnum(),
             labelDtos,
             commentDtos,
             assigneeResponse,

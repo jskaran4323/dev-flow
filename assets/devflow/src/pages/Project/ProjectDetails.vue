@@ -20,6 +20,7 @@
         </p>
         <p class="mt-3 text-sm">
            <span class="text-muted-foreground">Owner: </span>
+           
           <span class="font-medium text-foreground">{{ project?.owner?.fullName || 'Unknown' }}</span>
         </p>
       </header>

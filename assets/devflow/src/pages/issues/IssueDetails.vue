@@ -35,7 +35,7 @@
             variant="default"
             rounded
           >
-            {{ labelTypeMap[label.type] || 'Unknown' }}
+            {{ LabelStatusType[label.type] || 'Unknown' }}
           </Badge>
         </div>
       </section>
@@ -118,6 +118,8 @@ import { useTeamStore } from '../../stores/teams'
 import Badge from '../../components/ui/Badge.vue'
 import Textarea from '../../components/ui/Textarea.vue'
 import Button from '../../components/ui/Button.vue'
+import { LabelStatusType } from '../../enums/LabelStatusType'
+import { IssueStatusType } from '../../enums/IssueStatusType'
 
 const route = useRoute()
 const issueId = route.params.id as string
@@ -131,19 +133,6 @@ const comments = computed(() => commentStore.comments)
 const team = computed(() => teamStore.members || [])
 const newComment = ref('')
 
-const labelTypeMap: Record<number, string> = {
-  0: 'Bug',
-  1: 'Feature',
-  2: 'Enhancement',
-  3: 'Documentation',
-  4: 'Urgent',
-  5: 'Design',
-  6: 'Test',
-  7: 'Performance',
-  8: 'Security',
-  9: 'Backend',
-  10: 'Frontend'
-}
 
 onMounted(async () => {
   await issueStore.fetchIssue(issueId)
