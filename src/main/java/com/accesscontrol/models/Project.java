@@ -7,7 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.accesscontrol.enums.ProjectStatusType;
-
+import com.accesscontrol.enums.UserType;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,12 +27,18 @@ public class Project {
     private String name;
     private String description;
     @Column(name = "status")
-    private ProjectStatusType status;
+    private int status;
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
     
+    public ProjectStatusType getProjectStatusEnum() {
+        return ProjectStatusType.fromValue(this.status);
+    }
 
+    public void setProjectStatusEnum(ProjectStatusType value) {
+        this.status = value.getValue();
+    }
 
 @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
 private List<Issue> issues;

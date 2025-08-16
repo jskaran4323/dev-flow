@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { getIssueById, getProjectIssues, updateIssue, deleteIssue, addIssue,getAISuggestions } from "../services/devFlow/issue";
+import type { IssueStatusType } from "../enums/IssueStatusType";
 
 
 
@@ -11,7 +12,7 @@ export interface Issue {
     id: string
     title: string,
     description: string 
-    status: 'OPEN' | 'IN_PROGRESS' | 'CLOSED'
+    status: IssueStatusType
     assignee: {
         userId: string
         username: string,

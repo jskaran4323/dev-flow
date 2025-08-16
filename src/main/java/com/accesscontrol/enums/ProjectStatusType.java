@@ -19,7 +19,7 @@ public enum ProjectStatusType {
         return Arrays.stream(ProjectStatusType.values())
                 .filter(type -> type.value == value)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid LabelType: " + value));
+                .orElse(null); 
     }
 
 }

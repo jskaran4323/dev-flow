@@ -15,8 +15,11 @@
         <p class="text-sm text-muted-foreground mt-1">
           {{ project?.description }}
         </p>
+        <p class="text-sm text-muted-foreground mt-1">
+        {{ project?.status }} 
+        </p>
         <p class="mt-3 text-sm">
-          🧑 <span class="text-muted-foreground">Owner:</span>
+           <span class="text-muted-foreground">Owner: </span>
           <span class="font-medium text-foreground">{{ project?.owner?.fullName || 'Unknown' }}</span>
         </p>
       </header>

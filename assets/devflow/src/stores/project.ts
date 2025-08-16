@@ -8,12 +8,13 @@ import {
   deleteProject,
   fetchProjectDetails,getAllProjects
 } from '../services/devFlow/project'
+import type { ProjectStatusType } from '../enums/ProjectStatusType'
 
 export interface Project {
   id: string
   name: string
   description: string
-  status: string
+  status: ProjectStatusType
   createdAt: string
   updatedAt: string
 }
@@ -90,9 +91,11 @@ export const useProjectStore = defineStore('project', {
       name: string
       description: string
       status: number
+
     }) {
       this.error = null
       try {
+        console.log("data being sent",data);
         const newProject = await addProject(data)
         this.projects.unshift(newProject)
         return newProject

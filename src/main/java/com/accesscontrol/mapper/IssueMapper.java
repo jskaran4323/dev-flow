@@ -41,6 +41,7 @@ if (issue.getProject() != null) {
     projectResponse = new ProjectResponse(
          issue.getProject().getId(),
          issue.getProject().getName(),
+         issue.getProject().getProjectStatusEnum(),
          issue.getProject().getDescription(),
          toProjectUserResponse(issue.getProject().getOwner())
     );

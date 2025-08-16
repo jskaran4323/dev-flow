@@ -21,7 +21,9 @@
         >
           <div>
             <h5 class="text-base font-semibold">{{ project.name }}</h5>
-            <small class="text-xs text-muted-foreground">ID: {{ project.id }}</small>
+            <Badge variant="secondary" rounded class="mt-3">
+            {{ project.status }}
+          </Badge>
           </div>
 
           <Button size="sm" variant="secondary" @click="selectProject(project.id)">
@@ -40,7 +42,7 @@ import { useProjectStore } from '../../stores/project'
 import BaseLayout from '../../layouts/BaseLayout.vue'
 import Card from '../../components/ui/Card.vue'
 import Button from '../../components/ui/Button.vue'
-
+import Badge from '../../components/ui/Badge.vue'
 const router = useRouter()
 const projectStore = useProjectStore()
 

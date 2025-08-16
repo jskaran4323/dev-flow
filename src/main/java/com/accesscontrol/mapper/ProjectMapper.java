@@ -19,7 +19,8 @@ public class ProjectMapper {
             .id(project.getId())
             .name(project.getName())
             .description(project.getDescription())
-            .owner(ownerResponse) // Now setting the complete ProjectUserResponse object
+            .status(project.getProjectStatusEnum())
+            .owner(ownerResponse) 
             .build();
     }
 }
