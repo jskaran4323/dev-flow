@@ -1,6 +1,4 @@
 package com.accesscontrol.config;
-
-import com.accesscontrol.config.JwtCookieFilter; // NEW
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

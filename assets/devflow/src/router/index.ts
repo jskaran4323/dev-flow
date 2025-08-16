@@ -26,10 +26,9 @@ const routes = [
   { path: '/register', component: Register },
   { path: '/dashboard', component: DashBoard },
 
-  { path: '/about', component: About, name: 'About' },     // NEW
-  { path: '/team', component: Team, name: 'Team' },         // NEW
-
-  { path: '/projects', component: Project },
+  { path: '/about', component: About, name: 'About' },     
+  { path: '/team', component: Team, name: 'Team' },        
+  { path: '/projects', component: Project, name: "Project" },
   { path: '/projects/new', component: ProjectForm },
   { path: '/projects/:id/edit', component: ProjectForm },
 

@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+//we were doing token based auth but switched to cookie based 
+
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 

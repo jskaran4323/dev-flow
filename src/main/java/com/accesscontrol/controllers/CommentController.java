@@ -4,20 +4,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.accesscontrol.models.Issue;
 import com.accesscontrol.models.User;
-import com.accesscontrol.config.CustomUserDetails;
 import com.accesscontrol.dto.CommentDto;
 import com.accesscontrol.dto.request.CommentRequest;
 import com.accesscontrol.mapper.CommentMapper;
 import com.accesscontrol.models.Comment;
-
+import com.accesscontrol.models.CustomUserDetails;
 import com.accesscontrol.repositories.IssueRepository;
 import com.accesscontrol.repositories.UserRepository;
 import com.accesscontrol.services.CommentService;

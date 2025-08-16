@@ -79,7 +79,7 @@ const errorMessage = ref('')
 const handleSubmit = async () => {
   try {
     await projectStore.createProject(project)
-    router.push('/projects')
+    router.push({name: "Project"})
   } catch (error: any) {
     errorMessage.value = error?.response?.data?.errorMessage || 'Failed to save project'
   }

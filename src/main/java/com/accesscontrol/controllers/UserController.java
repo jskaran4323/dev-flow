@@ -1,8 +1,8 @@
 package com.accesscontrol.controllers;
 
-import com.accesscontrol.config.CustomUserDetails;
 import com.accesscontrol.dto.response.UserDto;
 import com.accesscontrol.mapper.UserMapper;
+import com.accesscontrol.models.CustomUserDetails;
 import com.accesscontrol.models.User;
 import com.accesscontrol.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

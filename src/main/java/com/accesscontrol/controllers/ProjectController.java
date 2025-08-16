@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import com.accesscontrol.config.CustomUserDetails;
 import com.accesscontrol.dto.response.ProjectResponse;
 import com.accesscontrol.mapper.ProjectMapper;
+import com.accesscontrol.models.CustomUserDetails;
 import com.accesscontrol.models.Project;
 import com.accesscontrol.models.User;
 import com.accesscontrol.repositories.ProjectRepository;
