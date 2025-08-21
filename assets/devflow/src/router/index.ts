@@ -7,14 +7,14 @@ import Home from '../pages/Home.vue'
 import Project from '../pages/Project/Project.vue'
 import ProjectForm from '../pages/Project/ProjectForm.vue'
 import SelectProject from '../pages/Project/SelectProject.vue'
-import Issues from '../pages/issues/Issues.vue'
-import IssueForm from '../pages/issues/IssueForm.vue'
+import Issues from '../pages/Issues/Issues.vue'
+import IssueForm from '../pages/Issues/IssueForm.vue'
 import ProjectDetails from '../pages/Project/ProjectDetails.vue'
 import ProjectKanban from '../pages/ProjectKanban.vue'
 import PublicProjects from '../pages/Project/PublicProjects.vue'
 import UserProfile from '../pages/user/UserProfile.vue'
 import AdminDashboard from '../pages/AdminDashboard.vue'
-import IssueDetails from '../pages/issues/IssueDetails.vue'
+import IssueDetails from '../pages/Issues/IssueDetails.vue'
 
 // NEW
 import About from '../pages/About.vue'
@@ -26,10 +26,9 @@ const routes = [
   { path: '/register', component: Register },
   { path: '/dashboard', component: DashBoard },
 
-  { path: '/about', component: About, name: 'About' },     // NEW
-  { path: '/team', component: Team, name: 'Team' },         // NEW
-
-  { path: '/projects', component: Project },
+  { path: '/about', component: About, name: 'About' },     
+  { path: '/team', component: Team, name: 'Team' },        
+  { path: '/projects', component: Project, name: "Project" },
   { path: '/projects/new', component: ProjectForm },
   { path: '/projects/:id/edit', component: ProjectForm },
 
@@ -42,8 +41,14 @@ const routes = [
   { path: '/projects/:projectId/issues/new', component: SelectProject }, // (left as-is per your current routes)
   { path: '/projects/:projectId', name: 'ProjectDetail', component: ProjectDetails },
   { path: '/issues/:id', name: 'IssueDetails', component: IssueDetails },
+  
+  { path: '/projects/:projectId/issues', name: 'Issues', component: Issues },
+  
+
   { path: '/projects/:projectId/kanban', name: 'ProjectKanban', component: ProjectKanban },
+  
   { path: '/public-projects', name: 'PublicProjects', component: PublicProjects },
+
   { path: '/profile', name: 'UserProfile', component: UserProfile },
   { path: '/admin', name: 'AdminDashboard', component: AdminDashboard }
 ]

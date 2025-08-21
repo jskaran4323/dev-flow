@@ -86,6 +86,7 @@ function deleteUser(userId: string) {
 
 function editUser(user: any) {
   const newName = prompt('Enter new full name:', user.fullName)
+ 
   if (newName) {
     adminStore.updateUser(user.userId, { fullName: newName })
   }

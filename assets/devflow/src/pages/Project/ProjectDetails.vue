@@ -4,10 +4,10 @@
     <section v-if="loading" class="py-10">
       <p class="text-sm text-muted-foreground">Loading project details...</p>
     </section>
-
+    <!-- TODO: want to show project info here, maybe add join request button to the project card itself -->
     <!-- Content -->
     <section v-else class="space-y-6">
-      <!-- Header -->
+      
       <header>
         <h2 class="text-2xl font-semibold tracking-tight">
           {{ project?.name }}
@@ -15,8 +15,12 @@
         <p class="text-sm text-muted-foreground mt-1">
           {{ project?.description }}
         </p>
+        <p class="text-sm text-muted-foreground mt-1">
+        {{ project?.status }} 
+        </p>
         <p class="mt-3 text-sm">
-          🧑 <span class="text-muted-foreground">Owner:</span>
+           <span class="text-muted-foreground">Owner: </span>
+           
           <span class="font-medium text-foreground">{{ project?.owner?.fullName || 'Unknown' }}</span>
         </p>
       </header>
@@ -69,7 +73,7 @@
 
       <!-- Error -->
       <p v-if="errorMessage" class="text-sm text-destructive">
-        {{ errorMessage }}
+        Be a Member to access the Project Click Request to Join
       </p>
     </section>
   </BaseLayout>

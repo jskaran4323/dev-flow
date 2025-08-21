@@ -41,6 +41,7 @@ if (issue.getProject() != null) {
     projectResponse = new ProjectResponse(
          issue.getProject().getId(),
          issue.getProject().getName(),
+         issue.getProject().getProjectStatusEnum(),
          issue.getProject().getDescription(),
          toProjectUserResponse(issue.getProject().getOwner())
     );
@@ -51,7 +52,7 @@ if (issue.getProject() != null) {
             issue.getId(),
             issue.getTitle(),
             issue.getDescription(),
-            issue.getStatus(),
+            issue.getIssueTypeEnum(),
             labelDtos,
             commentDtos,
             assigneeResponse,

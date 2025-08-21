@@ -7,7 +7,8 @@ export const getAISuggestions = async (payload: {
   description: string
 }) => {
   const res = await request.post('/ai/suggest-labels', payload)
-  return res.data 
+  
+  return res
 }
 export const addIssue = (projectId: string, data:{
   title: string

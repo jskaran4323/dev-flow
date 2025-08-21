@@ -13,8 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.accesscontrol.enums.IssueType;
 @Entity
 @Getter
 @Setter
@@ -33,7 +32,13 @@ public class Issue {
     private String description;
 
     private int status;
-
+    public IssueType getIssueTypeEnum(){
+        return IssueType.fromValue(this.status); 
+    }
+     
+    public void setIssueTypeEnum(IssueType value){
+     this.status = value.getValue();
+    }
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id")
 

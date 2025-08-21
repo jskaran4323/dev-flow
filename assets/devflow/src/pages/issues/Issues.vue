@@ -12,8 +12,13 @@
       </Button>
     </section>
 
+    <!-- Loading State -->
+    <section v-if="loading" class="py-10 text-center">
+      <p class="text-muted-foreground">Loading issues...</p>
+    </section>
+
     <!-- Empty State -->
-    <section v-if="issues.length === 0" class="py-10">
+    <section v-else-if="issues.length === 0" class="py-10">
       <div class="card text-center">
         <h3 class="text-lg font-medium">No issues found</h3>
         <p class="text-sm text-muted-foreground mt-1">
@@ -44,20 +49,27 @@
 
           <!-- Description -->
           <p class="mt-2 text-sm text-muted-foreground line-clamp-3">
-            {{ issue.description.length > 100 ? issue.description.slice(0, 100) + '...' : issue.description }}
+            {{ issue.description && issue.description.length > 100
+                ? issue.description.slice(0, 100) + '...'
+                : issue.description }}
           </p>
 
           <!-- Assignee -->
           <p class="mt-3 text-sm">
             <span class="text-muted-foreground">👤 Assignee:</span>
-            <span class="font-medium text-foreground">
-              {{ issue.assignee.fullName }}
-            </span>
-            <span class="text-muted-foreground">({{ issue.assignee.username }})</span>
+            <template v-if="issue.assignee">
+              <span class="font-medium text-foreground">
+                {{ issue.assignee.fullName }}
+              </span>
+              <span class="text-muted-foreground">
+                ({{ issue.assignee.username }})
+              </span>
+            </template>
+            <span v-else class="italic text-muted-foreground">Unassigned</span>
           </p>
 
           <!-- Labels -->
-          <div class="mt-3">
+          <div class="mt-3" v-if="issue.labels && issue.labels.length">
             <span class="text-sm text-muted-foreground">🏷️ Labels:</span>
             <div class="mt-2 flex flex-wrap gap-2">
               <Badge
@@ -66,7 +78,7 @@
                 variant="default"
                 rounded
               >
-                {{ label.type }}
+                {{ LabelStatusType[label.type] || label.type }}
               </Badge>
             </div>
           </div>
@@ -101,12 +113,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import BaseLayout from '../../layouts/BaseLayout.vue'
 import { useIssueStore } from '../../stores/issue'
 import Button from '../../components/ui/Button.vue'
 import Badge from '../../components/ui/Badge.vue'
+import { LabelStatusType } from '../../enums/LabelStatusType'
 
 const route = useRoute()
 const router = useRouter()
@@ -114,9 +127,12 @@ const projectId = route.params.projectId as string
 const issueStore = useIssueStore()
 
 const issues = computed(() => issueStore.issues)
+const loading = ref(true)
 
 onMounted(async () => {
+  loading.value = true
   await issueStore.fetchIssues(projectId)
+  loading.value = false
 })
 
 function goToCreateIssue() {
@@ -125,6 +141,8 @@ function goToCreateIssue() {
 
 const deleteIssue = async (id: string) => {
   await issueStore.deleteIssue(id)
+  
+  await issueStore.fetchIssues(projectId)
 }
 
 const formatDate = (dateString: string) => {

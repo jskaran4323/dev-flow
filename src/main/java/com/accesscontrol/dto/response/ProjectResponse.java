@@ -1,9 +1,9 @@
 package com.accesscontrol.dto.response;
 
-import java.util.List;
 import java.util.UUID;
 
-import com.accesscontrol.models.ProjectUser;
+import com.accesscontrol.enums.ProjectStatusType;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +14,7 @@ import lombok.Data;
 public class ProjectResponse {
     private UUID id;
     private String name;
+    private ProjectStatusType status;
     private String description;
     private ProjectUserResponse owner; 
    

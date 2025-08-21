@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { getIssueById, getProjectIssues, updateIssue, deleteIssue, addIssue,getAISuggestions } from "../services/devFlow/issue";
+import type { IssueStatusType } from "../enums/IssueStatusType";
 
 
 
@@ -7,11 +8,15 @@ export interface Label {
     id: string
     type: number
   }
+  export interface AISuggestion {
+    label: number
+    confidence: number
+}
 export interface Issue {
     id: string
     title: string,
     description: string 
-    status: 'OPEN' | 'IN_PROGRESS' | 'CLOSED'
+    status: IssueStatusType
     assignee: {
         userId: string
         username: string,
@@ -33,7 +38,7 @@ export const useIssueStore = defineStore('issue', {
         selectedIssue: null as Issue | null,
         loading: false,
         error: "" as string | null,
-        suggestedLabels: [] as number[]
+        suggestedLabels: [] as AISuggestion[]
     }),
     getters: {
         getIssueById: (state) => (id: string) => {
@@ -131,9 +136,11 @@ export const useIssueStore = defineStore('issue', {
                 const data = await getAISuggestions({ title, description })
                 console.log(data);
                 
-                this.suggestedLabels = data.suggestedLabels 
+                this.suggestedLabels = data.suggestions || []
             } catch (err: any) {
                 this.error = err.response?.data?.message || 'AI label suggestion failed'
+                
+                this.suggestedLabels = []
             }
     }
 }

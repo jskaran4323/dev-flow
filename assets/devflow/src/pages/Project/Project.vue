@@ -18,6 +18,11 @@
       </Card>
     </section>
 
+
+    <section v-if="loading" class="py-10 text-center">
+      <p class="text-muted-foreground">Loading issues...</p>
+    </section>
+
     <!-- Project grid -->
     <section v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card
@@ -75,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import BaseLayout from '../../layouts/BaseLayout.vue'
@@ -87,9 +92,11 @@ import Badge from '../../components/ui/Badge.vue'
 const router = useRouter()
 const projectStore = useProjectStore()
 const { projects } = storeToRefs(projectStore)
-
+const loading = ref(true)
 onMounted(async () => {
+  loading.value  = true
   await projectStore.fetchAllProjects()
+  loading.value = false
 })
 
 const goToProjectDetails = (projectId: string) => {

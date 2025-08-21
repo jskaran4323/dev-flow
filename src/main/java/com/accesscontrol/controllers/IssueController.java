@@ -6,10 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.accesscontrol.config.CustomUserDetails;
 import com.accesscontrol.dto.request.IssueRequest;
 import com.accesscontrol.dto.response.IssueResponse;
 import com.accesscontrol.mapper.IssueMapper;
+import com.accesscontrol.models.CustomUserDetails;
 import com.accesscontrol.models.Issue;
 import com.accesscontrol.models.Label;
 import com.accesscontrol.models.Project;
@@ -58,17 +58,15 @@ public class IssueController {
     
     
         
-        // Handle labels by type - find or create labels for this project
+       
         Set<Label> labels = new HashSet<>();
         if (request.getLabels() != null && !request.getLabels().isEmpty()) {
             for (Integer labelType : request.getLabels()) {
-                // Try to find existing label for this project and type
                 Label existingLabel = labelRepository.findByProjectAndType(project, labelType);
                 
                 if (existingLabel != null) {
                     labels.add(existingLabel);
                 } else {
-                    // Create new label for this project
                     Label newLabel = new Label();
                     newLabel.setType(labelType);
                     newLabel.setProject(project);
@@ -132,18 +130,18 @@ public class IssueController {
                 assigneeOpt.ifPresent(existing::setAssignee);
             }
             
-            // Update labels - find or create labels for this project
+         
             Set<Label> labels = new HashSet<>();
             if (request.getLabels() != null && !request.getLabels().isEmpty()) {
                 Project project = existing.getProject();
                 for (Integer labelType : request.getLabels()) {
-                    // Try to find existing label for this project and type
+                  
                     Label existingLabel = labelRepository.findByProjectAndType(project, labelType);
                     
                     if (existingLabel != null) {
                         labels.add(existingLabel);
                     } else {
-                        // Create new label for this project
+                
                         Label newLabel = new Label();
                         newLabel.setType(labelType);
                         newLabel.setProject(project);

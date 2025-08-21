@@ -39,11 +39,10 @@ public class User {
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
-    // ✅ Timestamp fields
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // ✅ Convert int <-> enum
+    
     public UserType getUserTypeEnum() {
         return UserType.fromValue(this.userType);
     }
@@ -52,7 +51,7 @@ public class User {
         this.userType = type.getValue();
     }
 
-    // ✅ Auto-set timestamps
+   
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();

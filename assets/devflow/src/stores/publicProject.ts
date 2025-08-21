@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import { getPublicProjects } from '../services/devFlow/project'
+import type { ProjectStatusType } from '../enums/ProjectStatusType'
 
-// 1. ✅ Define the interface
+
 export interface PublicProject {
   id: string
   name: string
   description: string
-  status: 'ACTIVE' | 'IN_PROGRESS' | 'COMPLETED'
+  status: ProjectStatusType
   createdAt: string
   updatedAt: string
   owner: {
@@ -35,8 +36,6 @@ export const usePublicProjectStore = defineStore('publicProject', {
     async fetchProjects() {
       this.loading = true
       this.error = null
-      
-
       try {
         const res = await getPublicProjects()
         console.log(res);
