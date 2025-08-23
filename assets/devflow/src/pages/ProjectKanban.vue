@@ -33,8 +33,8 @@
             <!-- Labels -->
             <div v-if="issue.labels && issue.labels.length" class="mt-2 flex flex-wrap gap-1.5">
               <Badge
-                v-for="label in issue.labels"
-                :key="label.id || label"
+                v-for="(label, index) in issue.labels"
+                :key="typeof label === 'object' ? label.id : `${issue.id}-${index}`"
                 :variant="getLabelVariant(getLabelType(label))"
                 rounded
               >

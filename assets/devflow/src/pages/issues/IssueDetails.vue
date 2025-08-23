@@ -119,7 +119,6 @@ import Badge from '../../components/ui/Badge.vue'
 import Textarea from '../../components/ui/Textarea.vue'
 import Button from '../../components/ui/Button.vue'
 import { LabelStatusType } from '../../enums/LabelStatusType'
-import { IssueStatusType } from '../../enums/IssueStatusType'
 
 const route = useRoute()
 const issueId = route.params.id as string

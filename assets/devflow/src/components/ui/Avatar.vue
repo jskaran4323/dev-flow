@@ -16,16 +16,20 @@ const props = withDefaults(defineProps<AvatarProps>(), {
 const emit = defineEmits<{
   (e: 'click'): void
 }>()
+
+const handleClick = () => {
+  emit('click')
+}
 </script>
 
 <template>
   <img
-    :src="src || 'https://via.placeholder.com/150?text=Avatar'"
-    :alt="alt"
-    :width="size"
-    :height="size"
+    :src="props.src || 'https://via.placeholder.com/150?text=Avatar'"
+    :alt="props.alt"
+    :width="props.size"
+    :height="props.size"
     class="object-cover"
-    :class="rounded ? 'rounded-full' : 'rounded-md'"
-    @click="$emit('click')"
+    :class="props.rounded ? 'rounded-full' : 'rounded-md'"
+    @click="handleClick"
   />
 </template>

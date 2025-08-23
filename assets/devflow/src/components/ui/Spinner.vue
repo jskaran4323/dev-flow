@@ -17,7 +17,7 @@ const sizeMap: Record<'sm' | 'md' | 'lg', string> = {
 
 <template>
   <svg
-    :class="['animate-spin text-primary', sizeMap[size]]"
+    :class="['animate-spin text-primary', sizeMap[props.size]]"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"

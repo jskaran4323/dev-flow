@@ -17,7 +17,7 @@
     <ul v-else class="mt-4 divide-y divide-border">
       <li
         v-for="member in members"
-        :key="member.id || member.userId"
+        :key="member.userId"
         class="py-3 flex items-center justify-between"
       >
         <div class="min-w-0">

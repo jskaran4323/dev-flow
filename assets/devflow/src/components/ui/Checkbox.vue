@@ -44,7 +44,7 @@ const isChecked = () => {
 </script>
 
 <template>
-  <label :for="id" class="inline-flex items-center gap-2 text-sm select-none cursor-pointer" :class="class">
+  <label :for="id" class="inline-flex items-center gap-2 text-sm select-none cursor-pointer" :class="props.class">
     <input
       :id="id"
       type="checkbox"

@@ -41,40 +41,25 @@
       </div>
 
       <!-- Labels -->
-      <!-- <div class="mb-4">
+      <div class="mb-4">
         <label class="block text-sm font-medium">Labels</label>
-        <div class="mt-2 rounded-lg border border-input bg-background p-3 max-h-52 overflow-y-auto">
-          <Checkbox
-            v-for="(labelName, index) in labelTypeMap"
-            :key="index"
-            v-model="issue.labels"
-            :value="index"
-            :id="`label-${index}`"
-            :label="labelName"
-            class="mr-4 mb-2"
-          />
+        <div class="mt-2">
+          <select 
+            v-model="issue.labels" 
+            multiple
+            class="w-full rounded-lg border border-input bg-background p-3 max-h-52 overflow-y-auto focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option 
+              v-for="(labelName, index) in labelTypeMap" 
+              :key="index" 
+              :value="index"
+            >
+              {{ labelName }}
+            </option>
+          </select>
         </div>
         <p class="mt-1 text-xs text-muted-foreground">Select one or more labels for this issue</p>
-      </div> -->
-      <div class="mb-4">
-  <label class="block text-sm font-medium">Labels</label>
-  <div class="mt-2">
-    <select 
-      v-model="issue.labels" 
-      multiple
-      class="w-full rounded-lg border border-input bg-background p-3 max-h-52 overflow-y-auto focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-    >
-      <option 
-        v-for="(labelName, index) in labelTypeMap" 
-        :key="index" 
-        :value="index"
-      >
-        {{ labelName }}
-      </option>
-    </select>
-  </div>
-  <p class="mt-1 text-xs text-muted-foreground">Select one or more labels for this issue</p>
-</div>
+      </div>
 
       <!-- AI Loading -->
       <div v-if="aiLoading" class="mb-4 rounded-lg border border-border bg-muted px-3 py-2 text-sm">
@@ -83,19 +68,19 @@
 
       <!-- Suggested Labels -->
       <div v-if="suggestedLabels.length > 0" class="mb-4 rounded-lg border border-border bg-muted px-3 py-2 text-sm">
-  <span class="mr-2">🤖 AI Suggested:</span>
-  <span
-    v-for="labelNum in suggestedLabels"
-    :key="labelNum"
-    class="inline-flex items-center rounded-full bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground mr-2 cursor-pointer"
-  
-  >
-    {{ labelTypeMap[labelNum] }}
-    <span class="ml-1 text-xs opacity-75">
-      ({{ Math.round(issueStore.suggestedLabels.find(s => s.label === labelNum)?.confidence * 100) }}%)
-    </span>
-  </span>
-</div>
+        <span class="mr-2">🤖 AI Suggested:</span>
+        <span
+          v-for="labelNum in suggestedLabels"
+          :key="labelNum"
+          class="inline-flex items-center rounded-full bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground mr-2 cursor-pointer"
+        
+        >
+          {{ labelTypeMap[labelNum] }}
+          <span class="ml-1 text-xs opacity-75">
+            ({{ Math.round((issueStore.suggestedLabels.find(s => s.label === labelNum)?.confidence || 0) * 100) }}%)
+          </span>
+        </span>
+      </div>
 
       <!-- Submit -->
       <Button type="submit" variant="primary" size="lg" class="w-full">
@@ -122,7 +107,6 @@ import { IssueStatusType } from '../../enums/IssueStatusType'
 import Input from '../../components/ui/Input.vue'
 import Textarea from '../../components/ui/Textarea.vue'
 import Select from '../../components/ui/Select.vue'
-import Checkbox from '../../components/ui/Checkbox.vue'
 import Button from '../../components/ui/Button.vue'
 
 const route = useRoute()
@@ -175,7 +159,8 @@ watch(
     if (title.length > 15 || description.length > 25) {
       aiSuggestionTimer = setTimeout(async () => {
         await issueStore.fetchAISuggestions(title, description)
-        issue.labels = [...issueStore.suggestedLabels]
+        // Extract only the label numbers from suggested labels
+        issue.labels = issueStore.suggestedLabels.map(suggestion => suggestion.label)
       }, 10000)
     }
   },
