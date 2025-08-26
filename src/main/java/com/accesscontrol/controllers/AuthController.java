@@ -45,13 +45,15 @@ public class AuthController {
         String token = jwtUtil.generateTokenFromUserType(user);
 
         // Set HttpOnly JWT cookie
+        // In login
         ResponseCookie cookie = ResponseCookie.from("token", token)
                 .httpOnly(true)
-                .secure(false) // true in prod with HTTPS
+                .secure(true)          // must be true on Render (HTTPS)
                 .path("/")
                 .maxAge(Duration.ofDays(1))
-                .sameSite("Lax")
+                .sameSite("None")      // CRUCIAL: allow cross-site cookies
                 .build();
+
 
         // Return user info (not token)
         LoginResponse loginResponse = new LoginResponse(user.getUsername(), user.getUserTypeEnum().name());
@@ -66,11 +68,12 @@ public class AuthController {
         // Clear the cookie
         ResponseCookie cookie = ResponseCookie.from("token", "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge(0)
-                .sameSite("Lax")
+                .sameSite("None")
                 .build();
+
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
