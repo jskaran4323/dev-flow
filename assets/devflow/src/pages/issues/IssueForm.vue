@@ -22,10 +22,11 @@
       <!-- Status -->
       <div class="mb-4">
         <label class="block text-sm font-medium mb-1">Status</label>
-        <Select v-model="issue.status">
-          <option :value="IssueStatusType.OPEN">OPEN</option>
-          <option :value="IssueStatusType.IN_PROGRESS">IN PROGRESS</option>
-          <option :value="IssueStatusType.CLOSED">CLOSED</option>
+        <Select v-model.number="issue.status">
+          <option disabled value="">Select status</option>
+          <option v-for="opt in issueStatusOptions" :key="opt.value" :value="opt.value">
+            {{ opt.label }}
+          </option>
         </Select>
       </div>
 
@@ -43,45 +44,45 @@
       <!-- Labels with Checkboxes -->
       <div class="mb-4">
         <label class="block text-sm font-medium mb-2">Labels</label>
-        
+
         <!-- Multi-select with checkboxes -->
         <div class="border border-input rounded-lg p-3 bg-background max-h-52 overflow-y-auto space-y-2">
-          <label 
-            v-for="(labelName, index) in LabelStatusType" 
-            :key="index"
+          <label
+            v-for="opt in labelOptions"
+            :key="opt.value"
             class="flex items-center space-x-3 cursor-pointer hover:bg-muted/50 p-2 rounded-md transition-colors"
           >
-            <input 
-              type="checkbox" 
-              :value="index"
+            <input
+              type="checkbox"
+              :value="opt.value"
               v-model="issue.labels"
               class="h-4 w-4 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 border-input rounded"
-            >
-            <span class="text-sm select-none">{{ labelName }}</span>
+            />
+            <span class="text-sm select-none">{{ opt.label }}</span>
           </label>
         </div>
 
         <!-- Selected Labels Display -->
         <div v-if="issue.labels.length > 0" class="mt-3">
           <div class="flex flex-wrap gap-2">
-            <span 
-              v-for="labelIndex in issue.labels" 
-              :key="labelIndex"
+            <span
+              v-for="labelValue in issue.labels"
+              :key="labelValue"
               class="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-full"
             >
-              {{ LabelStatusType[labelIndex] }}
-              <button 
+              {{ LabelStatusType[labelValue] }}
+              <button
                 type="button"
-                @click="removeLabel(labelIndex)"
+                @click="removeLabel(labelValue)"
                 class="text-primary/70 hover:text-primary hover:bg-primary/20 rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium"
-                :title="`Remove ${LabelStatusType[labelIndex]} label`"
+                :title="`Remove ${LabelStatusType[labelValue]} label`"
               >
                 ×
               </button>
             </span>
           </div>
         </div>
-        
+
         <p class="mt-1 text-xs text-muted-foreground">Select one or more labels for this issue</p>
       </div>
 
@@ -101,8 +102,8 @@
             @click="toggleSuggestedLabel(labelNum)"
             :class="[
               'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer',
-              issue.labels.includes(labelNum) 
-                ? 'bg-primary text-primary-foreground' 
+              issue.labels.includes(labelNum)
+                ? 'bg-primary text-primary-foreground'
                 : 'bg-primary/20 text-primary hover:bg-primary/30'
             ]"
           >
@@ -134,13 +135,13 @@ import { useIssueStore } from '../../stores/issue'
 import { useTeamStore } from '../../stores/teams'
 import BaseLayout from '../../layouts/BaseLayout.vue'
 import { IssueStatusType } from '../../enums/IssueStatusType'
+import { LabelStatusType } from '../../enums/LabelStatusType'
 
 // UI primitives
 import Input from '../../components/ui/Input.vue'
 import Textarea from '../../components/ui/Textarea.vue'
 import Select from '../../components/ui/Select.vue'
 import Button from '../../components/ui/Button.vue'
-import { LabelStatusType } from '../../enums/LabelStatusType'
 
 const route = useRoute()
 const router = useRouter()
@@ -149,15 +150,31 @@ const aiLoading = ref(false)
 const issueStore = useIssueStore()
 const teamStore = useTeamStore()
 
+// Helper: turn numeric enums into [{value, label}]
+function enumToOptions<T extends object>(en: T) {
+  return Object.keys(en)
+    .filter(k => !isNaN(Number(k))) // only numeric keys
+    .map(k => {
+      const value = Number(k)
+      const label = (en as any)[value] as string
+      return { value, label }
+    })
+}
+
+const issueStatusOptions = computed(() => enumToOptions(IssueStatusType))
+const labelOptions = computed(() => enumToOptions(LabelStatusType))
+
 const issue = reactive({
   title: '',
   description: '',
-  status: '',
+  // keep status numeric; default to OPEN if you want:
+  status: IssueStatusType.OPEN as number | '' ,
   assigneeId: '',
   labels: [] as number[]
 })
 
 const errorMessage = ref('')
+
 const suggestedLabels = computed(() => {
   return issueStore.suggestedLabels?.map(suggestion => suggestion.label) || []
 })
@@ -168,34 +185,35 @@ onMounted(() => {
   teamStore.fetchTeam(projectId)
 })
 
-
 let aiSuggestionTimer: ReturnType<typeof setTimeout> | null = null
 
-const removeLabel = (labelIndex: number) => {
-  const index = issue.labels.indexOf(labelIndex);
-  if (index > -1) {
-    issue.labels.splice(index, 1);
-  }
+const removeLabel = (labelValue: number) => {
+  issue.labels = issue.labels.filter(x => x !== labelValue)
 }
+
 const toggleSuggestedLabel = (labelNum: number) => {
-  const index = issue.labels.indexOf(labelNum);
-  if (index > -1) {
-    issue.labels.splice(index, 1);
-  } else {
-    issue.labels.push(labelNum);
-  }
+  const idx = issue.labels.indexOf(labelNum)
+  if (idx > -1) issue.labels.splice(idx, 1)
+  else issue.labels.push(labelNum)
 }
 
 watch(
   () => [issue.title, issue.description],
   async ([title, description]) => {
     if (aiSuggestionTimer) clearTimeout(aiSuggestionTimer)
-    if (title.length > 15 || description.length > 25) {
+    if ((title?.length || 0) > 15 || (description?.length || 0) > 25) {
       aiSuggestionTimer = setTimeout(async () => {
-        await issueStore.fetchAISuggestions(title, description)
-        // Extract only the label numbers from suggested labels
-        issue.labels = issueStore.suggestedLabels.map(suggestion => suggestion.label)
-      }, 10000)
+        aiLoading.value = true
+        try {
+          await issueStore.fetchAISuggestions(title, description)
+          // Merge suggestions without duplicating
+          const fromAI = issueStore.suggestedLabels.map(s => s.label)
+          const merged = new Set<number>([...issue.labels, ...fromAI])
+          issue.labels = Array.from(merged)
+        } finally {
+          aiLoading.value = false
+        }
+      }, 800) 
     }
   },
   { immediate: false }
@@ -203,17 +221,20 @@ watch(
 
 const handleSubmit = async () => {
   try {
+    if (issue.status === '') {
+      throw new Error('Please select a status')
+    }
     const payload = {
       title: issue.title,
       description: issue.description,
-      status: issue.status,
-      assigneeId: issue.assigneeId,
+      status: issue.status as number,
+      assigneeId: issue.assigneeId || null,
       labels: issue.labels
     }
     await issueStore.createIssue(projectId, payload)
-    router.push({ name: "Issues" })
+    router.push({ name: 'Issues' })
   } catch (err: any) {
-    errorMessage.value = err.response?.data?.message || 'Failed to create issue'
+    errorMessage.value = err.response?.data?.message || err.message || 'Failed to create issue'
   }
 }
 </script>
