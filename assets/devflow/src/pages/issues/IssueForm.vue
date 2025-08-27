@@ -40,24 +40,48 @@
         </Select>
       </div>
 
-      <!-- Labels -->
+      <!-- Labels with Checkboxes -->
       <div class="mb-4">
-        <label class="block text-sm font-medium">Labels</label>
-        <div class="mt-2">
-          <select 
-            v-model="issue.labels" 
-            multiple
-            class="w-full rounded-lg border border-input bg-background p-3 max-h-52 overflow-y-auto focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        <label class="block text-sm font-medium mb-2">Labels</label>
+        
+        <!-- Multi-select with checkboxes -->
+        <div class="border border-input rounded-lg p-3 bg-background max-h-52 overflow-y-auto space-y-2">
+          <label 
+            v-for="(labelName, index) in LabelStatusType" 
+            :key="index"
+            class="flex items-center space-x-3 cursor-pointer hover:bg-muted/50 p-2 rounded-md transition-colors"
           >
-            <option 
-              v-for="(labelName, index) in labelTypeMap" 
-              :key="index" 
+            <input 
+              type="checkbox" 
               :value="index"
+              v-model="issue.labels"
+              class="h-4 w-4 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 border-input rounded"
             >
-              {{ labelName }}
-            </option>
-          </select>
+            <span class="text-sm select-none">{{ labelName }}</span>
+          </label>
         </div>
+
+        <!-- Selected Labels Display -->
+        <div v-if="issue.labels.length > 0" class="mt-3">
+          <div class="flex flex-wrap gap-2">
+            <span 
+              v-for="labelIndex in issue.labels" 
+              :key="labelIndex"
+              class="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-full"
+            >
+              {{ LabelStatusType[labelIndex] }}
+              <button 
+                type="button"
+                @click="removeLabel(labelIndex)"
+                class="text-primary/70 hover:text-primary hover:bg-primary/20 rounded-full w-4 h-4 flex items-center justify-center text-xs font-medium"
+                :title="`Remove ${LabelStatusType[labelIndex]} label`"
+              >
+                ×
+              </button>
+            </span>
+          </div>
+        </div>
+        
         <p class="mt-1 text-xs text-muted-foreground">Select one or more labels for this issue</p>
       </div>
 
@@ -68,18 +92,26 @@
 
       <!-- Suggested Labels -->
       <div v-if="suggestedLabels.length > 0" class="mb-4 rounded-lg border border-border bg-muted px-3 py-2 text-sm">
-        <span class="mr-2">🤖 AI Suggested:</span>
-        <span
-          v-for="labelNum in suggestedLabels"
-          :key="labelNum"
-          class="inline-flex items-center rounded-full bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground mr-2 cursor-pointer"
-        
-        >
-          {{ labelTypeMap[labelNum] }}
-          <span class="ml-1 text-xs opacity-75">
-            ({{ Math.round((issueStore.suggestedLabels.find(s => s.label === labelNum)?.confidence || 0) * 100) }}%)
-          </span>
-        </span>
+        <div class="flex items-center flex-wrap gap-2">
+          <span class="text-muted-foreground">🤖 AI Suggested:</span>
+          <button
+            type="button"
+            v-for="labelNum in suggestedLabels"
+            :key="labelNum"
+            @click="toggleSuggestedLabel(labelNum)"
+            :class="[
+              'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer',
+              issue.labels.includes(labelNum) 
+                ? 'bg-primary text-primary-foreground' 
+                : 'bg-primary/20 text-primary hover:bg-primary/30'
+            ]"
+          >
+            {{ LabelStatusType[labelNum] }}
+            <span class="ml-1 text-xs opacity-75">
+              ({{ Math.round((issueStore.suggestedLabels.find(s => s.label === labelNum)?.confidence || 0) * 100) }}%)
+            </span>
+          </button>
+        </div>
       </div>
 
       <!-- Submit -->
@@ -108,6 +140,7 @@ import Input from '../../components/ui/Input.vue'
 import Textarea from '../../components/ui/Textarea.vue'
 import Select from '../../components/ui/Select.vue'
 import Button from '../../components/ui/Button.vue'
+import { LabelStatusType } from '../../enums/LabelStatusType'
 
 const route = useRoute()
 const router = useRouter()
@@ -128,7 +161,6 @@ const errorMessage = ref('')
 const suggestedLabels = computed(() => {
   return issueStore.suggestedLabels?.map(suggestion => suggestion.label) || []
 })
-console.log( suggestedLabels);
 
 const assignableUsers = computed(() => teamStore.assignableUsers)
 
@@ -136,21 +168,23 @@ onMounted(() => {
   teamStore.fetchTeam(projectId)
 })
 
-const labelTypeMap: Record<number, string> = {
-  0: 'BUG',
-  1: 'FEATURE',
-  2: 'ENHANCEMENT',
-  3: 'DOCUMENTATION',
-  4: 'URGENT',
-  5: 'DESIGN',
-  6: 'TEST',
-  7: 'PERFORMANCE',
-  8: 'SECURITY',
-  9: 'BACKEND',
-  10: 'FRONTEND'
-}
 
 let aiSuggestionTimer: ReturnType<typeof setTimeout> | null = null
+
+const removeLabel = (labelIndex: number) => {
+  const index = issue.labels.indexOf(labelIndex);
+  if (index > -1) {
+    issue.labels.splice(index, 1);
+  }
+}
+const toggleSuggestedLabel = (labelNum: number) => {
+  const index = issue.labels.indexOf(labelNum);
+  if (index > -1) {
+    issue.labels.splice(index, 1);
+  } else {
+    issue.labels.push(labelNum);
+  }
+}
 
 watch(
   () => [issue.title, issue.description],
@@ -177,7 +211,7 @@ const handleSubmit = async () => {
       labels: issue.labels
     }
     await issueStore.createIssue(projectId, payload)
-    router.push({name : "Issues"})
+    router.push({ name: "Issues" })
   } catch (err: any) {
     errorMessage.value = err.response?.data?.message || 'Failed to create issue'
   }
