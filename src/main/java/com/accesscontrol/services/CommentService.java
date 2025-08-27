@@ -10,5 +10,5 @@ public interface CommentService {
     List<Comment> getCommentByUserId(UUID id);
     Comment updateComment(Comment comment);
     void deleteComment(UUID id);
-
+    
 }

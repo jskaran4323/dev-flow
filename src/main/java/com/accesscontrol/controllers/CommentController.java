@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/api/issues/{issueId}/comments")
+@RequestMapping("/api/issues")
 @RequiredArgsConstructor
 public class CommentController {
 
@@ -32,7 +32,7 @@ public class CommentController {
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
 
-    @PostMapping
+    @PostMapping("/{issueId}/comments")
     public ResponseEntity<CommentDto> createComment(
         @PathVariable UUID issueId,
         @RequestBody CommentRequest request,
@@ -64,10 +64,19 @@ public class CommentController {
            return ResponseEntity.ok(CommentMapper.toDto(saved));
     }
 
-    //TODO: showing all comments need to filter through project id
-  @GetMapping
-public ResponseEntity<List<CommentDto>> getAllComments() {
-    List<Comment> comments = commentService.getAllComments();
+   //# can use but dont need right now
+//   @GetMapping
+// public ResponseEntity<List<CommentDto>> getAllComments() {
+//     List<Comment> comments = commentService.getAllComments();
+//     List<CommentDto> dtos = comments.stream()
+//         .map(CommentMapper::toDto)
+//         .collect(Collectors.toList());
+//     return ResponseEntity.ok(dtos);
+// }
+@GetMapping("/{issueId}/comments")
+public ResponseEntity<List<CommentDto>> getIssueComments(@PathVariable UUID issueId) {
+    
+    List<Comment> comments = commentService.getCommentByIssueId(issueId);
     List<CommentDto> dtos = comments.stream()
         .map(CommentMapper::toDto)
         .collect(Collectors.toList());
@@ -75,14 +84,14 @@ public ResponseEntity<List<CommentDto>> getAllComments() {
 }
 
     
-    @GetMapping("/{commentId}")
+    @GetMapping("/{issueId}/comments/{commentId}")
     public ResponseEntity<CommentDto> getSingleComment(@PathVariable UUID commentId){
         return commentService.getByCommentId(commentId)
             .map(CommentMapper::toDto).map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{commentId}")
+    @PutMapping("/{issueId}/comments/{commentId}")
     public ResponseEntity<CommentDto> updateComment(
         @PathVariable UUID commentId,
         @RequestBody Comment updatedComment

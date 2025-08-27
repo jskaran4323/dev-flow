@@ -14,7 +14,7 @@ import com.accesscontrol.models.Project;
 public interface IssueRepository extends JpaRepository<Issue, UUID> {
     Page<Issue> findByProject(Project Project, Pageable pageable);
     List<Issue> findByProjectId(UUID projectId);
-    
+    Optional<Issue> findWithCommentsById(UUID id);
     Page<Issue> findByAssigneeId(UUID assigneeId, Pageable pageable);
 
     

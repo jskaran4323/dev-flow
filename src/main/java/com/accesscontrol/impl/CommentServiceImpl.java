@@ -11,17 +11,22 @@ import com.accesscontrol.models.Comment;
 
 import com.accesscontrol.models.Issue;
 import com.accesscontrol.models.User;
+import com.accesscontrol.models.Project;
 import com.accesscontrol.repositories.CommentRepository;
 import com.accesscontrol.repositories.IssueRepository;
 import com.accesscontrol.repositories.UserRepository;
 import com.accesscontrol.services.CommentService;
+import com.accesscontrol.services.ProjectService;
 @Service
 public class CommentServiceImpl implements CommentService{
  
-    @Autowired
+  @Autowired
     private CommentRepository commentRepository;
+    @Autowired
     private IssueRepository issueRepository;
+    @Autowired
     private UserRepository userRepository;
+    
      
     @Override
     public Comment createComment(Comment comment) {
@@ -30,13 +35,12 @@ public class CommentServiceImpl implements CommentService{
       return commentRepository.save(comment);
     }
 
-    @Override
     public List<Comment> getCommentByIssueId(UUID id) {
-        return issueRepository.findById(id)
-                .map(Issue::getComments)
-                .orElse(Collections.emptyList());
-    }
-    
+     
+      return issueRepository.findWithCommentsById(id)   // use custom fetch; see repo below
+              .map(Issue::getComments)
+              .orElse(Collections.emptyList());
+  }
 
     @Override
 public List<Comment> getCommentByUserId(UUID id) {
@@ -65,5 +69,5 @@ public List<Comment> getCommentByUserId(UUID id) {
     public List<Comment> getAllComments() {
       return commentRepository.findAll();
     }
-    
+
 }

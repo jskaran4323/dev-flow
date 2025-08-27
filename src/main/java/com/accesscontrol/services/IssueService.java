@@ -11,10 +11,9 @@ public interface IssueService {
     Issue createIssue(Issue issue);
     Optional<Issue> getIssueById(UUID id);
     List<Issue> getProjectIssues(UUID projectId);
-    // Page<Issue> getIssueByProject(Project project);
-    //TODO: make more get models
     Page<Issue> findByAssigneeId(UUID assigneeId, Pageable pageable);
     public Issue updateIssue(Issue issue);
     public void deleteIssue(UUID id);
+    
     
 }

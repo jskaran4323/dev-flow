@@ -29,6 +29,10 @@ public class Comment {
    private String content;
    
    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "author_id")
   
    private User author;
