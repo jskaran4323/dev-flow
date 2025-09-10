@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LabelSuggestionDto {
-    private int label;      // e.g., "bug"
-    private double confidence; // 0.0–1.0
+  private int label; // e.g., "bug"
+  private double confidence; // 0.0–1.0
 }

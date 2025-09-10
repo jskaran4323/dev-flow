@@ -1,19 +1,14 @@
 package com.accesscontrol.models;
 
-
+import com.accesscontrol.enums.IssueType;
 import jakarta.persistence.*;
-
-import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.*;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
-
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.accesscontrol.enums.IssueType;
 @Entity
 @Getter
 @Setter
@@ -23,51 +18,43 @@ import com.accesscontrol.enums.IssueType;
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Issue {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-    private String title;
-    @Column
-    private String description;
 
-    private int status;
-    public IssueType getIssueTypeEnum(){
-        return IssueType.fromValue(this.status); 
-    }
-     
-    public void setIssueTypeEnum(IssueType value){
-     this.status = value.getValue();
-    }
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assignee_id")
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private UUID id;
 
-    private User assignee;
-    
+  private String title;
+  @Column private String description;
 
-     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    
-    private Project project;
+  private int status;
 
-    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
-   
-    @CreatedDate
-    private LocalDateTime createdAt;
+  public IssueType getIssueTypeEnum() {
+    return IssueType.fromValue(this.status);
+  }
 
+  public void setIssueTypeEnum(IssueType value) {
+    this.status = value.getValue();
+  }
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "assignee_id")
+  private User assignee;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "project_id")
+  private Project project;
 
-    @ManyToMany
-    @JoinTable(
-        name = "issue_labels",
-        joinColumns = @JoinColumn(name = "issue_id"),
-        inverseJoinColumns = @JoinColumn(name = "label_id")
-    )
-    private Set<Label> labels = new HashSet<>();
+  @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Comment> comments = new ArrayList<>();
 
+  @CreatedDate private LocalDateTime createdAt;
+
+  @LastModifiedDate private LocalDateTime updatedAt;
+
+  @ManyToMany
+  @JoinTable(
+      name = "issue_labels",
+      joinColumns = @JoinColumn(name = "issue_id"),
+      inverseJoinColumns = @JoinColumn(name = "label_id"))
+  private Set<Label> labels = new HashSet<>();
 }

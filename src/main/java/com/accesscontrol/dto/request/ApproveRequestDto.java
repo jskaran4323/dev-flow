@@ -1,9 +1,9 @@
 package com.accesscontrol.dto.request;
 
-import lombok.Data;
 import java.util.UUID;
+import lombok.Data;
 
 @Data
 public class ApproveRequestDto {
-    private UUID userId;
+  private UUID userId;
 }

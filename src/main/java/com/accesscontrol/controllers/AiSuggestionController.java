@@ -15,25 +15,32 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class AiSuggestionController {
 
-    private final AiSuggestionService aiSuggestionService;
+  private final AiSuggestionService aiSuggestionService;
 
-    @PostMapping("/suggest-labels")
-    public ResponseEntity<AiSuggestionResponse> suggestLabels(
-            @RequestBody AiSuggestionRequest request) {
-        
-        log.info("Received label suggestion request for: {}", request.getTitle());
-        
-        AiSuggestionResponse response = aiSuggestionService.suggest(request);
-        
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.internalServerError().body(response);
-        }
-    }
+  /**
+   * @param request
+   * @return list of suggestion label and confidence
+   */
+  @PostMapping("/suggest-labels")
+  public ResponseEntity<AiSuggestionResponse> suggestLabels(
+      @RequestBody AiSuggestionRequest request) {
 
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("AI Suggestion service is running");
+    log.info("Received label suggestion request for: {}", request.getTitle());
+
+    AiSuggestionResponse response = aiSuggestionService.suggest(request);
+
+    if (response.isSuccess()) {
+      return ResponseEntity.ok(response);
+    } else {
+      return ResponseEntity.internalServerError().body(response);
     }
+  }
+
+  /**
+   * @return just a test endpoint to check controller behaviour
+   */
+  @GetMapping("/health")
+  public ResponseEntity<String> health() {
+    return ResponseEntity.ok("AI Suggestion service is running");
+  }
 }

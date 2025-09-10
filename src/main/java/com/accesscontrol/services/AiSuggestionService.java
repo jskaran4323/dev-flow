@@ -5,5 +5,5 @@ import com.accesscontrol.dto.request.AiSuggestionRequest;
 import com.accesscontrol.dto.response.AiSuggestionResponse;
 
 public interface AiSuggestionService {
-    AiSuggestionResponse suggest(AiSuggestionRequest req);
+  AiSuggestionResponse suggest(AiSuggestionRequest req);
 }

@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatResponse {
-    
-    private String reply;
+
+  private String reply;
 }

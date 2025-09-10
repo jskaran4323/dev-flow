@@ -1,111 +1,93 @@
 package com.accesscontrol.controllers;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
-import com.accesscontrol.models.Issue;
-import com.accesscontrol.models.User;
 import com.accesscontrol.dto.CommentDto;
 import com.accesscontrol.dto.request.CommentRequest;
 import com.accesscontrol.mapper.CommentMapper;
 import com.accesscontrol.models.Comment;
 import com.accesscontrol.models.CustomUserDetails;
-import com.accesscontrol.repositories.IssueRepository;
+import com.accesscontrol.models.User;
 import com.accesscontrol.repositories.UserRepository;
 import com.accesscontrol.services.CommentService;
-
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/issues")
 @RequiredArgsConstructor
 public class CommentController {
 
-    private final CommentService commentService; 
-    private final IssueRepository issueRepository;
-    private final UserRepository userRepository;
+  private final CommentService commentService;
+  private final UserRepository userRepository;
 
-    @PostMapping("/{issueId}/comments")
-    public ResponseEntity<CommentDto> createComment(
-        @PathVariable UUID issueId,
-        @RequestBody CommentRequest request,
-            Authentication auth
-    ){
-        Optional<Issue> issueOpt = issueRepository.findById(issueId);
-        UUID authorId = request.getAuthorId();
-        User author;
-    
-        if (authorId != null) {
-            Optional<User> authorOpt = userRepository.findById(authorId);
-            if (authorOpt.isEmpty()) {
-                return ResponseEntity.badRequest().build(); 
-            }
-            author = authorOpt.get();
-        } else {
-             CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
-            author = userDetails.getUser();
-        }
-      
-
-        Comment comment = Comment.builder()
-            .content(request.getContent())
-            .author(author)
-            .issue(issueOpt.get())
-            .build();
-        
-          Comment saved = commentService.createComment(comment);
-           return ResponseEntity.ok(CommentMapper.toDto(saved));
+  /**
+   * @param issueId
+   * @param request
+   * @param auth
+   * @return add comments for a given issue POST api/issues/issue_id/comments
+   */
+  @PostMapping("/{issueId}/comments")
+  public ResponseEntity<CommentDto> createComment(
+      @PathVariable UUID issueId, @RequestBody CommentRequest request, Authentication auth) {
+    User author;
+    if (request.getAuthorId() != null) {
+      author =
+          userRepository
+              .findById(request.getAuthorId())
+              .orElseThrow(() -> new IllegalArgumentException("Author not found"));
+    } else {
+      CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+      author = userDetails.getUser();
     }
 
-   //# can use but dont need right now
-//   @GetMapping
-// public ResponseEntity<List<CommentDto>> getAllComments() {
-//     List<Comment> comments = commentService.getAllComments();
-//     List<CommentDto> dtos = comments.stream()
-//         .map(CommentMapper::toDto)
-//         .collect(Collectors.toList());
-//     return ResponseEntity.ok(dtos);
-// }
-@GetMapping("/{issueId}/comments")
-public ResponseEntity<List<CommentDto>> getIssueComments(@PathVariable UUID issueId) {
-    
-    List<Comment> comments = commentService.getCommentByIssueId(issueId);
-    List<CommentDto> dtos = comments.stream()
+    Comment created = commentService.createComment(issueId, request, author);
+    return ResponseEntity.ok(CommentMapper.toDto(created));
+  }
+
+  /**
+   * @param issueId
+   * @return list of comments GET api/issues/issue_id/comments
+   */
+  @GetMapping("/{issueId}/comments")
+  public ResponseEntity<List<CommentDto>> getIssueComments(@PathVariable UUID issueId) {
+    List<Comment> comments = commentService.getCommentsByIssueId(issueId);
+    return ResponseEntity.ok(comments.stream().map(CommentMapper::toDto).toList());
+  }
+
+  /**
+   * @param issueId
+   * @param commentId
+   * @return
+   */
+  @GetMapping("/{issueId}/comments/{commentId}")
+  public ResponseEntity<CommentDto> getSingleComment(
+      @PathVariable UUID issueId, @PathVariable UUID commentId) {
+    return commentService
+        .getCommentById(issueId, commentId)
         .map(CommentMapper::toDto)
-        .collect(Collectors.toList());
-    return ResponseEntity.ok(dtos);
-}
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
+  }
 
-    
-    @GetMapping("/{issueId}/comments/{commentId}")
-    public ResponseEntity<CommentDto> getSingleComment(@PathVariable UUID commentId){
-        return commentService.getByCommentId(commentId)
-            .map(CommentMapper::toDto).map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
-    }
+  @PutMapping("/{issueId}/comments/{commentId}")
+  public ResponseEntity<CommentDto> updateComment(
+      @PathVariable UUID issueId,
+      @PathVariable UUID commentId,
+      @RequestBody CommentRequest request) {
+    return commentService
+        .updateComment(issueId, commentId, request)
+        .map(CommentMapper::toDto)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
+  }
 
-    @PutMapping("/{issueId}/comments/{commentId}")
-    public ResponseEntity<CommentDto> updateComment(
-        @PathVariable UUID commentId,
-        @RequestBody Comment updatedComment
-    ) {
-        return commentService.getByCommentId(commentId).map(existing -> {
-            existing.setContent(updatedComment.getContent());
-            Comment updated  = commentService.updateComment(existing);
-            return ResponseEntity.ok(CommentMapper.toDto(updated));
-        }).orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable UUID commentId){
-        commentService.deleteComment(commentId);
-        return ResponseEntity.noContent().build();
-    }
+  @DeleteMapping("/{issueId}/comments/{commentId}")
+  public ResponseEntity<Void> deleteComment(
+      @PathVariable UUID issueId, @PathVariable UUID commentId) {
+    commentService.deleteComment(issueId, commentId);
+    return ResponseEntity.noContent().build();
+  }
 }

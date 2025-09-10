@@ -1,16 +1,13 @@
 package com.accesscontrol.models;
 
+import com.accesscontrol.enums.ProjectStatusType;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import com.accesscontrol.enums.ProjectStatusType;
-import com.accesscontrol.enums.UserType;
-
-import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @NoArgsConstructor
@@ -21,36 +18,32 @@ import lombok.*;
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Project {
-    @Id
-    @GeneratedValue()
-    private UUID id;
-    private String name;
-    private String description;
-    @Column(name = "status")
-    private int status;
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
-    
-    public ProjectStatusType getProjectStatusEnum() {
-        return ProjectStatusType.fromValue(this.status);
-    }
+  @Id @GeneratedValue() private UUID id;
+  private String name;
+  private String description;
 
-    public void setProjectStatusEnum(ProjectStatusType value) {
-        this.status = value.getValue();
-    }
+  @Column(name = "status")
+  private int status;
 
-@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
-private List<Issue> issues;
+  @ManyToOne
+  @JoinColumn(name = "owner_id", nullable = false)
+  private User owner;
 
-@OneToMany(mappedBy = "project",cascade = CascadeType.REMOVE, orphanRemoval = true)
-private List<Label> labels;
+  public ProjectStatusType getProjectStatusEnum() {
+    return ProjectStatusType.fromValue(this.status);
+  }
 
+  public void setProjectStatusEnum(ProjectStatusType value) {
+    this.status = value.getValue();
+  }
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+  @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private List<Issue> issues;
 
+  @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private List<Label> labels;
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+  @CreatedDate private LocalDateTime createdAt;
+
+  @LastModifiedDate private LocalDateTime updatedAt;
 }

@@ -8,8 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @EnableMethodSecurity
 public class AccesscontrolSystemApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AccesscontrolSystemApplication.class, args);
-	}
-	
+  public static void main(String[] args) {
+    SpringApplication.run(AccesscontrolSystemApplication.class, args);
+  }
 }
